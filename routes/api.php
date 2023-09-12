@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\AssetsApiController;
+use App\Http\Controllers\Api\AuthApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// public routes
+Route::post('/register',[AuthApiController::class,'register']);
+Route::post('/login',[AuthApiController::class,'login']);
+
+// proteced routes
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    // auth
+    Route::post('/logout',[AuthApiController::class,'logout']);
+
+    // asset routes
+    Route::resource('assets', AssetsApiController::class);
 });
+
+
+
+
