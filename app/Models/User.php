@@ -44,6 +44,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * role relationship
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    /**
      * Asset relationshipt
      */
     public function assets()
