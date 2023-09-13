@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Asset;
+use App\Models\AssetType;
 
-class AssetsApiController extends Controller
+class AssetTypesApiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,7 @@ class AssetsApiController extends Controller
      */
     public function index()
     {
-        return Asset::orderBy('id','desc')
-                    ->with('assetType','status','location')
-                    ->paginate(10);
+        return AssetType::orderBy('id','desc')->get();
     }
 
     /**
@@ -31,17 +29,9 @@ class AssetsApiController extends Controller
     {
         $this->validate($request,[
             'name' => 'required',
-            'model' => 'required',
-            'serial_number' => 'required',
         ]);
 
-        $asset = Auth::user()->assets()->create($request->all());
-        $asset->location()->associate($request->location_id);
-        $asset->assetType()->associate($request->asset_type_id);
-        $asset->status()->associate($request->status_id);
-        $asset->save();
-
-        return $asset;
+        return AssetType::create($request->all());
     }
 
     /**
@@ -52,7 +42,7 @@ class AssetsApiController extends Controller
      */
     public function show($id)
     {
-        return Asset::find($id);
+        return AssetType::find($id);
     }
 
     /**
@@ -62,18 +52,13 @@ class AssetsApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, AssetType $assetType)
     {
         $this->validate($request,[
             'name' => 'required',
-            'model' => 'required',
-            'serial_number' => 'required',
         ]);
 
-        $asset = Asset::find($id);
-        $asset->update($request->all());
-
-        return $asset;
+        return $assetType->update($request->all());
     }
 
     /**
@@ -84,6 +69,6 @@ class AssetsApiController extends Controller
      */
     public function destroy($id)
     {
-        return Asset::destroy($id);
+        return AssetType::destroy($id);
     }
 }

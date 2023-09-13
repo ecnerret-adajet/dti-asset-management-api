@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Asset;
+use App\Models\Customer;
 
-class AssetsApiController extends Controller
+class CustomersApiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,7 @@ class AssetsApiController extends Controller
      */
     public function index()
     {
-        return Asset::orderBy('id','desc')
-                    ->with('assetType','status','location')
-                    ->paginate(10);
+        return Customer::orderBy('id','desc')->paginate(10);
     }
 
     /**
@@ -29,19 +27,12 @@ class AssetsApiController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $request->validate([
             'name' => 'required',
-            'model' => 'required',
-            'serial_number' => 'required',
+            'address' => 'required'
         ]);
 
-        $asset = Auth::user()->assets()->create($request->all());
-        $asset->location()->associate($request->location_id);
-        $asset->assetType()->associate($request->asset_type_id);
-        $asset->status()->associate($request->status_id);
-        $asset->save();
-
-        return $asset;
+        return Customer::create($request->all());
     }
 
     /**
@@ -52,7 +43,7 @@ class AssetsApiController extends Controller
      */
     public function show($id)
     {
-        return Asset::find($id);
+        return Customer::find($id);
     }
 
     /**
@@ -62,18 +53,14 @@ class AssetsApiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Customer $customer)
     {
-        $this->validate($request,[
+        $request->validate([
             'name' => 'required',
-            'model' => 'required',
-            'serial_number' => 'required',
+            'address' => 'required'
         ]);
 
-        $asset = Asset::find($id);
-        $asset->update($request->all());
-
-        return $asset;
+        return $customer->update($request->all());
     }
 
     /**
@@ -84,6 +71,6 @@ class AssetsApiController extends Controller
      */
     public function destroy($id)
     {
-        return Asset::destroy($id);
+        return Customer::destroy($id);
     }
 }
