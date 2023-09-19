@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\User;
 
 class AuthApiController extends Controller
@@ -59,8 +60,10 @@ class AuthApiController extends Controller
         $token = $user->createToken('dti_asset_app')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
-            'token' => $token
+            'name' => $user->name,
+            'surname' => $user->name,
+            'email' => $user->email,
+            'api_token' => $token
         ],201);
     }
 
@@ -74,5 +77,27 @@ class AuthApiController extends Controller
         return response()->json([
             'message' => 'Logged out'
         ],201);
+    }
+
+    /**
+     * Verify token
+     */
+    public function verifyToken(Request $request)
+    {
+        $token = PersonalAccessToken::findToken($request->api_token);
+
+        if(!$token) {
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ],401);
+        }
+
+        return response()->json([
+            'name' => $token->tokenable->name,
+            'surname' => $token->tokenable->name,
+            'email' => $token->tokenable->email,
+            'api_token' => $request->api_token
+        ],200);
+
     }
 }

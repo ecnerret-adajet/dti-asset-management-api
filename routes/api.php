@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\AssetTypesApiController;
 // public routes
 Route::post('/register',[AuthApiController::class,'register']);
 Route::post('/login',[AuthApiController::class,'login']);
+Route::post('/verify_token',[AuthApiController::class,'verifyToken']);
 
 // proteced routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
