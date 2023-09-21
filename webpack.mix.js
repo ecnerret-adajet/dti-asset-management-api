@@ -12,13 +12,27 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    // .js('resources/metronic/plugins/global/plugins.bundle.js', 'public/js')
+    // .js('resources/metronic/plugins/custom/prismjs/prismjs.bundle.js', 'public/js')
+    // .js('resources/metronic/js/scripts.bundle.js', 'public/js')
     .vue()
-    .postCss('resources/css/app.css', 'public/css', [
-        //
-    ]);
+    .postCss('resources/css/app.css','public/css')
+    .postCss('resources/metronic/plugins/global/plugins.bundle.css','public/css')
+    .postCss('resources/metronic/plugins/custom/prismjs/prismjs.bundle.css','public/css')
+    .postCss('resources/metronic/css/style.bundle.css','public/css')
+    .webpackConfig(require('./webpack.config'));
 
 mix.webpackConfig({
     output: {
         chunkFilename: 'js/[name].js?id=[chunkhash]',
     }
 });
+
+if (mix.inProduction()) {
+    mix.version();
+}
+else {
+    mix.browserSync({
+        proxy: 'http://assetinventory.local'
+    });
+}

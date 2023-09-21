@@ -1,4 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
+    "/css/style.bundle.css": "/css/style.bundle.css",
+    "/css/prismjs.bundle.css": "/css/prismjs.bundle.css",
+    "/css/plugins.bundle.css": "/css/plugins.bundle.css",
     "/css/app.css": "/css/app.css"
 }

@@ -3,6 +3,7 @@ require('./bootstrap');
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import { InertiaProgress } from '@inertiajs/progress'
+import Neat from '@/Mixins/Neat.vue';
 
 createInertiaApp({
   resolve: name => require(`./Pages/${name}`),
