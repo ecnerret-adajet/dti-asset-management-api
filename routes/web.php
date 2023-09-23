@@ -18,12 +18,18 @@ use App\Http\Controllers\Auth\LoginController;
 
 // public routes
 Route::get('/login',[LoginController::class,'login'])->name('login');
+Route::post('/login',[LoginController::class,'auth'])->name('login-auth');
 
 
-// pages route
-Route::get('/',[PagesController::class,'home'])->name('home');
-Route::get('/inventory',[PagesController::class,'inventory'])->name('inventory');
-Route::get('/master-data',[PagesController::class,'masterData'])->name('master-data');
+// proteced routes
+Route::group(['middleware' => ['auth']], function() {
 
-// users route
-Route::get('/accounts',[AccountsController::class,'index'])->name('accounts');
+    // pages route
+    Route::get('/',[PagesController::class,'home'])->name('home');
+    Route::get('/inventory',[PagesController::class,'inventory'])->name('inventory');
+    Route::get('/master-data',[PagesController::class,'masterData'])->name('master-data');
+
+    // users route
+    Route::get('/accounts',[AccountsController::class,'index'])->name('accounts');
+
+});

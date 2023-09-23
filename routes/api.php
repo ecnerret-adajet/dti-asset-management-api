@@ -26,7 +26,7 @@ Route::post('/login',[AuthApiController::class,'login']);
 Route::post('/verify_token',[AuthApiController::class,'verifyToken']);
 
 // proteced routes
-Route::group(['middleware' => ['auth:sanctum']], function() {
+Route::group(['middleware' => ['auth:api']], function() {
     // auth
     Route::post('/logout',[AuthApiController::class,'logout']);
 

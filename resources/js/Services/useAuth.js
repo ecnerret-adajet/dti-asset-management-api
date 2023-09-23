@@ -5,9 +5,10 @@ const user = ref(null);
 
 const login = async (credentials) => {
     try {
+      await axios.get('/sanctum/csrf-token');
       const response = await axios.post('/api/login', credentials);
       isAuthenticated.value = true;
-      user.value = response.data.user;
+      user.value = response.data;
       // Store the authentication token in a secure way (e.g., localStorage or cookies)
     } catch (error) {
       // Handle login error
