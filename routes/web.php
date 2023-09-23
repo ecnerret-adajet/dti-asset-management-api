@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,10 @@ use App\Http\Controllers\AccountsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// public routes
+Route::get('/login',[LoginController::class,'login'])->name('login');
+
 
 // pages route
 Route::get('/',[PagesController::class,'home'])->name('home');
