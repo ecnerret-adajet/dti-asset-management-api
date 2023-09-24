@@ -57,6 +57,6 @@ class User extends Authenticatable
      */
     public function assets()
     {
-        return $this->hasMany(Assets::class);
+        return $this->hasMany(Asset::class);
     }
 }

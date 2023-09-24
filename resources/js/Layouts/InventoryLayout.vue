@@ -10,26 +10,44 @@
 
           <TopMenu />
 
-          <slot />
+          <div
+            class="content d-flex flex-column flex-column-fluid"
+            id="kt_content"
+          >
+            <!--begin::Entry-->
+            <div class="d-flex flex-column-fluid">
+              <!--begin::Container-->
+              <div class="container">
+                <!--begin::Teachers-->
+                <div class="d-flex flex-row">
+                  <!--begin::Content-->
+                  <div class="flex-row-fluid">
 
+                    <slot />
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--begin::Entry-->
+          </div>
         </div>
         <!--end::Wrapper-->
       </div>
       <!--end::Page-->
     </div>
 
-    <QuckPanel/>
+    <QuckPanel />
 
-    <UserPanel/>
+    <UserPanel />
 
     <ScrollTop />
-
   </div>
 </template>
 <script setup>
 import HeaderMobile from "../Components/HeaderMobile.vue";
 import TopMenu from "../Components/TopMenu.vue";
-import ScrollTop from '../Components/ScrollTop.vue'
-import UserPanel from '../Components/UserPanel.vue'
-import QuckPanel from '../Components/QuickPanel.vue'
+import ScrollTop from "../Components/ScrollTop.vue";
+import UserPanel from "../Components/UserPanel.vue";
+import QuckPanel from "../Components/QuickPanel.vue";
 </script>

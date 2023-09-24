@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -28,6 +29,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/',[PagesController::class,'home'])->name('home');
     Route::get('/inventory',[PagesController::class,'inventory'])->name('inventory');
     Route::get('/master-data',[PagesController::class,'masterData'])->name('master-data');
+
+    // asset routes
+    Route::get('/inventory/create',[AssetsController::class,'create'])->name('inventory-create');
+    Route::post('/inventory',[AssetsController::class,'store'])->name('inventory');
 
     // users route
     Route::get('/accounts',[AccountsController::class,'index'])->name('accounts');

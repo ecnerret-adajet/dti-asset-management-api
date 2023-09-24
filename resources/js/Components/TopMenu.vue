@@ -13,12 +13,12 @@ import { Link } from '@inertiajs/vue3'
           <a href="index.html">
             <img
               alt="Logo"
-              src="assets/media/logos/dtilogo.png"
+              src="/assets/media/logos/dtilogo.png"
               class="logo-default max-h-40px"
             />
             <img
               alt="Logo"
-              src="assets/media/logos/dtilogo.png"
+              src="/assets/media/logos/dtilogo.png"
               class="logo-sticky max-h-40px"
             />
           </a>

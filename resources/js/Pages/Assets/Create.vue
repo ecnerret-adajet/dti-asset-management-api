@@ -1,0 +1,259 @@
+<script setup>
+import InventoryLayout from "../../Layouts/InventoryLayout.vue";
+import { reactive } from "vue";
+import { router, useForm } from "@inertiajs/vue3";
+
+defineProps({
+  locations: Array,
+  asset_types: Array,
+});
+
+const form = useForm({
+  image_path: null,
+  name: null,
+  description: null,
+  location_id: null,
+  asset_type_id: null,
+  model: null,
+  serial_number: null,
+  purchase_date: null,
+  current_value: null,
+  manufacturer: null,
+  status_id: 1,
+});
+
+const storeAsset = () => {
+  form.post("/inventory");
+};
+</script>
+<template>
+  <InventoryLayout>
+    <!--begin::Card-->
+    <div class="card card-custom card-stretch">
+      <!--begin::Header-->
+      <div class="card-header py-3">
+        <div class="card-title align-items-start flex-column">
+          <h3 class="card-label font-weight-bolder text-dark">
+            New Asset Entry
+          </h3>
+          <span class="text-muted font-weight-bold font-size-sm mt-1"
+            >Inventory new record</span
+          >
+        </div>
+        <div class="card-toolbar">
+          <button type="submit" @click="storeAsset()" class="btn btn-success mr-2">Submit</button>
+          <button type="reset" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+      <!--end::Header-->
+      <!--begin::Form-->
+      <form class="form" @submit.prevent="storeAsset">
+        <!--begin::Body-->
+        <div class="card-body">
+          <div class="row">
+            <label class="col-xl-3"></label>
+            <div class="col-lg-9 col-xl-6">
+              <h5 class="font-weight-bold mb-6">General Information</h5>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Image</label>
+            <div class="col-lg-9 col-xl-6">
+              <div
+                class="image-input image-input-outline"
+                id="kt_profile_avatar"
+                style="
+                  background-image: url(/assets/media/users/image-asset.jpeg);
+                "
+              >
+                <div
+                  class="image-input-wrapper"
+                  style="background-image: url(assets/media/users/300_21.jpg)"
+                ></div>
+                <label
+                  class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                  data-action="change"
+                  data-toggle="tooltip"
+                  title=""
+                  data-original-title="Upload image"
+                >
+                  <i class="fa fa-pen icon-sm text-muted"></i>
+                  <input
+                    type="file"
+                    name="profile_avatar"
+                    @input="form.image_path = $event.target.files[0]"
+                    accept=".png, .jpg, .jpeg"
+                  />
+                  <input type="hidden" name="profile_avatar_remove" />
+                </label>
+                <span
+                  class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                  data-action="cancel"
+                  data-toggle="tooltip"
+                  title="Cancel avatar"
+                >
+                  <i class="ki ki-bold-close icon-xs text-muted"></i>
+                </span>
+                <span
+                  class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                  data-action="remove"
+                  data-toggle="tooltip"
+                  title="Remove avatar"
+                >
+                  <i class="ki ki-bold-close icon-xs text-muted"></i>
+                </span>
+              </div>
+              <span class="form-text text-muted"
+                >Allowed file types: png, jpg, jpeg.</span
+              >
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Name</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.name"
+                placeholder="Input Asset Name"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+              <div v-if="form.errors.name" class="fv-plugins-message-container text-danger mt-3">
+                <div
+                  class="fv-help-block"
+                >
+                  {{ form.errors.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Description</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.description"
+                placeholder="Short Description"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Location</label>
+            <div class="col-lg-9 col-xl-6">
+              <select
+                v-model="form.location_id"
+                class="form-control form-control-lg form-control-solid"
+              >
+                <option value="">Select</option>
+                <option
+                  v-for="(location, l) in locations"
+                  :key="l"
+                  :value="location.id"
+                >
+                  {{ location.name }}
+                </option>
+              </select>
+              <div class="fv-plugins-message-container"></div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-xl-3"></label>
+            <div class="col-lg-9 col-xl-6">
+              <h5 class="font-weight-bold mt-10 mb-6">Product Details</h5>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Asset Type</label>
+            <div class="col-lg-9 col-xl-6">
+              <select
+                v-model="form.asset_type_id"
+                class="form-control form-control-lg form-control-solid"
+              >
+                <option value="">Select</option>
+                <option
+                  v-for="(assettype, a) in asset_types"
+                  :key="a"
+                  :value="assettype.id"
+                >
+                  {{ assettype.name }}
+                </option>
+              </select>
+              <div class="fv-plugins-message-container"></div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Model</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.model"
+                placeholder="Input Model Name"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Serial Number</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.serial_number"
+                placeholder="Input Serial Number"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Manufacturer</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.manufacturer"
+                placeholder="Input Manufacturer"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Purchase Date</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.purchase_date"
+                placeholder="Input Purchase Date"
+                class="form-control form-control-lg form-control-solid"
+                type="date"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-xl-3"></label>
+            <div class="col-lg-9 col-xl-6">
+              <h5 class="font-weight-bold mt-10 mb-6">Inventory Details</h5>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Current Stock</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.current_value"
+                placeholder="Input Serial Number"
+                class="form-control form-control-lg form-control-solid"
+                type="number"
+              />
+            </div>
+          </div>
+        </div>
+        <!--end::Body-->
+      </form>
+      <!--end::Form-->
+    </div>
+  </InventoryLayout>
+</template>

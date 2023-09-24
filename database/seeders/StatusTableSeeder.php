@@ -18,16 +18,19 @@ class StatusTableSeeder extends Seeder
         DB::table('statuses')->insert([
             [
                 'name' => 'active',
+                'description' => 'active',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'defective',
+                'description' => 'defective',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'for repair',
+                'description' => 'for repair',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

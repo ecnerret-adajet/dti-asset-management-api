@@ -1,6 +1,5 @@
 <script setup>
 import BasicLayout from "../Layouts/BasicLayout.vue";
-import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
 </script>
 <template>
   <BasicLayout>
@@ -16,7 +15,7 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
             <!-- aside position -->
 
             <!--begin::Content-->
-            <div class="flex-row-fluid ml-lg-8">
+            <div class="flex-row-fluid">
               <!--begin::Card-->
               <div class="card card-custom">
                 <!--begin::Header-->
@@ -24,15 +23,15 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
                   <h3 class="card-title align-items-start flex-column">
                     <span
                       class="card-label font-weight-bolder font-size-h3 text-dark"
-                      >My Orders</span
+                      >Asset Inventory</span
                     >
                     <span class="text-muted mt-1 font-weight-bold font-size-sm"
-                      >Manage over 1600 products</span
+                      >Manage over assets and components</span
                     >
                   </h3>
                   <div class="card-toolbar">
                     <!--begin::Dropdown-->
-                    <div class="dropdown dropdown-inline mr-2">
+                    <!-- <div class="dropdown dropdown-inline mr-2">
                       <button
                         type="button"
                         class="btn btn-light-primary font-weight-bolder dropdown-toggle"
@@ -41,7 +40,6 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
                         aria-expanded="false"
                       >
                         <span class="svg-icon svg-icon-md">
-                          <!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -68,14 +66,12 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
                               />
                             </g>
                           </svg>
-                          <!--end::Svg Icon--> </span
+                         </span
                         >Export
                       </button>
-                      <!--begin::Dropdown Menu-->
                       <div
                         class="dropdown-menu dropdown-menu-sm dropdown-menu-right"
                       >
-                        <!--begin::Navigation-->
                         <ul class="navi flex-column navi-hover py-2">
                           <li
                             class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2"
@@ -123,11 +119,10 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
                             </a>
                           </li>
                         </ul>
-                        <!--end::Navigation-->
                       </div>
-                      <!--end::Dropdown Menu-->
-                    </div>
+                    </div> -->
                     <!--end::Dropdown-->
+
                     <!--begin::Button-->
                     <a href="#" class="btn btn-primary font-weight-bolder">
                       <span class="svg-icon svg-icon-md">
@@ -156,7 +151,7 @@ import InventoryLeftSide from '../Components/InventoryLeftSide.vue'
                           </g>
                         </svg>
                         <!--end::Svg Icon--> </span
-                      >New Record</a
+                      >Add Record</a
                     >
                     <!--end::Button-->
                   </div>

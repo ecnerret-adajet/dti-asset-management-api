@@ -33,6 +33,12 @@ if (mix.inProduction()) {
 }
 else {
     mix.browserSync({
-        proxy: 'http://assetinventory.local'
+        proxy: 'http://127.0.0.1:8000'
+    })
+    .webpackConfig({
+        devServer: {
+            hot: true,
+            open: true,
+        },
     });
 }
