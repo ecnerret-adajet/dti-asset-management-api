@@ -14,6 +14,12 @@ use Inertia\Inertia;
 
 class AssetsController extends Controller
 {
+
+    public function index()
+    {
+        return Inertia::render('Assets/Index');
+    }
+
     public function create()
     {
         $locations = Location::all();
