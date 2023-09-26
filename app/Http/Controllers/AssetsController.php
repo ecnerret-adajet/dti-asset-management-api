@@ -52,4 +52,51 @@ class AssetsController extends Controller
 
         return Redirect::route('inventory')->with('success','Asset successfully created.');
     }
+
+    public function edit($asset_id)
+    {
+        $asset = Asset::where('id', $asset_id)
+                    ->with('location','assetType','status')
+                    ->first();
+
+        $locations = Location::all();
+        $asset_types = AssetType::all();
+        $status = Status::all();
+
+        return Inertia::render('Assets/Edit',[
+            'asset' => $asset,
+            'locations' => $locations,
+            'asset_types' => $asset_types,
+            'status' => $status,
+        ]);
+    }
+
+    public function update(Request $request, Asset $asset)
+    {
+        $this->validate($request,[
+            'name' => 'required'
+        ]);
+
+        $asset->update($request->all());
+
+        if($request->file('image_path')) {
+            $asset->image_path = $request->file('image_path')->store('images');
+        }
+
+        if($request->status_id) {
+            $asset->status()->associate($request->status_id);
+        }
+
+        if($request->location_id) {
+            $asset->location()->associate($request->location_id);
+        }
+
+        if($request->asset_type_id) {
+            $asset->assetType()->associate($request->asset_type_id);
+        }
+
+        $asset->save();
+
+        return Redirect::route('inventory')->with('success','Asset successfully created.');
+    }
 }

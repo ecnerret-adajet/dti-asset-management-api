@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth']], function() {
     // asset routes
     Route::get('/inventory/create',[AssetsController::class,'create'])->name('inventory-create');
     Route::post('/inventory',[AssetsController::class,'store'])->name('inventory');
+    Route::get('/inventory/{asset_id}',[AssetsController::class,'edit'])->name('inventory-edit');
+    Route::patch('/inventory/{asset}',[AssetsController::class,'update'])->name('inventory-update');
 
     // users route
     Route::get('/accounts',[AccountsController::class,'index'])->name('accounts');

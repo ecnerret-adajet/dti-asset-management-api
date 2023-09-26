@@ -10,7 +10,19 @@ class Asset extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'image_path',
+        'name',
+        'description',
+        'model',
+        'serial_number',
+        'purchase_date',
+        'current_value',
+        'manufacturer',
+        'location_id',
+        'asset_type_id',
+        'status_id',
+    ];
 
     public function user()
     {
@@ -46,6 +58,8 @@ class Asset extends Model
             $query->where('serial_number', 'like', '%'.$serial_number.'%');
         })->when($filters['location'] ?? null, function ($query, $location) {
             $query->where('location_id', $location);
+        })->when($filters['asset_type'] ?? null, function ($query, $asset_type) {
+            $query->where('asset_type_id', $asset_type);
         });
     }
 }

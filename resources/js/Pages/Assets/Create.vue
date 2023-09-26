@@ -1,6 +1,6 @@
 <script setup>
 import InventoryLayout from "../../Layouts/InventoryLayout.vue";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
 
 defineProps({
@@ -21,10 +21,28 @@ const form = useForm({
   manufacturer: null,
   status_id: 1,
 });
+const previewImage = ref(null);
 
 const storeAsset = () => {
   form.post("/inventory");
 };
+
+const previewFile = (event) => {
+  const file = event.target.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      previewImage.value = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  } else {
+    previewImage.value = null;
+  }
+};
+
 </script>
 <template>
   <InventoryLayout>
@@ -41,7 +59,7 @@ const storeAsset = () => {
           >
         </div>
         <div class="card-toolbar">
-          <button type="submit" @click="storeAsset()" class="btn btn-success mr-2">Submit</button>
+          <button type="submit" @click="storeAsset()" :disabled="form.processing" class="btn btn-success mr-2">Submit</button>
           <button type="reset" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -68,7 +86,7 @@ const storeAsset = () => {
               >
                 <div
                   class="image-input-wrapper"
-                  style="background-image: url(assets/media/users/300_21.jpg)"
+                  :style="`background-image: url(${previewImage})`"
                 ></div>
                 <label
                   class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -81,6 +99,7 @@ const storeAsset = () => {
                   <input
                     type="file"
                     name="profile_avatar"
+                    @change="previewFile"
                     @input="form.image_path = $event.target.files[0]"
                     accept=".png, .jpg, .jpeg"
                   />

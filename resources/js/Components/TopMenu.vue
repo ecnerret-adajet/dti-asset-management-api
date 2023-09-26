@@ -49,7 +49,7 @@ import { Link } from '@inertiajs/vue3'
               </li>
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
-                :class="{ 'menu-item-here': $page.url === '/inventory' }"
+                :class="{ 'menu-item-here': $page.url.startsWith('/inventory') }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
@@ -715,12 +715,12 @@ import { Link } from '@inertiajs/vue3'
               >
               <span
                 class="text-white opacity-90 font-weight-bolder font-size-base d-none d-md-inline mr-4"
-                >Sean</span
+                >{{ $page.props.auth.user.name }}</span
               >
               <span class="symbol symbol-35">
                 <span
                   class="symbol-label text-white font-size-h5 font-weight-bold bg-white-o-30"
-                  >S</span
+                  >{{ $page.props.auth.user.name[0] }}</span
                 >
               </span>
             </div>
