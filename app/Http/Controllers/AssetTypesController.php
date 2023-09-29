@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Models\AssetType;
 use Inertia\Inertia;
@@ -11,6 +12,7 @@ class AssetTypesController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('AssetType/Index',[
+            'filters' => $request->all('name'),
             'asset_types' => AssetType::orderBy('created_at','desc')
                     ->filter($request->only('name'))
                     ->paginate(10)

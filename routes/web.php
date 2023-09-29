@@ -44,17 +44,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/users',[UsersController::class,'index'])->name('users');
 
     // locations pages
-    Route::get('/locations',[LocationsController::class,'index'])->name('locations');
+    Route::get('/master-data/locations',[LocationsController::class,'index'])->name('locations');
     Route::post('/locations',[LocationsController::class,'store'])->name('locations-store');
     Route::patch('/locations/{location}',[LocationsController::class,'update'])->name('locations-update');
 
     // asset type
-    Route::get('/asset-types',[AssetTypesController::class,'index'])->name('asset-types');
+    Route::get('/master-data/asset-types',[AssetTypesController::class,'index'])->name('asset-types');
     Route::post('/asset-types',[AssetTypesController::class,'store'])->name('asset-types-store');
     Route::patch('/asset-types/{assetType}',[AssetTypesController::class,'update'])->name('asset-types-update');
 
     // statuses
-    Route::get('/statuses',[StatusesController::class,'index'])->name('astatuses');
+    Route::get('/master-data/statuses',[StatusesController::class,'index'])->name('astatuses');
     Route::post('/statuses',[StatusesController::class,'store'])->name('statuses-store');
     Route::patch('/statuses/{status}',[StatusesController::class,'update'])->name('statuses-update');
 

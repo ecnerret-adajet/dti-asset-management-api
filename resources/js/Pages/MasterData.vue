@@ -54,7 +54,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--begin::Name-->
                   <div class="my-4">
                     <Link
-                      href="/locations"
+                      href="/master-data/locations"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
                       >Location Listing</Link
                     >
@@ -64,7 +64,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--begin::Buttons-->
                   <div class="mt-9">
                     <Link
-                      href="/locations"
+                      href="/master-data/locations"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
                       >Visit</Link
                     >
@@ -114,20 +114,20 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="/master-data/asset-types"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Asset Types</a
+                      >Asset Types</Link
                     >
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
-                    <a
-                      href="#"
+                    <Link
+                      href="/master-data/asset-types"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</a
+                      >Visit</Link
                     >
                   </div>
                   <!--end::Buttons-->
@@ -180,20 +180,20 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="/master-data/statuses"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Status Listing</a
+                      >Status Listing</Link
                     >
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
-                    <a
-                      href="#"
+                    <Link
+                      href="/master-data/statuses"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</a
+                      >Visit</Link
                     >
                   </div>
                   <!--end::Buttons-->

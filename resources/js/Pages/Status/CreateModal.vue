@@ -15,7 +15,7 @@ const props = defineProps({
 
 const form = useForm({
   name: null,
-  remarks: null,
+  description: null,
 });
 
 watch(
@@ -38,7 +38,7 @@ const closeModal = () => {
 };
 
 const handleSubmit = () => {
-  form.post('/locations', {
+  form.post('/statuses', {
     preserveScroll: true,
     onSuccess: () => {
         form.reset();
@@ -75,7 +75,7 @@ const handleSubmit = () => {
           </button>
         </div>
         <div class="modal-body">
-          <form id="locationForm" class="form" @submit.prevent="handleSubmit">
+          <form id="statusForm" class="form" @submit.prevent="handleSubmit">
             <!--begin::Body-->
             <div class="card-body">
               <div class="form-group row">
@@ -103,7 +103,7 @@ const handleSubmit = () => {
                 >
                 <div class="col-lg-9 col-xl-6">
                   <input
-                    v-model="form.remarks"
+                    v-model="form.description"
                     placeholder="Short Description"
                     class="form-control form-control-lg form-control-solid"
                     type="text"

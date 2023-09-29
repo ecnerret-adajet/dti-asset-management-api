@@ -38,7 +38,7 @@ const closeModal = () => {
 };
 
 const handleSubmit = () => {
-  form.post('/locations', {
+  form.post('/asset-types', {
     preserveScroll: true,
     onSuccess: () => {
         form.reset();
@@ -75,7 +75,7 @@ const handleSubmit = () => {
           </button>
         </div>
         <div class="modal-body">
-          <form id="locationForm" class="form" @submit.prevent="handleSubmit">
+          <form id="assetTypeForm" class="form" @submit.prevent="handleSubmit">
             <!--begin::Body-->
             <div class="card-body">
               <div class="form-group row">
@@ -99,12 +99,12 @@ const handleSubmit = () => {
               </div>
               <div class="form-group row">
                 <label class="col-xl-3 col-lg-3 col-form-label"
-                  >Description</label
+                  >Remarks</label
                 >
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.remarks"
-                    placeholder="Short Description"
+                    placeholder="Short Remarks"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                   />

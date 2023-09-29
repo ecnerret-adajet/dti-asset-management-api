@@ -21,7 +21,7 @@ class AssetType extends Model
 
      public function scopeFilter($query, array $filters)
      {
-        $query->where($filters['name'] ?? null, function($query, $name) {
+        $query->when($filters['name'] ?? null, function($query, $name) {
             $query->where('name','like','%'.$name.'%');
         });
      }

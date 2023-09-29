@@ -9,7 +9,7 @@ import pickBy from "lodash/pickBy";
 
 const show = ref(false);
 const props = defineProps({
-  locations: Object,
+  asset_types: Object,
   filters: Object,
 });
 
@@ -20,7 +20,7 @@ const form = useForm({
 watch(
   () => form,
   throttle(() => {
-    router.get("/locations", pickBy(form), {
+    router.get("/asset-types", pickBy(form), {
       preserveState: true,
     });
   }, 150),
@@ -31,10 +31,9 @@ const openModal = () => {
   show.value = !show.value;
 };
 
-
 </script>
 <template>
-  <BasicLayout>
+ <BasicLayout>
     <!--begin::Content-->
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
       <!--begin::Entry-->
@@ -54,10 +53,10 @@ const openModal = () => {
                   <h3 class="card-title align-items-start flex-column">
                     <span
                       class="card-label font-weight-bolder font-size-h3 text-dark"
-                      >Location Manamgement</span
+                      >Asset Type Manamgement</span
                     >
                     <span class="text-muted mt-1 font-weight-bold font-size-sm"
-                      >Asset locations.</span
+                      >List of asset type.</span
                     >
                   </h3>
                   <div class="card-toolbar">
@@ -144,33 +143,33 @@ const openModal = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(location, l) in locations.data" :key="l">
+                        <tr v-for="(type, l) in asset_types.data" :key="l">
                           <td class="pr-2">
                             <span class="text-capitalize">
-                              {{ location.name }}
+                              {{ type.name }}
                             </span>
                           </td>
                           <td>
                             <span class="text-capitalize">
-                              {{ location.remarks }}
+                              {{ type.remarks }}
                             </span>
                           </td>
                           <td>
                             <span
                               class="label label-dot mr-2"
                               :class="{
-                                ' label-success ': location.is_active === 1,
-                                ' label-danger ': location.is_active === 0,
+                                ' label-success ': type.is_active === 1,
+                                ' label-danger ': type.is_active === 0,
                               }"
                             ></span
                             ><span
                               class="font-weight-bold text-capitalize"
                               :class="{
-                                ' text-success ': location.is_active === 1,
-                                ' text-danger ': location.is_active === 0,
+                                ' text-success ': type.is_active === 1,
+                                ' text-danger ': type.is_active === 0,
                               }"
                               >{{
-                                location.is_active === 1
+                                type.is_active === 1
                                   ? "Active"
                                   : "Deactivated"
                               }}</span
@@ -240,8 +239,8 @@ const openModal = () => {
     <!--end::Content-->
 
     <create-modal
-      unique_id="locationModal"
-      title="Create New Location"
+      unique_id="assetTypeModal"
+      title="Create Asset Type"
       :show="show"
       @close="show = $event"
     />

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Models\Status;
 use Inertia\Inertia;
@@ -11,6 +12,7 @@ class StatusesController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Status/Index',[
+            'filters' => $request->all('name'),
             'statuses' => Status::orderBy('created_at','desc')
                     ->filter($request->only('name'))
                     ->paginate(10)

@@ -17,7 +17,7 @@ class AssetsController extends Controller
 
     public function index()
     {
-        return Inertia::render('Assets/Index');
+        return Inertia::render('AssetType/Index');
     }
 
     public function create()
@@ -26,7 +26,7 @@ class AssetsController extends Controller
         $asset_types = AssetType::all();
         $status = Status::all();
 
-        return Inertia::render('Assets/Create',[
+        return Inertia::render('AssetType/Create',[
             'locations' => $locations,
             'asset_types' => $asset_types,
             'statuses' => $status
@@ -63,7 +63,7 @@ class AssetsController extends Controller
         $asset_types = AssetType::all();
         $status = Status::all();
 
-        return Inertia::render('Assets/Edit',[
+        return Inertia::render('AssetType/Edit',[
             'asset' => $asset,
             'locations' => $locations,
             'asset_types' => $asset_types,

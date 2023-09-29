@@ -61,7 +61,7 @@ import { Link } from '@inertiajs/vue3'
               </li>
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
-                :class="{ 'menu-item-here':$page.url === '/master-data' }"
+                :class="{ 'menu-item-here': $page.url.startsWith('/master-data') }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
