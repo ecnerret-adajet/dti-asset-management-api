@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Inertia\Inertia;
 
-class AccountsController extends Controller
+class UsersController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Accounts/Users');
+        return Inertia::render('Users/Index');
     }
 }

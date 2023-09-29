@@ -22,7 +22,7 @@ class AssetsController extends Controller
 
     public function create()
     {
-        $locations = Location::all();
+        $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $status = Status::all();
 
@@ -59,7 +59,7 @@ class AssetsController extends Controller
                     ->with('location','assetType','status')
                     ->first();
 
-        $locations = Location::all();
+        $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $status = Status::all();
 

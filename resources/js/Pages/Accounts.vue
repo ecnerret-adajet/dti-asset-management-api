@@ -1,7 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
 import BasicLayout from "../Layouts/BasicLayout.vue";
-
 </script>
 <template>
   <BasicLayout>
@@ -24,7 +22,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                     <div class="symbol symbol-circle symbol-lg-90">
                       <!-- <img src="/assets/media/project-logos/1.png" alt="image" /> -->
                       <span class="svg-icon svg-icon-primary svg-icon-4x"
-                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Map\Location-arrow.svg--><svg
+                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Communication\Group.svg--><svg
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
                           width="24px"
@@ -38,12 +36,17 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                             fill="none"
                             fill-rule="evenodd"
                           >
-                            <rect x="0" y="0" width="24" height="24" />
+                            <polygon points="0 0 24 0 24 24 0 24" />
                             <path
-                              d="M4.88230018,17.2353996 L13.2844582,0.431083506 C13.4820496,0.0359007077 13.9625881,-0.12427877 14.3577709,0.0733126292 C14.5125928,0.15072359 14.6381308,0.276261584 14.7155418,0.431083506 L23.1176998,17.2353996 C23.3152912,17.6305824 23.1551117,18.1111209 22.7599289,18.3087123 C22.5664522,18.4054506 22.3420471,18.4197165 22.1378777,18.3482572 L14,15.5 L5.86212227,18.3482572 C5.44509941,18.4942152 4.98871325,18.2744737 4.84275525,17.8574509 C4.77129597,17.6532815 4.78556182,17.4288764 4.88230018,17.2353996 Z"
+                              d="M18,14 C16.3431458,14 15,12.6568542 15,11 C15,9.34314575 16.3431458,8 18,8 C19.6568542,8 21,9.34314575 21,11 C21,12.6568542 19.6568542,14 18,14 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z"
                               fill="#000000"
                               fill-rule="nonzero"
-                              transform="translate(14.000087, 9.191034) rotate(-315.000000) translate(-14.000087, -9.191034) "
+                              opacity="0.3"
+                            />
+                            <path
+                              d="M17.6011961,15.0006174 C21.0077043,15.0378534 23.7891749,16.7601418 23.9984937,20.4 C24.0069246,20.5466056 23.9984937,21 23.4559499,21 L19.6,21 C19.6,18.7490654 18.8562935,16.6718327 17.6011961,15.0006174 Z M0.00065168429,20.1992055 C0.388258525,15.4265159 4.26191235,13 8.98334134,13 C13.7712164,13 17.7048837,15.2931929 17.9979143,20.2 C18.0095879,20.3954741 17.9979143,21 17.2466999,21 C13.541124,21 8.03472472,21 0.727502227,21 C0.476712155,21 -0.0204617505,20.45918 0.00065168429,20.1992055 Z"
+                              fill="#000000"
+                              fill-rule="nonzero"
                             />
                           </g></svg
                         ><!--end::Svg Icon--></span
@@ -53,20 +56,20 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
-                    <Link
-                      href="/locations"
+                    <a
+                      href="#"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Location Listing</Link
+                      >Users</a
                     >
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
-                    <Link
-                      href="/locations"
+                    <a
+                      href="#"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</Link
+                      >Visit</a
                     >
                   </div>
                   <!--end::Buttons-->
@@ -87,7 +90,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                     <div class="symbol symbol-circle symbol-lg-90">
                       <!-- <img src="/assets/media/project-logos/1.png" alt="image" /> -->
                       <span class="svg-icon svg-icon-primary svg-icon-4x"
-                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Design\Component.svg--><svg
+                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Clothes\Briefcase.svg--><svg
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
                           width="24px"
@@ -103,8 +106,14 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                           >
                             <rect x="0" y="0" width="24" height="24" />
                             <path
-                              d="M12.7442084,3.27882877 L19.2473374,6.9949025 C19.7146999,7.26196679 20.003129,7.75898194 20.003129,8.29726722 L20.003129,15.7027328 C20.003129,16.2410181 19.7146999,16.7380332 19.2473374,17.0050975 L12.7442084,20.7211712 C12.2830594,20.9846849 11.7169406,20.9846849 11.2557916,20.7211712 L4.75266256,17.0050975 C4.28530007,16.7380332 3.99687097,16.2410181 3.99687097,15.7027328 L3.99687097,8.29726722 C3.99687097,7.75898194 4.28530007,7.26196679 4.75266256,6.9949025 L11.2557916,3.27882877 C11.7169406,3.01531506 12.2830594,3.01531506 12.7442084,3.27882877 Z M12,14.5 C13.3807119,14.5 14.5,13.3807119 14.5,12 C14.5,10.6192881 13.3807119,9.5 12,9.5 C10.6192881,9.5 9.5,10.6192881 9.5,12 C9.5,13.3807119 10.6192881,14.5 12,14.5 Z"
+                              d="M5.84026576,8 L18.1597342,8 C19.1999115,8 20.0664437,8.79732479 20.1528258,9.83390904 L20.8194924,17.833909 C20.9112219,18.9346631 20.0932459,19.901362 18.9924919,19.9930915 C18.9372479,19.9976952 18.8818364,20 18.8264009,20 L5.1735991,20 C4.0690296,20 3.1735991,19.1045695 3.1735991,18 C3.1735991,17.9445645 3.17590391,17.889153 3.18050758,17.833909 L3.84717425,9.83390904 C3.93355627,8.79732479 4.80008849,8 5.84026576,8 Z M10.5,10 C10.2238576,10 10,10.2238576 10,10.5 L10,11.5 C10,11.7761424 10.2238576,12 10.5,12 L13.5,12 C13.7761424,12 14,11.7761424 14,11.5 L14,10.5 C14,10.2238576 13.7761424,10 13.5,10 L10.5,10 Z"
                               fill="#000000"
+                            />
+                            <path
+                              d="M10,8 L8,8 L8,7 C8,5.34314575 9.34314575,4 11,4 L13,4 C14.6568542,4 16,5.34314575 16,7 L16,8 L14,8 L14,7 C14,6.44771525 13.5522847,6 13,6 L11,6 C10.4477153,6 10,6.44771525 10,7 L10,8 Z"
+                              fill="#000000"
+                              fill-rule="nonzero"
+                              opacity="0.3"
                             />
                           </g></svg
                         ><!--end::Svg Icon--></span
@@ -117,7 +126,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                     <a
                       href="#"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Asset Types</a
+                      >Customers</a
                     >
                   </div>
                   <!--end::Name-->
@@ -183,7 +192,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                     <a
                       href="#"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Status Listing</a
+                      >Suppliers</a
                     >
                   </div>
                   <!--end::Name-->

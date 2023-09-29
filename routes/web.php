@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
-use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AssetsController;
+use App\Http\Controllers\LocationsController;
+use App\Http\Controllers\AssetTypesController;
+use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -29,6 +32,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/',[PagesController::class,'home'])->name('home');
     Route::get('/inventory',[PagesController::class,'inventory'])->name('inventory');
     Route::get('/master-data',[PagesController::class,'masterData'])->name('master-data');
+    Route::get('/accounts',[PagesController::class,'accounts'])->name('accounts');
 
     // asset routes
     Route::get('/inventory/create',[AssetsController::class,'create'])->name('inventory-create');
@@ -37,6 +41,22 @@ Route::group(['middleware' => ['auth']], function() {
     Route::patch('/inventory/{asset}',[AssetsController::class,'update'])->name('inventory-update');
 
     // users route
-    Route::get('/accounts',[AccountsController::class,'index'])->name('accounts');
+    Route::get('/users',[UsersController::class,'index'])->name('users');
+
+    // locations pages
+    Route::get('/locations',[LocationsController::class,'index'])->name('locations');
+    Route::post('/locations',[LocationsController::class,'store'])->name('locations-store');
+    Route::patch('/locations/{location}',[LocationsController::class,'update'])->name('locations-update');
+
+    // asset type
+    Route::get('/asset-types',[AssetTypesController::class,'index'])->name('asset-types');
+    Route::post('/asset-types',[AssetTypesController::class,'store'])->name('asset-types-store');
+    Route::patch('/asset-types/{assetType}',[AssetTypesController::class,'update'])->name('asset-types-update');
+
+    // statuses
+    Route::get('/statuses',[StatusesController::class,'index'])->name('astatuses');
+    Route::post('/statuses',[StatusesController::class,'store'])->name('statuses-store');
+    Route::patch('/statuses/{status}',[StatusesController::class,'update'])->name('statuses-update');
+
 
 });

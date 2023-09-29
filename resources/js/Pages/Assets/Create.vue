@@ -1,7 +1,7 @@
 <script setup>
 import InventoryLayout from "../../Layouts/InventoryLayout.vue";
-import { reactive, ref } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 
 defineProps({
   locations: Array,

@@ -18,7 +18,7 @@ class PagesController extends Controller
 
     public function inventory(Request $request)
     {
-        $locations = Location::all();
+        $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $statuses = Status::all();
 
@@ -49,6 +49,6 @@ class PagesController extends Controller
 
     public function accounts()
     {
-        return Inertia::render('accounts');
+        return Inertia::render('Accounts');
     }
 }
