@@ -20,7 +20,7 @@ const form = useForm({
 watch(
   () => form,
   throttle(() => {
-    router.get("/locations", pickBy(form), {
+    router.get("/master-data/locations", pickBy(form), {
       preserveState: true,
     });
   }, 150),

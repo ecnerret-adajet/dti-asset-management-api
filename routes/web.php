@@ -7,6 +7,8 @@ use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\AssetTypesController;
 use App\Http\Controllers\StatusesController;
+use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -58,5 +60,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/statuses',[StatusesController::class,'store'])->name('statuses-store');
     Route::patch('/statuses/{status}',[StatusesController::class,'update'])->name('statuses-update');
 
+    // customer
+    Route::get('/accounts/customers',[CustomersController::class,'index'])->name('customers');
+    Route::get('/accounts/customers/create',[CustomersController::class,'create'])->name('customers-create');
+    Route::post('/customers',[CustomersController::class,'store'])->name('customers-store');
+    Route::patch('/customers/{customer}',[CustomersController::class,'update'])->name('customers-update');
+
+    // suppliers
+    Route::get('/accounts/suppliers',[SuppliersController::class,'index'])->name('suppliers');
+    Route::post('/suppliers',[SuppliersController::class,'store'])->name('suppliers-store');
+    Route::patch('/suppliers/{supplier}',[SuppliersController::class,'update'])->name('suppliers-update');
 
 });
