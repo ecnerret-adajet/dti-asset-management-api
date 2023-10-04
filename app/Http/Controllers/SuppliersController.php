@@ -12,7 +12,7 @@ class SuppliersController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('Supplier/Index',[
+        return Inertia::render('Suppliers/Index',[
             'filters' => $request->all('name'),
             'suppliers' => Supplier::orderBy('created_at','desc')
                         ->filter($request->only('name'))
@@ -20,6 +20,11 @@ class SuppliersController extends Controller
                         ->withQueryString()
                         ->through(fn ($supplier) => $supplier),
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Suppliers/Create');
     }
 
     public function store(Request $request)
@@ -33,6 +38,13 @@ class SuppliersController extends Controller
         Supplier::create($request->all());
 
         return Redirect::route('suppliers')->with('success','Successfully created.');
+    }
+
+    public function show(Supplier $supplier)
+    {
+        return Inertia::render('Suppliers/Show',[
+            'supplier' => $supplier
+        ]);
     }
 
     public function update(Request $request, Supplier $supplier)

@@ -12,7 +12,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
         <div class="container">
 
           <!-- search -->
-            <form class="d-flex position-relative mb-8">
+        <form class="d-flex position-relative mb-8">
             <div class="input-group">
               <!--begin::Icon-->
               <div class="input-group-prepend">
@@ -61,7 +61,6 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
               <!--end::Input-->
             </div>
           </form>
-
           <!-- end search -->
 
           <!--begin::Row-->
@@ -244,20 +243,20 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="/accounts/suppliers"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Suppliers</a
+                      >Suppliers</Link
                     >
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
-                    <a
-                      href="#"
+                    <Link
+                      href="/accounts/suppliers"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</a
+                      >Visit</Link
                     >
                   </div>
                   <!--end::Buttons-->

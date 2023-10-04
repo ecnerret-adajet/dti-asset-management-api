@@ -9,7 +9,7 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
 const props = defineProps({
-  customers: Object,
+  suppliers: Object,
   filters: Object,
 });
 
@@ -19,26 +19,26 @@ const form = useForm({
 
 const breadcrumbs = ref([
   { id: 1, name: "Accounts", url: "/accounts" },
-  { id: 2, name: "Customers", url: "/accounts/customers" },
+  { id: 2, name: "Suppliers", url: "/accounts/suppliers" },
 ]);
 
 const columnsPerRow = ref(3);
 
 const rows = computed(() => {
-  const rowCount = Math.ceil(props.customers.data.length / columnsPerRow.value);
+  const rowCount = Math.ceil(props.suppliers.data.length / columnsPerRow.value);
   return new Array(rowCount).fill([]);
 });
 
 const getItemsInRow = (rowIndex) => {
   const start = rowIndex * columnsPerRow.value;
   const end = start + columnsPerRow.value;
-  return props.customers.data.slice(start, end);
+  return props.suppliers.data.slice(start, end);
 };
 
 watch(
   () => form,
   throttle(() => {
-    router.get("/accounts/customers", pickBy(form), {
+    router.get("/accounts/suppliers", pickBy(form), {
       preserveState: true,
     });
   }, 150),
@@ -50,7 +50,7 @@ watch(
     <!--begin::Content-->
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
       <!-- sub header -->
-      <SubHeader title="Customers" :breadcrumbs="breadcrumbs" />
+      <SubHeader title="Suppliers" :breadcrumbs="breadcrumbs" />
       <!-- end subheader -->
       <!--begin::Entry-->
       <div class="d-flex flex-column-fluid">
@@ -101,12 +101,12 @@ watch(
                 type="text"
                 v-model="form.name"
                 class="form-control h-auto border-0 py-4 px-1 font-size-h6"
-                placeholder="Search a customer..."
+                placeholder="Search a supplier..."
               />
               <!--end::Input-->
             </div>
             <Link
-              href="/accounts/customers/create"
+              href="/accounts/suppliers/create"
               class="btn btn-primary btn-lg font-weight-bold ml-4 py-3 px-6"
               >Create</Link
             >
@@ -142,7 +142,7 @@ watch(
                       <!--begin: Title-->
                       <div class="d-flex flex-column mr-auto">
                         <Link
-                          :href="`/accounts/customers/${item.id}`"
+                          :href="`/accounts/suppliers/${item.id}`"
                           class="text-dark text-hover-primary font-size-h4 font-weight-bolder mb-1"
                           >{{ item.name }}</Link
                         >
@@ -287,7 +287,7 @@ watch(
           </div>
           <!--end::Row-->
           <!--begin::Pagination-->
-          <Pagination class="mt-6" :links="customers.links" />
+          <Pagination class="mt-6" :links="suppliers.links" />
           <!--end::Pagination-->
         </div>
         <!--end::Container-->

@@ -40,6 +40,13 @@ class CustomersController extends Controller
         return Redirect::route('customers')->with('success','Successfully created.');
     }
 
+    public function show(Customer $customer)
+    {
+        return Inertia::render('Customers/Show',[
+            'customer' => $customer
+        ]);
+    }
+
     public function update(Request $request, Customer $customer)
     {
         $this->validate($request,[

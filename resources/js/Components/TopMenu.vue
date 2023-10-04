@@ -73,7 +73,7 @@ import { Link } from '@inertiajs/vue3'
               </li>
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
-                :class="{ 'menu-item-here':$page.url === '/accounts' }"
+                :class="{ 'menu-item-here': $page.url.startsWith('/accounts') }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >

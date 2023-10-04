@@ -63,11 +63,14 @@ Route::group(['middleware' => ['auth']], function() {
     // customer
     Route::get('/accounts/customers',[CustomersController::class,'index'])->name('customers');
     Route::get('/accounts/customers/create',[CustomersController::class,'create'])->name('customers-create');
+    Route::get('/accounts/customers/{customer}',[CustomersController::class,'show'])->name('customers-show');
     Route::post('/customers',[CustomersController::class,'store'])->name('customers-store');
     Route::patch('/customers/{customer}',[CustomersController::class,'update'])->name('customers-update');
 
     // suppliers
     Route::get('/accounts/suppliers',[SuppliersController::class,'index'])->name('suppliers');
+    Route::get('/accounts/suppliers/create',[SuppliersController::class,'create'])->name('suppliers-create');
+    Route::get('/accounts/suppliers/{supplier}',[SuppliersController::class,'show'])->name('suppliers-show');
     Route::post('/suppliers',[SuppliersController::class,'store'])->name('suppliers-store');
     Route::patch('/suppliers/{supplier}',[SuppliersController::class,'update'])->name('suppliers-update');
 
