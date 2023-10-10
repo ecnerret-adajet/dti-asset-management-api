@@ -16,7 +16,9 @@ class AssetTypesApiController extends Controller
      */
     public function index()
     {
-        return AssetType::orderBy('id','desc')->get();
+        return AssetType::orderBy('id','desc')
+                        ->withCount('assets')
+                        ->get();
     }
 
     /**

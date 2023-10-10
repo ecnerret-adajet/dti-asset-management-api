@@ -15,10 +15,14 @@ class AssetType extends Model
         'is_active'
     ];
 
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
+
     /**
      * Scope
      */
-
      public function scopeFilter($query, array $filters)
      {
         $query->when($filters['name'] ?? null, function($query, $name) {

@@ -9,6 +9,7 @@ use App\Http\Controllers\AssetTypesController;
 use App\Http\Controllers\StatusesController;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -73,5 +74,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/accounts/suppliers/{supplier}',[SuppliersController::class,'show'])->name('suppliers-show');
     Route::post('/suppliers',[SuppliersController::class,'store'])->name('suppliers-store');
     Route::patch('/suppliers/{supplier}',[SuppliersController::class,'update'])->name('suppliers-update');
+
+    // orders
+    Route::get('/inventory/orders',[OrdersController::class,'index'])->name('orders');
+    Route::get('/inventory/orders/create',[OrdersController::class,'create'])->name('orders-create');
+    Route::post('/orders',[OrdersController::class,'store'])->name('orders-store');
+
 
 });

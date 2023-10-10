@@ -22,6 +22,29 @@ class AssetsApiController extends Controller
     }
 
     /**
+     * Asset APi for dropdown selection
+     */
+    public function list()
+    {
+        $assets = Asset::orderBy('id','desc')
+                    ->select('id','name','image_path','description','unit_price','current_value')
+                    ->get();
+
+        return $assets->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'title' => $item->name,
+                'desc' => $item->description,
+                'img' => $item->image_path,
+                'unit_price' => $item->unit_price,
+                'unit_price_total' => 0,
+                'current_value' => $item->current_value,
+                'qty' => 1,
+            ];
+        });
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -85,5 +108,13 @@ class AssetsApiController extends Controller
     public function destroy($id)
     {
         return Asset::destroy($id);
+    }
+
+    /**
+     * Recently created
+     */
+    public function recentCreated()
+    {
+        return Asset::orderBy('id','desc')->take(2)->get();
     }
 }

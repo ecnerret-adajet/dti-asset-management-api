@@ -22,6 +22,7 @@ class Asset extends Model
         'location_id',
         'asset_type_id',
         'status_id',
+        'unit_price',
     ];
 
     public function user()
@@ -44,6 +45,13 @@ class Asset extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)
+            ->withPivot('qty','unit_price','total_amount')
+            ->withTimestamps();
+    }
+
     /**
      * Scope
      */
@@ -57,9 +65,9 @@ class Asset extends Model
         })->when($filters['serial_number'] ?? null, function ($query, $serial_number) {
             $query->where('serial_number', 'like', '%'.$serial_number.'%');
         })->when($filters['location'] ?? null, function ($query, $location) {
-            $query->where('location_id', $location);
+            $query->whereIn('location_id', $location);
         })->when($filters['asset_type'] ?? null, function ($query, $asset_type) {
-            $query->where('asset_type_id', $asset_type);
+            $query->whereIn('asset_type_id', $asset_type);
         });
     }
 }

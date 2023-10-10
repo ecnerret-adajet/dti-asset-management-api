@@ -16,6 +16,14 @@ class Location extends Model
     ];
 
     /**
+     * asset relationship
+     */
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
+
+    /**
      * Scope
      */
     public function scopeFilter($query, array $filters)

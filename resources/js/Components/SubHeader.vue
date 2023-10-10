@@ -3,6 +3,10 @@ import { Link } from "@inertiajs/vue3";
 defineProps({
   title: String,
   breadcrumbs: Array,
+  button_name: String,
+  button_link: String,
+  second_button_name: String,
+  second_button_link: String,
 });
 </script>
 <template>
@@ -25,15 +29,15 @@ defineProps({
             </Link>
             <!--end::Item-->
             <!--begin::Item-->
-            <template v-for="(breadcrumb,b) in breadcrumbs" :key="b">
-            <span
-              class="label label-dot label-sm bg-white opacity-75 mx-3"
-            ></span>
-            <Link
-              :href="breadcrumb.url"
-              class="text-white text-hover-white opacity-75 hover-opacity-100"
-              >{{breadcrumb.name}}</Link
-            >
+            <template v-for="(breadcrumb, b) in breadcrumbs" :key="b">
+              <span
+                class="label label-dot label-sm bg-white opacity-75 mx-3"
+              ></span>
+              <Link
+                :href="breadcrumb.url"
+                class="text-white text-hover-white opacity-75 hover-opacity-100"
+                >{{ breadcrumb.name }}</Link
+              >
             </template>
             <!--end::Item-->
           </div>
@@ -43,7 +47,23 @@ defineProps({
       </div>
       <!--end::Info-->
 
+      <!--begin:: toolbar -->
+      <div  class="d-flex align-items-center">
+        <!--begin::Button-->
+        <Link v-if="second_button_link"
+          :href="second_button_link"
+          class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2"
+          >{{ second_button_name }}</Link
+        >
+        <Link v-if="button_link"
+          :href="button_link"
+          class="btn btn-primary font-weight-bold py-3 px-6 mr-2"
+          >{{ button_name }}</Link
+        >
+        <!--end::Button-->
+      </div>
 
+      <!--end:: toolbar -->
     </div>
   </div>
 </template>
