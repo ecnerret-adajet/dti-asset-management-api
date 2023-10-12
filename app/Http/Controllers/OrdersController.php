@@ -13,9 +13,23 @@ use Inertia\Inertia;
 
 class OrdersController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Orders/Index');
+        $order_statuses = OrderStatus::all();
+
+        return Inertia::render('Orders/Index',[
+            'order_statuses' => $order_statuses,
+            'filters' => $request->all('name','order_status_id','asset_name'),
+            'orders' => Order::orderBy('created_at','desc')
+                        ->with('user','orderStatus','assets')
+                        ->filter($request->only(
+                            'order_status_id',
+                            'asset_name'
+                        ))
+                        ->paginate(10)
+                        ->withQueryString()
+                        ->through(fn ($order) => $order),
+        ]);
     }
 
     public function create()

@@ -37,4 +37,25 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function orderStatus()
+    {
+        return $this->belongsTo(OrderStatus::class);
+    }
+
+    /**
+     * scope
+     */
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['asset_name'] ?? null, function ($query, $asset_name) {
+            $query->whereHas('assets', function($q) use ($asset_name) {
+                $q->where('name', 'like', '%'.$asset_name.'%');
+            });
+        })->when($filters['order_status_id'] ?? null, function ($query, $order_status_id) {
+            $query->whereHas('orderStatus', function($q) use ($order_status_id) {
+                $q->where('id', $order_status_id);
+            });
+        });
+    }
 }

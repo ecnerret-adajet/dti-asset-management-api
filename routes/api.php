@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\CustomersApiController;
 use App\Http\Controllers\Api\SuppliersApiController;
 use App\Http\Controllers\Api\LocationsApiController;
 use App\Http\Controllers\Api\StatusesApiController;
+use App\Http\Controllers\Api\ReceivingsApiController;
+use App\Http\Controllers\Api\ReceivingStatusApiController;
 use App\Http\Controllers\Api\AssetTypesApiController;
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,13 @@ Route::group(['middleware' => ['api']], function() {
 
     // asset type route
     Route::resource('asset-types', AssetTypesApiController::class);
+
+    // receiving status api
+    Route::get('receiving-statuses',[ReceivingStatusApiController::class,'index']);
+
+    // asset receiving api
+    Route::post('receivings',[ReceivingsApiController::class,'store']);
+
 
 });
 

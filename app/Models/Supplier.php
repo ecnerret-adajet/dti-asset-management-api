@@ -17,6 +17,11 @@ class Supplier extends Model
         'representative_name',
     ];
 
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
+
     /**
      * Scope
      */

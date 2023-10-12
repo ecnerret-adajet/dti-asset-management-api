@@ -9,14 +9,14 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
 const props = defineProps({
-  order_statuses: Array,
+  receiving_statuses: Array,
   filters: Object,
-  orders: Object,
+  receivings: Object,
 });
 
 const breadcrumbs = ref([
   { id: 1, name: "Apps", url: "/" },
-  { id: 2, name: "Orders", url: "/inventory/orders" },
+  { id: 2, name: "Requests", url: "/inventory/receivings" },
 ]);
 
 const form = useForm({
@@ -26,7 +26,7 @@ const form = useForm({
 watch(
   () => form,
   throttle(() => {
-    router.get("/inventory/orders", pickBy(form), {
+    router.get("/inventory/receivings", pickBy(form), {
       preserveState: true,
     });
   }, 150),
@@ -38,7 +38,7 @@ watch(
     <!--begin::Content-->
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
       <!-- sub header -->
-      <SubHeader title="Orders" :breadcrumbs="breadcrumbs" />
+      <SubHeader title="Asset Requests" :breadcrumbs="breadcrumbs" />
       <!-- end subheader -->
       <!--begin::Entry-->
       <div class="d-flex flex-column-fluid">
@@ -91,8 +91,7 @@ watch(
                       <thead>
                         <tr class="text-left">
                           <th class="pr-0" style="width: 300px">Asset Name</th>
-                          <th style="min-width: 150px">Total Qty</th>
-                          <th style="min-width: 150px">Total Cost</th>
+                          <th style="min-width: 150px">Quantity</th>
                           <th style="min-width: 150px">Status</th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
@@ -100,29 +99,20 @@ watch(
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(order, l) in orders.data" :key="l">
+                        <tr v-for="(receiving, l) in receivings.data" :key="l">
                           <td class="pr-2">
-                            <span
-                              v-for="(asset, s) in order.assets"
-                              :key="s"
-                              class="text-capitalize"
-                            >
-                              {{ asset.name }}
+                            <span class="text-capitalize">
+                              {{ receiving.asset.name }}
                             </span>
                           </td>
                           <td>
                             <span class="text-capitalize">
-                              {{ order.total_orders }}
+                              {{ receiving.qty }}
                             </span>
                           </td>
                           <td>
                             <span class="text-capitalize">
-                              {{ order.total_cost }}
-                            </span>
-                          </td>
-                          <td>
-                            <span class="text-capitalize">
-                              {{ receiving?.order_status.name }}
+                              {{ receiving.receiving_status.name }}
                             </span>
                           </td>
                           <td class="pr-0 text-right">
@@ -173,7 +163,7 @@ watch(
                   </div>
                   <!--end::Table-->
                   <!--begin::Pagination-->
-                  <Pagination class="mt-6" :links="orders.links" />
+                  <Pagination class="mt-6" :links="receivings.links" />
                   <!--end::Pagination-->
                   <!--end: Datatable-->
                 </div>

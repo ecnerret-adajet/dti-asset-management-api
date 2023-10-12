@@ -23,6 +23,7 @@ class Asset extends Model
         'asset_type_id',
         'status_id',
         'unit_price',
+        'supplier_id'
     ];
 
     public function user()
@@ -50,6 +51,16 @@ class Asset extends Model
         return $this->belongsToMany(Order::class)
             ->withPivot('qty','unit_price','total_amount')
             ->withTimestamps();
+    }
+
+    public function receivings()
+    {
+        return $this->hasMany(Receiving::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     /**

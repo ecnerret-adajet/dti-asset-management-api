@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link } from "@inertiajs/vue3";
 </script>
 <template>
   <!--begin::Header-->
@@ -37,8 +37,8 @@ import { Link } from '@inertiajs/vue3'
             <!--begin::Header Nav-->
             <ul class="menu-nav">
               <li
-                class="menu-item  menu-item-open menu-item-submenu menu-item-rel menu-item-open"
-                :class="{ 'menu-item-here':$page.url === '/' }"
+                class="menu-item menu-item-open menu-item-submenu menu-item-rel menu-item-open"
+                :class="{ 'menu-item-here': $page.url === '/' }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
@@ -49,23 +49,68 @@ import { Link } from '@inertiajs/vue3'
               </li>
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
-                :class="{ 'menu-item-here': $page.url.startsWith('/inventory') }"
+                :class="{ 'menu-item-here': $page.url === '/inventory', 'menu-item-here': $page.url === '/orders', 'menu-item-here': $page.url === '/receivings'  }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
-                <Link href="/inventory"  class="menu-link menu-toggle">
+                <a href="javascript:;" class="menu-link menu-toggle">
+                  <span class="menu-text">App</span>
+                  <i class="menu-arrow"></i>
+                </a>
+                <div
+                  class="menu-submenu menu-submenu-classic menu-submenu-left"
+                >
+                  <ul class="menu-subnav">
+                    <li class="menu-item menu-item-active" aria-haspopup="true">
+                      <Link href="/inventory" class="menu-link">
+                        <span class="menu-text">Inventory</span>
+                        <span class="menu-desc"></span>
+                      </Link>
+                    </li>
+                    <li class="menu-item" aria-haspopup="true">
+                      <Link
+                        href="/orders"
+                        class="menu-link"
+                      >
+                        <span class="menu-text">Orders</span>
+                        <span class="menu-desc"></span>
+                      </Link>
+                    </li>
+                    <li class="menu-item" aria-haspopup="true">
+                      <Link
+                        href="/receivings"
+                        class="menu-link"
+                      >
+                        <span class="menu-text">Requests</span>
+                        <span class="menu-desc"></span>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <!-- <li
+                class="menu-item menu-item-submenu menu-item-rel"
+                :class="{
+                  'menu-item-here': $page.url.startsWith('/inventory'),
+                }"
+                data-menu-toggle="click"
+                aria-haspopup="true"
+              >
+                <Link href="/inventory" class="menu-link menu-toggle">
                   <span class="menu-text">Inventory</span>
                   <span class="menu-desc"></span>
                   <i class="menu-arrow"></i>
                 </Link>
-              </li>
+              </li> -->
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
-                :class="{ 'menu-item-here': $page.url.startsWith('/master-data') }"
+                :class="{
+                  'menu-item-here': $page.url.startsWith('/master-data'),
+                }"
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
-                <Link href="/master-data"  class="menu-link menu-toggle">
+                <Link href="/master-data" class="menu-link menu-toggle">
                   <span class="menu-text">Master Data</span>
                   <span class="menu-desc"></span>
                   <i class="menu-arrow"></i>
@@ -77,7 +122,7 @@ import { Link } from '@inertiajs/vue3'
                 data-menu-toggle="click"
                 aria-haspopup="true"
               >
-                <Link href="/accounts"  class="menu-link menu-toggle">
+                <Link href="/accounts" class="menu-link menu-toggle">
                   <span class="menu-text">Accounts</span>
                   <span class="menu-desc"></span>
                   <i class="menu-arrow"></i>

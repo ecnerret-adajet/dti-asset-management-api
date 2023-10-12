@@ -509,6 +509,18 @@ const previewFile = (event) => {
                   />
                 </div>
               </div>
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Unit Price</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.unit_price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
             </form>
           </div>
           <!--end::Tab Content-->

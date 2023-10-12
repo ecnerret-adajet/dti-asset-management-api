@@ -3,9 +3,17 @@ import InventoryLayout from "../../Layouts/InventoryLayout.vue";
 import { router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 
+import { useSweetAlert } from "../../Services/useSweetAlert";
+import VueMultiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.css";
+
+const sweetAlert = useSweetAlert();
+
 defineProps({
   locations: Array,
   asset_types: Array,
+  statuses: Array,
+  suppliers: Array,
 });
 
 const form = useForm({
@@ -19,7 +27,9 @@ const form = useForm({
   purchase_date: null,
   current_value: null,
   manufacturer: null,
+  unit_price: null,
   status_id: 1,
+  selected_supplier: null,
 });
 const previewImage = ref(null);
 
@@ -42,7 +52,6 @@ const previewFile = (event) => {
     previewImage.value = null;
   }
 };
-
 </script>
 <template>
   <InventoryLayout>
@@ -59,7 +68,14 @@ const previewFile = (event) => {
           >
         </div>
         <div class="card-toolbar">
-          <button type="submit" @click="storeAsset()" :disabled="form.processing" class="btn btn-success mr-2">Submit</button>
+          <button
+            type="submit"
+            @click="storeAsset()"
+            :disabled="form.processing"
+            class="btn btn-success mr-2"
+          >
+            Submit
+          </button>
           <button type="reset" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -128,6 +144,28 @@ const previewFile = (event) => {
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Supplier</label>
+            <div class="col-lg-9 col-xl-6">
+              <VueMultiselect
+                v-model="form.selected_supplier"
+                :options="suppliers"
+                :close-on-select="true"
+                :clear-on-select="false"
+                placeholder="Search supplier"
+                label="name"
+                track-by="name"
+              />
+              <div
+                v-if="form.errors.selected_supplier"
+                class="fv-plugins-message-container text-danger mt-3"
+              >
+                <div class="fv-help-block">
+                  {{ form.errors.selected_supplier }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Name</label>
             <div class="col-lg-9 col-xl-6">
               <input
@@ -136,10 +174,11 @@ const previewFile = (event) => {
                 class="form-control form-control-lg form-control-solid"
                 type="text"
               />
-              <div v-if="form.errors.name" class="fv-plugins-message-container text-danger mt-3">
-                <div
-                  class="fv-help-block"
-                >
+              <div
+                v-if="form.errors.name"
+                class="fv-plugins-message-container text-danger mt-3"
+              >
+                <div class="fv-help-block">
                   {{ form.errors.name }}
                 </div>
               </div>
@@ -225,9 +264,7 @@ const previewFile = (event) => {
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-xl-3 col-lg-3 col-form-label"
-              >Manufacturer</label
-            >
+            <label class="col-xl-3 col-lg-3 col-form-label">Manufacturer</label>
             <div class="col-lg-9 col-xl-6">
               <input
                 v-model="form.manufacturer"
@@ -264,6 +301,17 @@ const previewFile = (event) => {
               <input
                 v-model="form.current_value"
                 placeholder="Input Serial Number"
+                class="form-control form-control-lg form-control-solid"
+                type="number"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Unit Price</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.unit_price"
+                placeholder="Input Unit Price"
                 class="form-control form-control-lg form-control-solid"
                 type="number"
               />

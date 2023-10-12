@@ -8,6 +8,7 @@ import { router, Link, useForm } from "@inertiajs/vue3";
 import BasicLayout from "../Layouts/BasicLayout.vue";
 import Pagination from "../Components/Pagination.vue";
 import StockOutModal from "../Pages/Assets/StockOutModal.vue";
+import ReceivingCreateModal from "../Pages/Assets/ReceivingCreateModal.vue";
 import InventoryAsideFilter from "../Components/InventoryAsideFilter.vue";
 import InventoryAsideRecent from "../Components/InventoryAsideRecent.vue";
 import SubHeader from "../Components/SubHeader.vue";
@@ -60,7 +61,7 @@ const openModal = (item) => {
         button_name="Add Record"
         button_link="/inventory/create"
         second_button_name="Add Order"
-        second_button_link="/inventory/orders/create"
+        second_button_link="/orders/create"
         :breadcrumbs="breadcrumbs"
       />
       <!-- end subheader -->
@@ -268,15 +269,11 @@ const openModal = (item) => {
                                     Choose an action:
                                   </li>
                                   <li class="navi-item">
-                                    <a href="javascript:void(0)" @click="openModal(asset)" class="navi-link">
-                                      <span class="navi-icon"
-                                        ><i class="la la-print"></i
-                                      ></span>
-                                      <span class="navi-text">Stock Out</span>
-                                    </a>
-                                  </li>
-                                  <li class="navi-item">
-                                    <a href="#" class="navi-link">
+                                    <a
+                                      href="javascript:;"
+                                      @click="openModal(asset)"
+                                      class="navi-link"
+                                    >
                                       <span class="navi-icon"
                                         ><i class="la la-copy"></i
                                       ></span>
@@ -369,10 +366,13 @@ const openModal = (item) => {
     </div>
     <!--end::Content-->
 
-    <stock-out-modal
-      unique_id="stockOutModal"
-      title="Stock Out"
+    <receiving-create-modal
+      unique_id="receivingsModal"
+      title="Asset Request"
+      :asset_id="selectedAsset.id"
+      :asset="selectedAsset"
       :show="show"
+      @onSuccess="selectedAsset = $event"
       @close="show = $event"
     />
   </BasicLayout>

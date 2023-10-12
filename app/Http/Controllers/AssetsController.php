@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Supplier;
 use App\Models\Location;
 use App\Models\AssetType;
 use App\Models\Status;
@@ -25,8 +26,10 @@ class AssetsController extends Controller
         $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $status = Status::all();
+        $suppliers = Supplier::all();
 
         return Inertia::render('Assets/Create',[
+            'suppliers' => $suppliers,
             'locations' => $locations,
             'asset_types' => $asset_types,
             'statuses' => $status
@@ -40,6 +43,7 @@ class AssetsController extends Controller
         ]);
 
         $asset = Auth::user()->assets()->create($request->all());
+        $selected_supplier = $request->selected_supplier;
 
         if($request->file('image_path')) {
             $asset->image_path = $request->file('image_path')->store('images');
@@ -47,6 +51,7 @@ class AssetsController extends Controller
         $asset->location()->associate($request->location_id);
         $asset->status()->associate($request->status_id);
         $asset->assetType()->associate($request->asset_type_id);
+        $asset->supplier()->associate($selected_supplier['id']);
 
         $asset->save();
 
