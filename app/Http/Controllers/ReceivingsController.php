@@ -54,6 +54,14 @@ class ReceivingsController extends Controller
         $receving->receivingStatus()->associate($request->receiving_status_id);
         $receving->save();
 
+        // if the tagging is "added"
+        if($request->receiving_status_id === 4)
+        {
+            $asset = Asset::where('id', $request->asset_id)->first();
+            $asset->current_value = $receving->qty;
+            $asset->save();
+        }
+
         return Redirect::route('inventory')->with('success','Asset successfully created.');
     }
 }

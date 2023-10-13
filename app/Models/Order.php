@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -16,6 +17,7 @@ class Order extends Model
         'total_cost',
         'total_orders',
         'remarks',
+        'order_reference',
     ];
 
     /**
@@ -53,9 +55,11 @@ class Order extends Model
                 $q->where('name', 'like', '%'.$asset_name.'%');
             });
         })->when($filters['order_status_id'] ?? null, function ($query, $order_status_id) {
-            $query->whereHas('orderStatus', function($q) use ($order_status_id) {
-                $q->where('id', $order_status_id);
-            });
+            if($order_status_id != null)  {
+                $query->whereHas('orderStatus', function($q) use ($order_status_id) {
+                    $q->where('id', $order_status_id);
+                });
+            }
         });
     }
 }

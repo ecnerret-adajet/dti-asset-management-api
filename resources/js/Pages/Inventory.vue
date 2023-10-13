@@ -58,7 +58,7 @@ const openModal = (item) => {
       <!-- sub header -->
       <SubHeader
         title="Asset Inventory"
-        button_name="Add Record"
+        button_name="New Asset"
         button_link="/inventory/create"
         second_button_name="Add Order"
         second_button_link="/orders/create"

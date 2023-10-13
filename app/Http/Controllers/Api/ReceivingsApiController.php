@@ -26,8 +26,6 @@ class ReceivingsApiController extends Controller
             'qty' => 'required'
         ]);
 
-        \Log::info(Auth::user());
-
         $receving = new Receiving;
         $receving->qty = $request->qty;
         $receving->user_id = Auth::user()->id;

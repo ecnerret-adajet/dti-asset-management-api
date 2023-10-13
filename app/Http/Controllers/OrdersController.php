@@ -21,12 +21,12 @@ class OrdersController extends Controller
             'order_statuses' => $order_statuses,
             'filters' => $request->all('name','order_status_id','asset_name'),
             'orders' => Order::orderBy('created_at','desc')
-                        ->with('user','orderStatus','assets')
+                        ->with('user','customer','orderStatus','assets')
                         ->filter($request->only(
                             'order_status_id',
-                            'asset_name'
+                            'asset_name',
                         ))
-                        ->paginate(10)
+                        ->paginate(5)
                         ->withQueryString()
                         ->through(fn ($order) => $order),
         ]);
@@ -41,6 +41,13 @@ class OrdersController extends Controller
         ]);
     }
 
+    private function generateOrderReference()
+    {
+        $default = str_pad(1, 8, "0", STR_PAD_LEFT);
+        $latestOrderReference = Order::withTrashed()->orderBy('created_at','DESC')->first();
+        return  $latestOrderReference ? str_pad($latestOrderReference->id + 1, 8, "0", STR_PAD_LEFT) : $default;
+    }
+
     public function store(Request $request)
     {
         $this->validate($request,[
@@ -48,16 +55,16 @@ class OrdersController extends Controller
             'selected_orders' => 'required',
         ]);
 
-
         $selected_customer = $request->selected_customer;
         $selected_orders = $request->selected_orders;
 
         $order = new Order;
         $order->user_id = Auth::user()->id;
+        $order->order_reference = $this->generateOrderReference();
         $order->customer_id = $selected_customer['id'];
         $order->order_status_id = 1; // default as pending;
         $order->total_cost = $request->grand_total;
-        $order->total_orders = 0; // temporarily
+        $order->total_orders = $request->total_qty_orders; // temporarily
         $order->save();
 
         if(count($selected_orders) > 0) {
@@ -77,5 +84,18 @@ class OrdersController extends Controller
 
         return Redirect::route('inventory')->with('success','Asset successfully created.');
         // return Redirect::back()->with('success','Order successfully created.');
+    }
+
+    public function updateOrderStatus(Request $request, $id)
+    {
+        $this->validate($request,[
+            'order_status_id' => 'required'
+        ]);
+
+        $order = Order::where('id',$id)->first();
+        $order->order_status_id = $request->order_status_id;
+        $order->save();
+
+        return Redirect::route('orders')->with('success','Status updated successfully');
     }
 }

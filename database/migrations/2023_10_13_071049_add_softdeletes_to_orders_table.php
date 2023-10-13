@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSupplierIdFieldToAssetsTable extends Migration
+class AddSoftdeletesToOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddSupplierIdFieldToAssetsTable extends Migration
      */
     public function up()
     {
-        Schema::table('assets', function (Blueprint $table) {
-            $table->integer('supplier_id')->unsigned();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +25,8 @@ class AddSupplierIdFieldToAssetsTable extends Migration
      */
     public function down()
     {
-        Schema::table('assets', function (Blueprint $table) {
-            $table->dropColumn('supplier_id');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropSoftDeletes();
         });
     }
 }

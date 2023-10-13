@@ -9,7 +9,7 @@ import "vue-multiselect/dist/vue-multiselect.css";
 
 const sweetAlert = useSweetAlert();
 
-defineProps({
+const props = defineProps({
   locations: Array,
   asset_types: Array,
   statuses: Array,
@@ -29,12 +29,28 @@ const form = useForm({
   manufacturer: null,
   unit_price: null,
   status_id: 1,
-  selected_supplier: null,
+  supplier_id: 1,
 });
+
+const selected_supplier = ref(null);
 const previewImage = ref(null);
 
 const storeAsset = () => {
-  form.post("/inventory");
+  console.log(selected_supplier.value.id);
+  form
+    .transform((data) => ({
+      ...data,
+      supplier_id: selected_supplier.value.id,
+    }))
+    .post("/inventory", {
+      onSuccess: () => {
+        sweetAlert.basicAlert(
+          "Created succesfully!",
+          "New Asset",
+          "success"
+        );
+      },
+    });
 };
 
 const previewFile = (event) => {
@@ -147,7 +163,7 @@ const previewFile = (event) => {
             <label class="col-xl-3 col-lg-3 col-form-label">Supplier</label>
             <div class="col-lg-9 col-xl-6">
               <VueMultiselect
-                v-model="form.selected_supplier"
+                v-model="selected_supplier"
                 :options="suppliers"
                 :close-on-select="true"
                 :clear-on-select="false"
@@ -156,11 +172,11 @@ const previewFile = (event) => {
                 track-by="name"
               />
               <div
-                v-if="form.errors.selected_supplier"
+                v-if="form.errors.supplier_id"
                 class="fv-plugins-message-container text-danger mt-3"
               >
                 <div class="fv-help-block">
-                  {{ form.errors.selected_supplier }}
+                  {{ form.errors.supplier_id }}
                 </div>
               </div>
             </div>

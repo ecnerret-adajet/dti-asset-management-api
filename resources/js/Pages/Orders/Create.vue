@@ -144,15 +144,27 @@ const subTotal = computed(() => {
     return getTotal;
 });
 
+const getTotalQtyOrders = computed(() => {
+    return  asset_orders.value
+    .reduce((accumlator, item) => {
+        return accumlator + item.qty;
+    }, 0);
+})
+
 const form = useForm({
   selected_customer: null,
   selected_orders: null,
   grand_total: null,
+  total_qty_orders: null,
 });
 
 const storeOrder = () => {
-  console.log('trigger store', form)
-  form.post("/orders", {
+  form
+    .transform((data) => ({
+        ...data,
+        total_qty_orders: getTotalQtyOrders.value,
+    }))
+    .post("/orders", {
     onSuccess: () => {
       sweetAlert.basicAlert("Succesfully created!", "New Order", "success");
     },

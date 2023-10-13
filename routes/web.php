@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/orders',[OrdersController::class,'index'])->name('orders');
     Route::get('/orders/create',[OrdersController::class,'create'])->name('orders-create');
     Route::post('/orders',[OrdersController::class,'store'])->name('orders-store');
+    Route::patch('/orders/status/{id}',[OrdersController::class,'updateOrderStatus'])->name('orders-status-update');
 
     // receiving
     Route::get('/receivings',[ReceivingsController::class,'index'])->name('receivings');

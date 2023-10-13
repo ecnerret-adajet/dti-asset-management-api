@@ -43,7 +43,6 @@ class AssetsController extends Controller
         ]);
 
         $asset = Auth::user()->assets()->create($request->all());
-        $selected_supplier = $request->selected_supplier;
 
         if($request->file('image_path')) {
             $asset->image_path = $request->file('image_path')->store('images');
@@ -51,7 +50,7 @@ class AssetsController extends Controller
         $asset->location()->associate($request->location_id);
         $asset->status()->associate($request->status_id);
         $asset->assetType()->associate($request->asset_type_id);
-        $asset->supplier()->associate($selected_supplier['id']);
+        $asset->supplier()->associate($request->supplier_id);
 
         $asset->save();
 
