@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ReceivingStatus;
 use App\Models\Receiving;
 use Carbon\Carbon;
-use App\Model\Asset;
+use App\Models\Asset;
 use Inertia\Inertia;
 
 class ReceivingsController extends Controller
@@ -52,16 +52,46 @@ class ReceivingsController extends Controller
         $receving = Auth::user()->receivings()->create($request->all());
         $receving->asset()->associate($request->asset_id);
         $receving->receivingStatus()->associate($request->receiving_status_id);
-        $receving->save();
 
         // if the tagging is "added"
-        if($request->receiving_status_id === 4)
+        if($request->receiving_status_id == 4 && $receving->is_added == 0)
         {
-            $asset = Asset::where('id', $request->asset_id)->first();
+            $receving->is_added = 1;
+
+            $asset = Asset::where('id', $receving->asset_id)->first();
             $asset->current_value = $receving->qty;
             $asset->save();
         }
 
+        $receving->save();
+
+
         return Redirect::route('inventory')->with('success','Asset successfully created.');
+    }
+
+
+    public function updateReceivingStatus(Request $request, $id)
+    {
+        $this->validate($request,[
+            'receiving_status_id' => 'required'
+        ]);
+
+        $receving = Receiving::where('id',$id)->first();
+        $receving->receiving_status_id = $request->receiving_status_id;
+
+        // if added
+        if($request->receiving_status_id == 4 && $receving->is_added == 0)
+        {
+            $receving->is_added = 1;
+
+            $asset = Asset::where('id', $receving->asset_id)->first();
+            $asset->current_value = $receving->qty;
+            $asset->save();
+        }
+
+        $receving->save();
+
+        return Redirect::route('receivings')->with('success','Status updated successfully');
+
     }
 }

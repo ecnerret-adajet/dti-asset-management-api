@@ -14,7 +14,8 @@ class Receiving extends Model
         'asset_id',
         'qty',
         'receiving_status_id',
-        'remarks'
+        'remarks',
+        'is_added'
     ];
 
     public function user()

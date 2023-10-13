@@ -8,6 +8,8 @@ import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
+import ShowModal from "./ShowModal.vue";
+
 const props = defineProps({
   receiving_statuses: Array,
   filters: Object,
@@ -119,12 +121,23 @@ const openShowDetails = (item) => {
                             </span>
                           </td>
                           <td>
-                            <span class="text-capitalize">
-                              {{ receiving.receiving_status.name }}
-                            </span>
+                            <span
+                              :class="{
+                                ' label-light-info ':
+                                  receiving.receiving_status.id === 1,
+                                ' label-light-primary ':
+                                  receiving.receiving_status.id === 2,
+                                ' label-light-warning ':
+                                  receiving.receiving_status.id === 3,
+                                ' label-light-success ':
+                                  receiving.receiving_status.id === 4,
+                              }"
+                              class="label label-lg font-weight-bold text-capitalize label-inline"
+                              >{{ receiving.receiving_status.name }}</span
+                            >
                           </td>
                           <td class="pr-0 text-right">
-                            <div class="dropdown dropdown-inline">
+                            <div v-show="receiving.receiving_status.id !=4" class="dropdown dropdown-inline">
                               <a
                                 href="javascript::void(0)"
                                 class="btn btn-sm btn-clean btn-icon mr-2"
@@ -183,6 +196,7 @@ const openShowDetails = (item) => {
                             </div>
 
                             <button
+                              v-show="receiving.receiving_status.id !=4"
                               type="button"
                               @click="openShowDetails(receiving)"
                               class="btn btn-sm btn-clean btn-icon mr-2"
@@ -250,5 +264,14 @@ const openShowDetails = (item) => {
       <!--end::Entry-->
     </div>
     <!--end::Content-->
+
+    <show-modal
+      unique_id="receivingDetailsModal"
+      title="Request Details"
+      :show="show"
+      @close="show = $event"
+      :receiving="selected_receiving"
+      :receiving_statuses="receiving_statuses"
+    />
   </BasicLayout>
 </template>

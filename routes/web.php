@@ -85,4 +85,6 @@ Route::group(['middleware' => ['auth']], function() {
     // receiving
     Route::get('/receivings',[ReceivingsController::class,'index'])->name('receivings');
     Route::post('/receivings',[ReceivingsController::class,'store'])->name('receivings-store');
+    Route::patch('/receivings/status/{id}',[ReceivingsController::class,'updateReceivingStatus'])->name('receivings-status-update');
+
 });

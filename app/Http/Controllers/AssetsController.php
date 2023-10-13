@@ -99,6 +99,10 @@ class AssetsController extends Controller
             $asset->assetType()->associate($request->asset_type_id);
         }
 
+        if($request->supplier_id) {
+            $asset->supplier()->associate($request->supplier_id);
+        }
+
         $asset->save();
 
         return Redirect::route('inventory')->with('success','Asset successfully created.');

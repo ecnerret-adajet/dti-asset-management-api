@@ -47,7 +47,7 @@ import { Link } from "@inertiajs/vue3";
                   <i class="menu-arrow"></i>
                 </Link>
               </li>
-              <li
+              <!-- <li
                 class="menu-item menu-item-submenu menu-item-rel"
                 :class="{ 'menu-item-here': $page.url === '/inventory', 'menu-item-here': $page.url === '/orders', 'menu-item-here': $page.url === '/receivings'  }"
                 data-menu-toggle="click"
@@ -87,8 +87,8 @@ import { Link } from "@inertiajs/vue3";
                     </li>
                   </ul>
                 </div>
-              </li>
-              <!-- <li
+              </li> -->
+              <li
                 class="menu-item menu-item-submenu menu-item-rel"
                 :class="{
                   'menu-item-here': $page.url.startsWith('/inventory'),
@@ -101,7 +101,35 @@ import { Link } from "@inertiajs/vue3";
                   <span class="menu-desc"></span>
                   <i class="menu-arrow"></i>
                 </Link>
-              </li> -->
+              </li>
+              <li
+                class="menu-item menu-item-submenu menu-item-rel"
+                :class="{
+                  'menu-item-here': $page.url.startsWith('/orders'),
+                }"
+                data-menu-toggle="click"
+                aria-haspopup="true"
+              >
+                <Link href="/orders" class="menu-link menu-toggle">
+                  <span class="menu-text">Orders</span>
+                  <span class="menu-desc"></span>
+                  <i class="menu-arrow"></i>
+                </Link>
+              </li>
+              <li
+                class="menu-item menu-item-submenu menu-item-rel"
+                :class="{
+                  'menu-item-here': $page.url.startsWith('/receivings'),
+                }"
+                data-menu-toggle="click"
+                aria-haspopup="true"
+              >
+                <Link href="/receivings" class="menu-link menu-toggle">
+                  <span class="menu-text">Requests</span>
+                  <span class="menu-desc"></span>
+                  <i class="menu-arrow"></i>
+                </Link>
+              </li>
               <li
                 class="menu-item menu-item-submenu menu-item-rel"
                 :class="{

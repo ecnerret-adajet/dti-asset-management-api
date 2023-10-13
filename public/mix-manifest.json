@@ -1,7 +1,7 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/style.bundle.css": "/css/style.bundle.css",
-    "/css/prismjs.bundle.css": "/css/prismjs.bundle.css",
-    "/css/plugins.bundle.css": "/css/plugins.bundle.css",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=61bd547aac77ba760cbca2a1e090d7fc",
+    "/css/style.bundle.css": "/css/style.bundle.css?id=d120d6d933536f60f338d26970941e95",
+    "/css/prismjs.bundle.css": "/css/prismjs.bundle.css?id=295d55bf41d25118da6fb8d04c1ee03a",
+    "/css/plugins.bundle.css": "/css/plugins.bundle.css?id=7f5b51ac02c5ababaccdf11d69bdf181",
+    "/css/app.css": "/css/app.css?id=0a70483e3192163daf3dcad9b9ef8dbb"
 }
