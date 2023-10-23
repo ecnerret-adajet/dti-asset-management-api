@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Model\Role;
+use App\Models\Role;
 
 class UserTableSeeder extends Seeder
 {
