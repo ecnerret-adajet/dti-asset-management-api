@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasOne(Role::class, 'user_role');
     }
 
+    public function permissions()
+    {
+        return $this->roles->load('permissions')->pluck('permissions')->flatten()->pluck('slug')->unique();
+    }
+
     /**
      * Asset relationshipt
      */
