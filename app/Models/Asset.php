@@ -10,7 +10,23 @@ class Asset extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'image_path',
+        'name',
+        'description',
+        'model',
+        'serial_number',
+        'purchase_date',
+        'current_value',
+        'manufacturer',
+        'location_id',
+        'asset_type_id',
+        'status_id',
+        'unit_price',
+        'supplier_id',
+        'import_price',
+        'local_price',
+    ];
 
     public function user()
     {
@@ -30,5 +46,41 @@ class Asset extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)
+            ->withPivot('qty','unit_price','total_amount')
+            ->withTimestamps();
+    }
+
+    public function receivings()
+    {
+        return $this->hasMany(Receiving::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    /**
+     * Scope
+     */
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['name'] ?? null, function ($query, $name) {
+            $query->where('name', 'like', '%'.$name.'%');
+        })->when($filters['model'] ?? null, function ($query, $model) {
+            $query->where('model', 'like', '%'.$model.'%');
+        })->when($filters['serial_number'] ?? null, function ($query, $serial_number) {
+            $query->where('serial_number', 'like', '%'.$serial_number.'%');
+        })->when($filters['location'] ?? null, function ($query, $location) {
+            $query->whereIn('location_id', $location);
+        })->when($filters['asset_type'] ?? null, function ($query, $asset_type) {
+            $query->whereIn('asset_type_id', $asset_type);
+        });
     }
 }

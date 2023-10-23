@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\CustomersApiController;
 use App\Http\Controllers\Api\SuppliersApiController;
 use App\Http\Controllers\Api\LocationsApiController;
 use App\Http\Controllers\Api\StatusesApiController;
+use App\Http\Controllers\Api\ReceivingsApiController;
+use App\Http\Controllers\Api\ReceivingStatusApiController;
 use App\Http\Controllers\Api\AssetTypesApiController;
 /*
 |--------------------------------------------------------------------------
@@ -23,16 +25,20 @@ use App\Http\Controllers\Api\AssetTypesApiController;
 // public routes
 Route::post('/register',[AuthApiController::class,'register']);
 Route::post('/login',[AuthApiController::class,'login']);
+Route::post('/verify_token',[AuthApiController::class,'verifyToken']);
 
 // proteced routes
-Route::group(['middleware' => ['auth:sanctum']], function() {
+Route::group(['middleware' => ['api']], function() {
     // auth
     Route::post('/logout',[AuthApiController::class,'logout']);
 
     // asset routes
+    Route::get('assets/recent',[AssetsApiController::class,'recentCreated']);
+    Route::get('assets/list',[AssetsApiController::class,'list']);
     Route::resource('assets', AssetsApiController::class);
 
     // customers route
+    Route::get('customers/list',[CustomersApiController::class,'list']);
     Route::resource('customers', CustomersApiController::class);
 
     // suppliers route
@@ -46,6 +52,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     // asset type route
     Route::resource('asset-types', AssetTypesApiController::class);
+
+    // receiving status api
+    Route::get('receiving-statuses',[ReceivingStatusApiController::class,'index']);
+
+    // asset receiving api
+    Route::post('receivings',[ReceivingsApiController::class,'store']);
+
 
 });
 

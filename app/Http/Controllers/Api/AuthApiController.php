@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\Actions\CreateNewToken;
 use App\Models\User;
+use Inertia\Inertia;
 
 class AuthApiController extends Controller
 {
@@ -38,8 +41,10 @@ class AuthApiController extends Controller
 
     /**
      * login routes
+     *
+     * for api login
      */
-    public function login(Request $request)
+    public function apilogin(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -56,12 +61,42 @@ class AuthApiController extends Controller
             ],401);
         }
 
-        $token = $user->createToken('dti_asset_app')->plainTextToken;
+         // Authenticate the user (you can use Laravel's Auth system)
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+            // Create a new Sanctum token for the authenticated user
+            $token = (new CreateNewToken)->handle(Auth::user());
+
+            // Store the token in the session for web authentication
+            session(['dti_asset_app' => $token->plainTextToken]);
+
+            // Redirect to a protected web route
+            // return redirect('/protected-route');
+        }
 
         return response()->json([
             'user' => $user,
-            'token' => $token
+            'api_token' => $token
         ],201);
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+         // Authenticate the user (you can use Laravel's Auth system)
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+            // Redirect to a protected web route
+            // return redirect('/protected-route');
+            return redirect()->intended('/');
+        }
+
+        // return response()->json(['message' => 'Login failed'], 401);
+        return back()->withErrors(['email' => 'Invalid credentials']);
     }
 
     /**
@@ -71,8 +106,33 @@ class AuthApiController extends Controller
     {
         auth()->user()->tokens()->delete();
 
+        // Clear the session
+        session()->forget('dti_asset_app');
+
         return response()->json([
             'message' => 'Logged out'
         ],201);
+    }
+
+    /**
+     * Verify token
+     */
+    public function verifyToken(Request $request)
+    {
+        $token = PersonalAccessToken::findToken($request->api_token);
+
+        if(!$token) {
+            return response()->json([
+                'message' => 'Unauthenticated'
+            ],401);
+        }
+
+        return response()->json([
+            'name' => $token->tokenable->name,
+            'surname' => $token->tokenable->name,
+            'email' => $token->tokenable->email,
+            'api_token' => $request->api_token
+        ],200);
+
     }
 }

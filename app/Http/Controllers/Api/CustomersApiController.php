@@ -20,6 +20,15 @@ class CustomersApiController extends Controller
     }
 
     /**
+     * Customer API for dropdown purposes
+     */
+    public function list()
+    {
+        return Customer::orderBy('id','desc')
+                    ->select('id','name')->get();
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

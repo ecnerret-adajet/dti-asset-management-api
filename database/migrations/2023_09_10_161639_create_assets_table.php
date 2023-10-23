@@ -17,7 +17,7 @@ class CreateAssetsTable extends Migration
             $table->id();
             $table->integer('user_id')->unsigned();
             $table->integer('location_id')->unsigned();
-            $table->integer('asset_type')->unsigned();
+            $table->integer('asset_type_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->string('name');
             $table->string('description');

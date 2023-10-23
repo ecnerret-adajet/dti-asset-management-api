@@ -16,7 +16,9 @@ class StatusesApiController extends Controller
      */
     public function index()
     {
-        return Status::orderBy('id','desc')->get();
+        return Status::orderBy('id','desc')
+                ->withCount('assets')
+                ->get();
     }
 
     /**

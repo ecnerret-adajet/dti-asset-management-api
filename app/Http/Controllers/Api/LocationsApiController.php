@@ -16,7 +16,9 @@ class LocationsApiController extends Controller
      */
     public function index()
     {
-        return Location::orderBy('id','desc')->get();
+        return Location::orderBy('id','desc')
+                ->withCount('assets')
+                ->get();
     }
 
     /**

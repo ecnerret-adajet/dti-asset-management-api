@@ -18,11 +18,13 @@ class LocationsTableSeeder extends Seeder
         DB::table('locations')->insert([
             [
                 'name' => 'location_1',
+                'remarks' => 'location_1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'location_2',
+                'remarks' => 'location_2',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
