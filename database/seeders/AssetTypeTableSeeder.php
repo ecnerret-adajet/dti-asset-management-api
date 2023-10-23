@@ -17,12 +17,12 @@ class AssetTypeTableSeeder extends Seeder
     {
         DB::table('asset_types')->insert([
             [
-                'name' => 'component',
+                'name' => 'asset type 1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'fixed',
+                'name' => 'asset type 2',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
