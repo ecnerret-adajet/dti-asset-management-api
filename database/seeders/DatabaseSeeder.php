@@ -13,14 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call('PermissionsTableSeeder');
-        $this->call('RolesTableSeeder');
-        $this->call('UserTableSeeder');
-        $this->call('AssetTypeTableSeeder');
-        $this->call('LocationsTableSeeder');
-        $this->call('OrderStatusSeeder');
-        $this->call('ReceivingStatusTableSeeder');
-        $this->call('StatusTableSeeder');
+        $this->call([
+            PermissionsTableSeeder::class,
+            RolesTableSeeder::class,
+            UserTableSeeder::class,
+            AssetTypeTableSeeder::class,
+            LocationsTableSeeder::class,
+            OrderStatusSeeder::class,
+            ReceivingStatusTableSeeder::class,
+            StatusTableSeeder::class,
+        ]);
         // \App\Models\User::factory(10)->create();
     }
 }
