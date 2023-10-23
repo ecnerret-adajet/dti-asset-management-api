@@ -1,6 +1,7 @@
 <script setup>
 import BasicLayout from "../../Layouts/BasicLayout.vue";
 import CreateModal from "./CreateModal.vue";
+import EditModal from './EditModal.vue';
 import { router, Link, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
@@ -8,6 +9,9 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
 const show = ref(false);
+const show_edit = ref(false);
+const selected_status = ref({});
+
 const props = defineProps({
   statuses: Object,
   filters: Object,
@@ -29,6 +33,11 @@ watch(
 
 const openModal = () => {
   show.value = !show.value;
+};
+
+const openEditModal = (item) => {
+  show_edit.value = !show_edit.value;
+  selected_status.value = item;
 };
 
 
@@ -177,8 +186,9 @@ const openModal = () => {
                             >
                           </td>
                           <td class="pr-0 text-right">
-                            <Link
-                              href="/"
+                            <a
+                              href="javascript:;"
+                              @click="openEditModal(status)"
                               class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
                             >
                               <span
@@ -216,7 +226,7 @@ const openModal = () => {
                                 </svg>
                                 <!--end::Svg Icon-->
                               </span>
-                            </Link>
+                            </a>
                           </td>
                         </tr>
                       </tbody>
@@ -245,6 +255,14 @@ const openModal = () => {
       :show="show"
       @submit="createLocation($event)"
       @close="show = $event"
+    />
+
+    <edit-modal
+      unique_id="statusEditModal"
+      title="Update Status"
+      :location="selected_status"
+      :show="show_edit"
+      @close="show_edit = $event"
     />
 
   </BasicLayout>

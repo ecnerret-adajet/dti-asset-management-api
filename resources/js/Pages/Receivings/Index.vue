@@ -101,6 +101,7 @@ const openShowDetails = (item) => {
                       <thead>
                         <tr class="text-left">
                           <th class="pr-0" style="width: 300px">Asset Name</th>
+                          <th style="min-width: 150px">PO Number</th>
                           <th style="min-width: 150px">Quantity</th>
                           <th style="min-width: 150px">Status</th>
                           <th class="pr-0 text-right" style="min-width: 150px">
@@ -113,6 +114,11 @@ const openShowDetails = (item) => {
                           <td class="pr-2">
                             <span class="text-capitalize">
                               {{ receiving.asset.name }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ receiving.po_number }}
                             </span>
                           </td>
                           <td>

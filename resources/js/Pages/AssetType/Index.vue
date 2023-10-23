@@ -1,6 +1,7 @@
 <script setup>
 import BasicLayout from "../../Layouts/BasicLayout.vue";
 import CreateModal from "./CreateModal.vue";
+import EditModal from './EditModal.vue';
 import { router, Link, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
@@ -8,6 +9,9 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
 const show = ref(false);
+const show_edit = ref(false);
+const selected_asset_type = ref({});
+
 const props = defineProps({
   asset_types: Object,
   filters: Object,
@@ -29,6 +33,11 @@ watch(
 
 const openModal = () => {
   show.value = !show.value;
+};
+
+const openEditModal = (item) => {
+  show_edit.value = !show_edit.value;
+  selected_asset_type.value = item;
 };
 
 </script>
@@ -176,8 +185,9 @@ const openModal = () => {
                             >
                           </td>
                           <td class="pr-0 text-right">
-                            <Link
-                              href="/"
+                            <a
+                              href="javascript:;"
+                              @click="openEditModal(type)"
                               class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
                             >
                               <span
@@ -215,7 +225,7 @@ const openModal = () => {
                                 </svg>
                                 <!--end::Svg Icon-->
                               </span>
-                            </Link>
+                            </a>
                           </td>
                         </tr>
                       </tbody>
@@ -243,6 +253,14 @@ const openModal = () => {
       title="Create Asset Type"
       :show="show"
       @close="show = $event"
+    />
+
+    <edit-modal
+      unique_id="assetTypeEditModal"
+      title="Update Asset Type"
+      :location="selected_asset_type"
+      :show="show_edit"
+      @close="show_edit = $event"
     />
 
   </BasicLayout>

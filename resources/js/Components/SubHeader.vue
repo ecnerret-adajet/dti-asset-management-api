@@ -1,5 +1,6 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { computed } from 'vue'
+import { Link, usePage } from "@inertiajs/vue3";
 defineProps({
   title: String,
   breadcrumbs: Array,
@@ -8,6 +9,11 @@ defineProps({
   second_button_name: String,
   second_button_link: String,
 });
+
+const page = usePage();
+
+const permissions = computed(() => page.props.auth.permissions);
+
 </script>
 <template>
   <div class="subheader pb-8 subheader-transparent" id="kt_subheader">
@@ -50,12 +56,12 @@ defineProps({
       <!--begin:: toolbar -->
       <div  class="d-flex align-items-center">
         <!--begin::Button-->
-        <Link v-if="second_button_link"
+        <Link v-if="second_button_link && permissions.includes('create')"
           :href="second_button_link"
           class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2"
           >{{ second_button_name }}</Link
         >
-        <Link v-if="button_link"
+        <Link v-if="button_link && permissions.includes('create')"
           :href="button_link"
           class="btn btn-primary font-weight-bold py-3 px-6 mr-2"
           >{{ button_name }}</Link

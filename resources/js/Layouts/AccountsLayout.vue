@@ -1,3 +1,16 @@
+<script setup>
+import { ref } from "vue";
+
+import SubHeader from "../Components/SubHeader.vue";
+import HeaderMobile from "../Components/HeaderMobile.vue";
+import TopMenu from "../Components/TopMenu.vue";
+import ScrollTop from "../Components/ScrollTop.vue";
+import UserPanel from "../Components/UserPanel.vue";
+import QuckPanel from "../Components/QuickPanel.vue";
+import AccountSideBar from "../Components/AccountSideBar.vue";
+
+const breadcrumbs = ref([{ id: 1, name: "Accounts", url: "/accounts" }]);
+</script>
 <template>
   <div>
     <HeaderMobile />
@@ -14,6 +27,15 @@
             class="content d-flex flex-column flex-column-fluid"
             id="kt_content"
           >
+            <!-- sub header -->
+            <SubHeader
+              title="Users Management"
+              button_name="New User"
+              button_link="/users/create"
+              :breadcrumbs="breadcrumbs"
+            />
+            <!-- end subheader -->
+
             <!--begin::Entry-->
             <div class="d-flex flex-column-fluid">
               <!--begin::Container-->
@@ -45,11 +67,4 @@
     <ScrollTop />
   </div>
 </template>
-<script setup>
-import HeaderMobile from "../Components/HeaderMobile.vue";
-import TopMenu from "../Components/TopMenu.vue";
-import ScrollTop from "../Components/ScrollTop.vue";
-import UserPanel from "../Components/UserPanel.vue";
-import QuckPanel from "../Components/QuickPanel.vue";
-import AccountSideBar from "../Components/AccountSideBar.vue";
-</script>
+

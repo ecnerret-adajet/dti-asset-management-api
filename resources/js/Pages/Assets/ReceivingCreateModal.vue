@@ -18,6 +18,7 @@ const props = defineProps({
   title: String,
   asset: Object,
   asset_id: Number,
+  po_number: Number,
   show: { type: Boolean, default: false },
 });
 
@@ -161,6 +162,17 @@ onMounted(() => {
                       {{ form.errors.qty }}
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label">PO Number</label>
+                <div class="col-lg-9 col-xl-9">
+                  <input
+                    v-model="form.po_number"
+                    placeholder="PO Number"
+                    class="form-control form-control-lg form-control-solid"
+                    type="text"
+                  />
                 </div>
               </div>
               <div class="form-group row">

@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                     'email' => $request->user()->email,
                 ] : null,
                 'roles' => $request->user() ? $request->user()->load('roles')->roles->pluck('slug') : null,
+                'permissions' => $request->user() ? $request->user()->load('permissions')->permissions->pluck('slug') : null,
             ],
             'baseUrl' => config('app.url'),
         ]);

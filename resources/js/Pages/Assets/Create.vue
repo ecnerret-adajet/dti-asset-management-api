@@ -28,6 +28,8 @@ const form = useForm({
   current_value: null,
   manufacturer: null,
   unit_price: null,
+  import_price: null,
+  local_price: null,
   status_id: 1,
   supplier_id: 1,
 });
@@ -36,7 +38,6 @@ const selected_supplier = ref(null);
 const previewImage = ref(null);
 
 const storeAsset = () => {
-  console.log(selected_supplier.value.id);
   form
     .transform((data) => ({
       ...data,
@@ -44,11 +45,7 @@ const storeAsset = () => {
     }))
     .post("/inventory", {
       onSuccess: () => {
-        sweetAlert.basicAlert(
-          "Created succesfully!",
-          "New Asset",
-          "success"
-        );
+        sweetAlert.basicAlert("Created succesfully!", "New Asset", "success");
       },
     });
 };
@@ -203,12 +200,14 @@ const previewFile = (event) => {
           <div class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Description</label>
             <div class="col-lg-9 col-xl-6">
-              <input
+              <textarea
                 v-model="form.description"
-                placeholder="Short Description"
                 class="form-control form-control-lg form-control-solid"
+                id="exampleTextarea"
+                rows="4"
                 type="text"
-              />
+                placeholder="Type product description"
+              ></textarea>
             </div>
           </div>
           <div class="form-group row">
@@ -328,6 +327,30 @@ const previewFile = (event) => {
               <input
                 v-model="form.unit_price"
                 placeholder="Input Unit Price"
+                class="form-control form-control-lg form-control-solid"
+                type="number"
+              />
+            </div>
+          </div>
+          <!-- for admin viewer only -->
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Import Price</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.import_price"
+                placeholder="Input Import Price"
+                class="form-control form-control-lg form-control-solid"
+                type="number"
+              />
+            </div>
+          </div>
+          <!-- for admin viewer only -->
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Local Price</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.local_price"
+                placeholder="Input Local Price"
                 class="form-control form-control-lg form-control-solid"
                 type="number"
               />

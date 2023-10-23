@@ -110,20 +110,20 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="/users"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Users</a
+                      >Users</Link
                     >
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
-                    <a
-                      href="#"
+                    <Link
+                      href="/users"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</a
+                      >Visit</Link
                     >
                   </div>
                   <!--end::Buttons-->

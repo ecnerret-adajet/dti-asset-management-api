@@ -15,7 +15,8 @@ class Receiving extends Model
         'qty',
         'receiving_status_id',
         'remarks',
-        'is_added'
+        'is_added',
+        'po_number',
     ];
 
     public function user()

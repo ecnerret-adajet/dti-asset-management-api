@@ -23,7 +23,9 @@ class Asset extends Model
         'asset_type_id',
         'status_id',
         'unit_price',
-        'supplier_id'
+        'supplier_id',
+        'import_price',
+        'local_price',
     ];
 
     public function user()

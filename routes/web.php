@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AssetsController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\AssetTypesController;
 use App\Http\Controllers\StatusesController;
@@ -46,6 +48,23 @@ Route::group(['middleware' => ['auth']], function() {
 
     // users route
     Route::get('/users',[UsersController::class,'index'])->name('users');
+    Route::get('/users/create',[UsersController::class,'create'])->name('users-create');
+    Route::post('/users',[UsersController::class,'store'])->name('users-store');
+    Route::get('/users/{user}',[UsersController::class,'edit'])->name('users-edit');
+    Route::patch('/users/{user}',[UsersController::class,'update'])->name('users-update');
+    Route::delete('/users/{user}',[UsersController::class,'delete'])->name('users-delete');
+
+    // roles route
+    Route::get('/roles',[RolesController::class,'index'])->name('roles');
+    Route::get('/roles/create',[RolesController::class,'create'])->name('roles-create');
+    Route::get('/roles/{role}',[RolesController::class,'edit'])->name('roles-edit');
+    Route::post('/roles',[RolesController::class,'store'])->name('roles-store');
+    Route::patch('/roles/{role}',[RolesController::class,'update'])->name('roles-update');
+
+    // permissons route
+    Route::get('/permissions',[PermissionsController::class,'index'])->name('permissions');
+    Route::post('/permissions',[PermissionsController::class,'store'])->name('permissions-store');
+    Route::patch('/permissions/{permission}',[PermissionsController::class,'update'])->name('permissions-store');
 
     // locations pages
     Route::get('/master-data/locations',[LocationsController::class,'index'])->name('locations');

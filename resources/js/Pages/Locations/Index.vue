@@ -1,6 +1,7 @@
 <script setup>
 import BasicLayout from "../../Layouts/BasicLayout.vue";
 import CreateModal from "./CreateModal.vue";
+import EditModal from "./EditModal.vue"
 import { router, Link, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
@@ -8,6 +9,9 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 
 const show = ref(false);
+const show_edit = ref(false);
+const selected_location = ref({});
+
 const props = defineProps({
   locations: Object,
   filters: Object,
@@ -27,8 +31,13 @@ watch(
   { deep: true }
 );
 
-const openModal = () => {
+const openCreateModal = () => {
   show.value = !show.value;
+};
+
+const openEditModal = (item) => {
+  show_edit.value = !show_edit.value;
+  selected_location.value = item;
 };
 
 
@@ -63,7 +72,7 @@ const openModal = () => {
                   <div class="card-toolbar">
                     <!--begin::Button-->
                     <button
-                      @click="openModal()"
+                      @click="openCreateModal()"
                       class="btn btn-primary font-weight-bolder"
                     >
                       <span class="svg-icon svg-icon-md">
@@ -177,8 +186,9 @@ const openModal = () => {
                             >
                           </td>
                           <td class="pr-0 text-right">
-                            <Link
-                              href="/"
+                            <a
+                              href="javascript:;"
+                              @click="openEditModal(location)"
                               class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
                             >
                               <span
@@ -216,7 +226,7 @@ const openModal = () => {
                                 </svg>
                                 <!--end::Svg Icon-->
                               </span>
-                            </Link>
+                            </a>
                           </td>
                         </tr>
                       </tbody>
@@ -244,6 +254,14 @@ const openModal = () => {
       title="Create New Location"
       :show="show"
       @close="show = $event"
+    />
+
+    <edit-modal
+      unique_id="locationEditModal"
+      title="Update Location"
+      :location="selected_location"
+      :show="show_edit"
+      @close="show_edit = $event"
     />
 
   </BasicLayout>
