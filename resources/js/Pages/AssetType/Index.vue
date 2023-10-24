@@ -258,7 +258,7 @@ const openEditModal = (item) => {
     <edit-modal
       unique_id="assetTypeEditModal"
       title="Update Asset Type"
-      :location="selected_asset_type"
+      :asset_type="selected_asset_type"
       :show="show_edit"
       @close="show_edit = $event"
     />

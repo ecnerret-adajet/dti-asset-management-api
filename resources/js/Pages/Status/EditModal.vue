@@ -1,9 +1,9 @@
 <script setup>
-import { watch, reactive  } from "vue";
+import { watch, ref } from "vue";
 import { router, Link, useForm } from "@inertiajs/vue3";
-import { useToastr } from '../../Services/useToastr';
+import { useSweetAlert } from "../../Services/useSweetAlert";
 
-const toast = useToastr();
+const sweetAlert = useSweetAlert();
 
 const emit = defineEmits(["close"]);
 
@@ -11,15 +11,20 @@ const props = defineProps({
   unique_id: String,
   title: String,
   show: { type: Boolean, default: false },
-  status: { type: Object, default: () => {} }
+  status: { type: Object, default: {} },
 });
 
-const form = useForm(props.status);
+let form = useForm({
+  name: null,
+  description: null,
+});
 
 watch(
   () => props.show,
   (newValue, oldValue) => {
     if (newValue === true) {
+      form.name = props.status.name;
+      form.description = props.status.description;
       $(`#${props.unique_id}`).modal({
         backdrop: "static",
         keyboard: false,
@@ -36,19 +41,18 @@ const closeModal = () => {
 };
 
 const handleSubmit = () => {
-  form.post(`/statuses/${props.status.id}`, {
+  form.patch(`/statuses/${props.status.id}`, {
     preserveScroll: true,
     onSuccess: () => {
-        form.reset();
-        closeModal();
-        toast.notify("Updated successfully");
+      form.reset();
+      closeModal();
+      sweetAlert.basicAlert("Succesfully updated!", "Status Update", "success");
     },
   });
 };
-
 </script>
 <template>
-<!-- Modal-->
+  <!-- Modal-->
   <div
     class="modal fade"
     :id="unique_id"

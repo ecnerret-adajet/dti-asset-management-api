@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::patch('/asset-types/{assetType}',[AssetTypesController::class,'update'])->name('asset-types-update');
 
     // statuses
-    Route::get('/master-data/statuses',[StatusesController::class,'index'])->name('astatuses');
+    Route::get('/master-data/statuses',[StatusesController::class,'index'])->name('statuses');
     Route::post('/statuses',[StatusesController::class,'store'])->name('statuses-store');
     Route::patch('/statuses/{status}',[StatusesController::class,'update'])->name('statuses-update');
 

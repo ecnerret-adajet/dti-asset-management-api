@@ -11,6 +11,7 @@ import pickBy from "lodash/pickBy";
 const baseUrl = window.location.origin;
 
 const show = ref(false);
+const show_edit = ref(false);
 const selected_user = ref({});
 
 const props = defineProps({
@@ -312,5 +313,6 @@ const confirmDeactivateUser = (user) => {
       :show="show_edit"
       @close="show_edit = $event"
     />
+
   </AccountsLayout>
 </template>

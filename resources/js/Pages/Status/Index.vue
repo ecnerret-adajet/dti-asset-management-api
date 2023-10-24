@@ -260,7 +260,7 @@ const openEditModal = (item) => {
     <edit-modal
       unique_id="statusEditModal"
       title="Update Status"
-      :location="selected_status"
+      :status="selected_status"
       :show="show_edit"
       @close="show_edit = $event"
     />

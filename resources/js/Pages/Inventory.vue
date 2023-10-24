@@ -1,9 +1,9 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
-import { router, Link, useForm } from "@inertiajs/vue3";
+import { router, Link, useForm, usePage } from "@inertiajs/vue3";
 // layouts
 import BasicLayout from "../Layouts/BasicLayout.vue";
 import Pagination from "../Components/Pagination.vue";
@@ -12,6 +12,10 @@ import ReceivingCreateModal from "../Pages/Assets/ReceivingCreateModal.vue";
 import InventoryAsideFilter from "../Components/InventoryAsideFilter.vue";
 import InventoryAsideRecent from "../Components/InventoryAsideRecent.vue";
 import SubHeader from "../Components/SubHeader.vue";
+
+const page = usePage();
+
+const permissions = computed(() => page.props.auth.permissions);
 
 const baseUrl = window.location.origin;
 
@@ -224,7 +228,7 @@ const openModal = (item) => {
                             </span>
                           </td>
                           <td class="pr-0 text-right">
-                            <div class="dropdown dropdown-inline">
+                            <div v-if="permissions.includes('edit')" class="dropdown dropdown-inline">
                               <a
                                 href="javascript::void(0)"
                                 class="btn btn-sm btn-clean btn-icon mr-2"
@@ -296,7 +300,7 @@ const openModal = (item) => {
                               </div>
                             </div>
 
-                            <Link
+                            <Link v-if="permissions.includes('edit')"
                               :href="`/inventory/${asset.id}`"
                               class="btn btn-sm btn-clean btn-icon mr-2"
                               title="Edit details"

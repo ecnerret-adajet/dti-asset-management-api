@@ -13,15 +13,20 @@ const props = defineProps({
   unique_id: String,
   title: String,
   show: { type: Boolean, default: false },
-  location: { type: Object, default: () => {} },
+  location: Object
 });
 
-const form = useForm(props.location);
+const form = useForm({
+    name: null,
+    remarks: null
+});
 
 watch(
   () => props.show,
   (newValue, oldValue) => {
     if (newValue === true) {
+       form.name = props.location.name
+       form.remarks = props.location.remarks
       $(`#${props.unique_id}`).modal({
         backdrop: "static",
         keyboard: false,
@@ -41,10 +46,10 @@ const handleSubmit = () => {
   form.patch(`/locations/${props.location.id}`, {
     preserveScroll: true,
     onSuccess: () => {
-      form.reset();
       closeModal();
+      form.reset();
       emit("submit", false);
-      toast.notify("Updated successfully");
+      sweetAlert.basicAlert("Updated succesfully!", "Location", "success");
     },
   });
 };

@@ -16,7 +16,7 @@ const props = defineProps({
   permission: { type: Object, default: () => {} },
 });
 
-const form = useForm(props.location);
+const form = useForm(props.permission);
 
 watch(
   () => props.show,

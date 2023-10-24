@@ -2,17 +2,17 @@
 import { ref, reactive } from "vue";
 import AuthenticationLayout from "../../Layouts/AuthenticationLayout.vue";
 import { useAuthStore } from "../../Store/auth";
-import { router } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 
 const authStore = useAuthStore();
 const processing = ref(false);
-const form = reactive({
+const form = useForm({
   email: "",
   password: "",
 });
 
 const handleLogin = () => {
-  router.post("/login", form);
+  form.post("/login", form);
 };
 </script>
 <template>
@@ -65,6 +65,14 @@ const handleLogin = () => {
                   name="username"
                   autocomplete="off"
                 />
+                <div
+                    v-if="form.errors.email"
+                    class="fv-plugins-message-container text-danger mt-3"
+                >
+                    <div class="fv-help-block">
+                    {{ form.errors.email }}
+                    </div>
+                </div>
               </div>
               <!--end::Form group-->
               <!--begin::Form group-->

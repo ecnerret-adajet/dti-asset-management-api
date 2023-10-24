@@ -1,25 +1,30 @@
 <script setup>
-import { watch, reactive  } from "vue";
+import { watch, reactive, onMounted } from "vue";
 import { router, Link, useForm } from "@inertiajs/vue3";
-import { useToastr } from '../../Services/useToastr';
-
-const toast = useToastr();
+import { useSweetAlert } from "../../Services/useSweetAlert";
 
 const emit = defineEmits(["close"]);
+
+const sweetAlert = useSweetAlert();
 
 const props = defineProps({
   unique_id: String,
   title: String,
   show: { type: Boolean, default: false },
-  asset_type: { type: Object, default: () => {} }
+  asset_type: Object,
 });
 
-const form = useForm(props.asset_type);
+let form = useForm({
+  name: null,
+  remarks: null,
+});
 
 watch(
   () => props.show,
   (newValue, oldValue) => {
     if (newValue === true) {
+      form.name = props.asset_type.name;
+      form.remarks = props.asset_type.remarks;
       $(`#${props.unique_id}`).modal({
         backdrop: "static",
         keyboard: false,
@@ -39,17 +44,16 @@ const handleSubmit = () => {
   form.patch(`/asset-types/${props.asset_type.id}`, {
     preserveScroll: true,
     onSuccess: () => {
+      emit("submit", false);
+      sweetAlert.basicAlert("Updated succesfully!", "Asset Type", "success");
       form.reset();
       closeModal();
-      emit("submit", false);
-      toast.notify("Updated successfully");
     },
   });
 };
-
 </script>
 <template>
- <!-- Modal-->
+  <!-- Modal-->
   <div
     class="modal fade"
     :id="unique_id"
@@ -97,9 +101,7 @@ const handleSubmit = () => {
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 col-form-label"
-                  >Remarks</label
-                >
+                <label class="col-xl-3 col-lg-3 col-form-label">Remarks</label>
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.remarks"
