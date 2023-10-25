@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\StatusesApiController;
 use App\Http\Controllers\Api\ReceivingsApiController;
 use App\Http\Controllers\Api\ReceivingStatusApiController;
 use App\Http\Controllers\Api\AssetTypesApiController;
+use App\Http\Controllers\Api\ReportsApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,6 +60,11 @@ Route::group(['middleware' => ['api']], function() {
     // asset receiving api
     Route::post('receivings',[ReceivingsApiController::class,'store']);
 
+    // retport api
+    Route::get('/total-assets',[ReportsApiController::class,'totalAssets']);
+    Route::get('/total-spending',[ReportsApiController::class,'totalSpending']);
+    Route::get('/total-sold',[ReportsApiController::class,'totalQuantitySold']);
+    Route::get('/total-requests',[ReportsApiController::class,'totalQuantityRequest']);
 
 });
 
