@@ -1,3 +1,38 @@
+<script setup>
+import { ref } from "vue";
+import { router, useForm } from "@inertiajs/vue3";
+
+const confirmLogout = () => {
+  Swal.fire({
+    title: "Logout",
+    text: "Are you sure you want to sign out?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirm",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Processing...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showCancelButton: false,
+        showConfirmButton: false,
+        onOpen: () => {
+          Swal.showLoading();
+        },
+      });
+       router.get('/logout',{
+        onSuccess: () => {
+            Swal.close();
+        }
+       });
+    }
+  });
+};
+
+</script>
 <template>
   <!-- begin::User Panel-->
   <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
@@ -78,10 +113,10 @@
                 >
               </span>
             </a>
-            <a
-              href="#"
+            <button
+              @click="confirmLogout()"
               class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"
-              >Sign Out</a
+              >Sign Out</button
             >
           </div>
         </div>

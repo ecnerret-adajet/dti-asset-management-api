@@ -14,6 +14,7 @@ use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ReceivingsController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,8 @@ Route::post('/login',[LoginController::class,'auth'])->name('login-auth');
 
 // proteced routes
 Route::group(['middleware' => ['auth']], function() {
+
+    Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 
     // pages route
     Route::get('/',[PagesController::class,'home'])->name('home');
