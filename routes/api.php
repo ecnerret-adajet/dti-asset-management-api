@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\ReceivingsApiController;
 use App\Http\Controllers\Api\ReceivingStatusApiController;
 use App\Http\Controllers\Api\AssetTypesApiController;
 use App\Http\Controllers\Api\ReportsApiController;
+use App\Http\Controllers\Api\AuditApiController;
+use App\Http\Controllers\Api\UserApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -65,6 +67,12 @@ Route::group(['middleware' => ['api']], function() {
     Route::get('/total-spending',[ReportsApiController::class,'totalSpending']);
     Route::get('/total-sold',[ReportsApiController::class,'totalQuantitySold']);
     Route::get('/total-requests',[ReportsApiController::class,'totalQuantityRequest']);
+
+    // audits api
+    Route::get('/audits-assets',[AuditApiController::class,'assets']);
+
+    // user api
+    Route::post('users/change-pass/{user}',[UserApiController::class,'changePassword']);
 
 });
 

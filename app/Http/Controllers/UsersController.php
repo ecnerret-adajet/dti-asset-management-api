@@ -100,4 +100,17 @@ class UsersController extends Controller
         $user->destroy();
         return $user;
     }
+
+    public function changePassword(Request $request, User $user)
+    {
+        $this->validate($request,[
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        // Change Password Logic
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return Redirect::route('users')->with('success','User successfully updated.');
+    }
 }

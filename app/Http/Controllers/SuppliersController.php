@@ -15,6 +15,7 @@ class SuppliersController extends Controller
         return Inertia::render('Suppliers/Index',[
             'filters' => $request->all('name'),
             'suppliers' => Supplier::orderBy('created_at','desc')
+                        ->withCount('assets')
                         ->filter($request->only('name'))
                         ->paginate(10)
                         ->withQueryString()

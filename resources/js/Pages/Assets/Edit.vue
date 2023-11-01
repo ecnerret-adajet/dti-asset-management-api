@@ -1,9 +1,13 @@
 <script setup>
 import InventoryLayout from "../../Layouts/InventoryLayout.vue";
-import { ref } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 
 const baseUrl = window.location.origin;
+
+const page = usePage();
+
+const roles = computed(() => page.props.auth.roles);
 
 const props = defineProps({
   asset: Object,
@@ -521,6 +525,34 @@ const previewFile = (event) => {
                   />
                 </div>
               </div>
+
+              <div v-if="roles.includes('admin')" class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Import Price</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.import_price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
+
+              <div v-if="roles.includes('admin')" class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Local Price</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.local_price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
+
+
             </form>
           </div>
           <!--end::Tab Content-->

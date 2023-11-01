@@ -11,7 +11,7 @@ const props = defineProps({
   unique_id: String,
   title: String,
   show: { type: Boolean, default: false },
-  user: { type: Object, default: () => {} }
+  user: { type: Object, default: {} }
 });
 
 const form = useForm({
@@ -39,7 +39,7 @@ const closeModal = () => {
 };
 
 const handleSubmit = () => {
-  form.patch(`/users/${props.user.id}`, {
+  form.patch(`/users/change-pass/${props.user.id}`, {
     preserveScroll: true,
     onSuccess: () => {
         form.reset();
@@ -81,8 +81,8 @@ const handleSubmit = () => {
             <div class="card-body">
 
               <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 col-form-label">Password</label>
-                <div class="col-lg-9 col-xl-6">
+                <label class="col-3  col-form-label">Password</label>
+                <div class="col-9">
                   <input
                     v-model="form.password"
                     placeholder="Input Password"
@@ -101,8 +101,8 @@ const handleSubmit = () => {
               </div>
 
               <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 col-form-label">Password Confirmation</label>
-                <div class="col-lg-9 col-xl-6">
+                <label class="col-3 col-form-label">Password Confirmation</label>
+                <div class="col-9">
                   <input
                     v-model="form.password_confirmation"
                     placeholder="Input Password Confirmation"

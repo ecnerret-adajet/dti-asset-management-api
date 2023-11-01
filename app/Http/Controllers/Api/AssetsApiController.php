@@ -115,6 +115,9 @@ class AssetsApiController extends Controller
      */
     public function recentCreated()
     {
-        return Asset::orderBy('id','desc')->take(2)->get();
+        return Asset::orderBy('id','desc')
+            ->with('assetType','status','location')
+            ->take(3)
+            ->get();
     }
 }

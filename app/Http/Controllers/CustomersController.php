@@ -15,6 +15,7 @@ class CustomersController extends Controller
         return Inertia::render('Customers/Index',[
             'filters' => $request->all('name'),
             'customers' => Customer::orderBy('created_at','desc')
+                        ->withCount('orders')
                         ->filter($request->only('name'))
                         ->paginate(6)
                         ->withQueryString()

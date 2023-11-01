@@ -274,8 +274,8 @@ watch(
                         </svg>
                         <!--end::Svg Icon-->
                       </span>
-                      <a href="#" class="font-weight-bolder text-primary ml-2"
-                        >72 Orders</a
+                      <a href="javascript:;" class="font-weight-bolder text-primary ml-2"
+                        >{{ item.orders_count }} Orders</a
                       >
                     </div>
                   </div>

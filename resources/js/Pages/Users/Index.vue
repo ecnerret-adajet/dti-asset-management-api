@@ -11,7 +11,7 @@ import pickBy from "lodash/pickBy";
 const baseUrl = window.location.origin;
 
 const show = ref(false);
-const show_edit = ref(false);
+const show_change_pass = ref(false);
 const selected_user = ref({});
 
 const props = defineProps({
@@ -34,7 +34,7 @@ watch(
 );
 
 const openChangePasswordModal = (item) => {
-  show.value = !show.value;
+  show_change_pass.value = !show_change_pass.value;
   selected_user.value = item;
 };
 
@@ -310,8 +310,8 @@ const confirmDeactivateUser = (user) => {
       unique_id="changePasswordModal"
       title="Change user password"
       :user="selected_user"
-      :show="show_edit"
-      @close="show_edit = $event"
+      :show="show_change_pass"
+      @close="show_change_pass = $event"
     />
 
   </AccountsLayout>

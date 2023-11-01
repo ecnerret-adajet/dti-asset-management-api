@@ -228,7 +228,7 @@ const openModal = (item) => {
                             </span>
                           </td>
                           <td class="pr-0 text-right">
-                            <div v-if="permissions.includes('edit')" class="dropdown dropdown-inline">
+                            <div v-if="permissions.includes('create')" class="dropdown dropdown-inline">
                               <a
                                 href="javascript::void(0)"
                                 class="btn btn-sm btn-clean btn-icon mr-2"
@@ -300,7 +300,7 @@ const openModal = (item) => {
                               </div>
                             </div>
 
-                            <Link v-if="permissions.includes('edit')"
+                            <Link v-if="permissions.includes('create')"
                               :href="`/inventory/${asset.id}`"
                               class="btn btn-sm btn-clean btn-icon mr-2"
                               title="Edit details"

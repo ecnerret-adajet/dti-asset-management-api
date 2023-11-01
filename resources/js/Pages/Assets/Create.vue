@@ -1,13 +1,17 @@
 <script setup>
 import InventoryLayout from "../../Layouts/InventoryLayout.vue";
-import { router, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { router, useForm, usePage } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
 
 import { useSweetAlert } from "../../Services/useSweetAlert";
 import VueMultiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 
+const page = usePage();
+
 const sweetAlert = useSweetAlert();
+
+const roles = computed(() => page.props.auth.roles);
 
 const props = defineProps({
   locations: Array,
@@ -333,7 +337,7 @@ const previewFile = (event) => {
             </div>
           </div>
           <!-- for admin viewer only -->
-          <div class="form-group row">
+          <div v-if="roles.includes('admin')" class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Import Price</label>
             <div class="col-lg-9 col-xl-6">
               <input
@@ -345,7 +349,7 @@ const previewFile = (event) => {
             </div>
           </div>
           <!-- for admin viewer only -->
-          <div class="form-group row">
+          <div v-if="roles.includes('admin')" class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Local Price</label>
             <div class="col-lg-9 col-xl-6">
               <input
