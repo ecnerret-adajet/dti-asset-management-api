@@ -16,7 +16,7 @@ class User extends Authenticatable implements Auditable
     // use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasFactory, Notifiable, SoftDeletes;
 
-    use OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that are mass assignable.
