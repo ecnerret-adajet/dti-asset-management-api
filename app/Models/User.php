@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 // use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
 
 
 class User extends Authenticatable implements Auditable
@@ -16,7 +17,7 @@ class User extends Authenticatable implements Auditable
     // use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasFactory, Notifiable, SoftDeletes;
 
-    use \OwenIt\Auditing\Auditable;
+    use AuditableTrait;
 
     /**
      * The attributes that are mass assignable.
