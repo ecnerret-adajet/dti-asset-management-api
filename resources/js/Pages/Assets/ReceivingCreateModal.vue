@@ -18,7 +18,7 @@ const props = defineProps({
   title: String,
   asset: Object,
   asset_id: Number,
-  po_number: Number,
+  po_number: String,
   show: { type: Boolean, default: false },
 });
 
@@ -29,6 +29,7 @@ const form = useForm({
   receiving_status_id: null,
   remarks: null,
   asset_id: null,
+  po_number: null,
 });
 
 const sweetAlert = useSweetAlert();

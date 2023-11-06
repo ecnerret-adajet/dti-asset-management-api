@@ -85,7 +85,7 @@ class ReceivingsController extends Controller
             $receving->is_added = 1;
 
             $asset = Asset::where('id', $receving->asset_id)->first();
-            $asset->current_value = $receving->qty;
+            $asset->current_value = $asset->current_value + $receving->qty;
             $asset->save();
         }
 

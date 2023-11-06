@@ -52,10 +52,10 @@ const handleSubmit = () => {
   form.patch(`/receivings/status/${props.receiving.id}`, {
     preserveScroll: true,
     onSuccess: () => {
+      sweetAlert.basicAlert("Succesfully updated!", "Asset Request", "success");
       form.reset();
       closeModal();
       emit("submit", false);
-      sweetAlert.basicAlert("Succesfully updated!", "Asset Request", "success");
     },
   });
 };
