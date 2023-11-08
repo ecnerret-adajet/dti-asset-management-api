@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use Inertia\Inertia;
+use App\Models\Order;
 
 class CustomersController extends Controller
 {
@@ -41,10 +42,21 @@ class CustomersController extends Controller
         return Redirect::route('customers')->with('success','Successfully created.');
     }
 
-    public function show(Customer $customer)
+    public function show(Request $request, Customer $customer)
     {
         return Inertia::render('Customers/Show',[
-            'customer' => $customer
+            'customer' => $customer,
+            'filters' => $request->all('name','order_status_id','asset_name'),
+            'orders' => Order::orderBy('created_at','desc')
+                        ->where('customer_id', $customer->id)
+                        ->with('user','customer','orderStatus','assets')
+                        ->filter($request->only(
+                            'order_status_id',
+                            'asset_name',
+                        ))
+                        ->paginate(5)
+                        ->withQueryString()
+                        ->through(fn ($order) => $order),
         ]);
     }
 

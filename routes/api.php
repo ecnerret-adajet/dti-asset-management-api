@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AssetsApiController;
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\CustomersApiController;
+use App\Http\Controllers\Api\OrdersApiController;
 use App\Http\Controllers\Api\SuppliersApiController;
 use App\Http\Controllers\Api\LocationsApiController;
 use App\Http\Controllers\Api\StatusesApiController;
@@ -73,6 +74,10 @@ Route::group(['middleware' => ['api']], function() {
 
     // user api
     Route::post('users/change-pass/{user}',[UserApiController::class,'changePassword']);
+
+    // customer's order
+    Route::get('/customer-orders/{customer_id}',[OrdersApiController::class,'customerOders']);
+    Route::get('/customer-total-cost/{customer_id}',[OrdersApiController::class,'customerTotalCost']);
 
 });
 
