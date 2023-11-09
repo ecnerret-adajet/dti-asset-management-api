@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Supplier;
+use App\Models\Asset;
 use Inertia\Inertia;
 
 class SuppliersController extends Controller
@@ -41,10 +42,24 @@ class SuppliersController extends Controller
         return Redirect::route('suppliers')->with('success','Successfully created.');
     }
 
-    public function show(Supplier $supplier)
+    public function show(Request $request, Supplier $supplier)
     {
         return Inertia::render('Suppliers/Show',[
-            'supplier' => $supplier
+            'filters' => $request->all('name','model','driver','serial_number','location','status','asset_type'),
+            'supplier' => $supplier,
+            'assets' => Asset::orderBy('created_at','desc')
+                        ->where('supplier_id',$supplier->id)
+                        ->with('location','assetType','status')
+                        ->filter($request->only(
+                                'name',
+                                'model',
+                                'serial_number',
+                                'location',
+                                'status',
+                                'asset_type'))
+                        ->paginate(10)
+                        ->withQueryString()
+                        ->through(fn ($asset) => $asset),
         ]);
     }
 

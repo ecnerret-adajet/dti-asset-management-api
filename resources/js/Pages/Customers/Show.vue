@@ -47,7 +47,7 @@ const form = useForm({
 watch(
   () => form,
   throttle(() => {
-    router.get(`/accounts/customer/${props.customer.id}`, pickBy(form), {
+    router.get(`/accounts/customers/${props.customer.id}`, pickBy(form), {
       preserveState: true,
     });
   }, 150),
@@ -76,8 +76,8 @@ onMounted(() => {
                   <div class="symbol symbol-50 symbol-lg-120">
                     <span
                           class="symbol-label font-size-h3 font-weight-boldest"
-                          >{{ customer.name[0] }}</span
-                        >
+                          >{{ customer.name[0] }}
+                    </span>
                   </div>
                   <div
                     class="symbol symbol-50 symbol-lg-120 symbol-primary d-none"
@@ -286,7 +286,7 @@ onMounted(() => {
                       >Order List</span
                     >
                     <span class="text-muted mt-3 font-weight-bold font-size-sm"
-                      >Customer order list</span
+                      >Customer's orders</span
                     >
                   </h3>
                 </div>
