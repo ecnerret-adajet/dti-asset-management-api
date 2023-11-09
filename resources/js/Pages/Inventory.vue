@@ -292,7 +292,7 @@ const openModal = (item) => {
                                         ><i class="la la-file-excel-o"></i
                                       ></span>
                                       <span class="navi-text"
-                                        >Change Status</span
+                                        >Update Location</span
                                       >
                                     </a>
                                   </li>
