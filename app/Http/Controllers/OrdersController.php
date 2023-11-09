@@ -96,6 +96,16 @@ class OrdersController extends Controller
         $order->order_status_id = $request->order_status_id;
         $order->save();
 
+        // if failed
+        if($request->order_status_id === 4)
+        {
+            foreach($order->assets as $orderAsset) {
+                $asset = Asset::where('id', $orderAsset->id)->first();
+                $asset->current_value = $asset->current_value + $orderAsset->pivot->qty;
+                $asset->save();
+            }
+        }
+
         return Redirect::route('orders')->with('success','Status updated successfully');
     }
 }

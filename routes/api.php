@@ -61,6 +61,7 @@ Route::group(['middleware' => ['api']], function() {
     Route::get('receiving-statuses',[ReceivingStatusApiController::class,'index']);
 
     // asset receiving api
+    Route::get('receivings-statuses-stats',[ReceivingsApiController::class,'receivingStatus']);
     Route::post('receivings',[ReceivingsApiController::class,'store']);
 
     // retport api
@@ -76,6 +77,7 @@ Route::group(['middleware' => ['api']], function() {
     Route::post('users/change-pass/{user}',[UserApiController::class,'changePassword']);
 
     // customer's order
+    Route::get('/order-statuses',[OrdersApiController::class,'orderStatus']);
     Route::get('/customer-orders/{customer_id}',[OrdersApiController::class,'customerOders']);
     Route::get('/customer-total-cost/{customer_id}',[OrdersApiController::class,'customerTotalCost']);
 

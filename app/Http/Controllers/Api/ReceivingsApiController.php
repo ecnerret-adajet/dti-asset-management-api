@@ -9,10 +9,25 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Receiving;
 use App\Models\ReceivingStatus;
 use Carbon\Carbon;
-use App\Model\Asset;
+use App\Models\Asset;
 
 class ReceivingsApiController extends Controller
 {
+
+    public function receivingStatus(Request $request)
+    {
+        $start_date = $request->start_date;
+        $end_date = $request->end_date ? $request->end_date : Carbon::today();
+
+        return ReceivingStatus::when($start_date, function ($q) use ($start_date, $end_date) {
+                        $q->whereHas('receivings', function ($x) use ($start_date, $end_date) {
+                            $x->whereBetween('created_at', [Carbon::parse($start_date), Carbon::parse($end_date)]);
+                        });
+                    })
+                    ->withCount('receivings')
+                    ->get();
+    }
+
     public function index()
     {
         return Receiving::all();
