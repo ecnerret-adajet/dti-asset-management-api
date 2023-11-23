@@ -9,11 +9,15 @@ use App\Models\Order;
 use App\Models\Receiving;
 use App\Models\Customer;
 use App\Models\Supplier;
+use OwenIt\Auditing\Facades\Auditor;
+use OwenIt\Auditing\Contracts\Audit;
 
 class AuditApiController extends Controller
 {
     public function assets()
     {
-        return Asset::with('audits')->paginate(10);
+        return \OwenIt\Auditing\Models\Audit::with('user')
+        ->take(15)
+        ->orderBy('created_at', 'desc')->get();
     }
 }
