@@ -60,15 +60,17 @@ class AssetsController extends Controller
     public function edit($asset_id)
     {
         $asset = Asset::where('id', $asset_id)
-                    ->with('location','assetType','status')
+                    ->with('location','assetType','status','audits')
                     ->first();
 
         $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $status = Status::all();
+        $audits = $asset->audits()->get();
 
         return Inertia::render('Assets/Edit',[
             'asset' => $asset,
+            'audits' => $audits,
             'locations' => $locations,
             'asset_types' => $asset_types,
             'status' => $status,
@@ -101,6 +103,21 @@ class AssetsController extends Controller
 
         if($request->supplier_id) {
             $asset->supplier()->associate($request->supplier_id);
+        }
+
+        $asset->save();
+
+        return Redirect::route('inventory')->with('success','Asset successfully created.');
+    }
+
+    public function changeLocation(Request $request, Asset $asset)
+    {
+        $this->validate($request,[
+            'location_id' => 'required'
+        ]);
+
+        if($request->location_id) {
+            $asset->location()->associate($request->location_id);
         }
 
         $asset->save();

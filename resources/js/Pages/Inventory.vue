@@ -8,6 +8,7 @@ import { router, Link, useForm, usePage } from "@inertiajs/vue3";
 import BasicLayout from "../Layouts/BasicLayout.vue";
 import Pagination from "../Components/Pagination.vue";
 import StockOutModal from "../Pages/Assets/StockOutModal.vue";
+import ChangeLocationModal from '../Pages/Assets/ChangeLocationModal.vue'
 import ReceivingCreateModal from "../Pages/Assets/ReceivingCreateModal.vue";
 import InventoryAsideFilter from "../Components/InventoryAsideFilter.vue";
 import InventoryAsideRecent from "../Components/InventoryAsideRecent.vue";
@@ -20,6 +21,8 @@ const permissions = computed(() => page.props.auth.permissions);
 const baseUrl = window.location.origin;
 
 const show = ref(false);
+const show_changeloc = ref(false);
+
 const selectedAsset = ref({});
 const props = defineProps({
   filters: Object,
@@ -54,6 +57,13 @@ const openModal = (item) => {
   selectedAsset.value = item;
   show.value = !show.value;
 };
+
+const openChangeLocModal = (item) => {
+  selectedAsset.value = item;
+  show_changeloc.value = !show_changeloc.value;
+};
+
+
 </script>
 <template>
   <BasicLayout>
@@ -287,7 +297,7 @@ const openModal = (item) => {
                                     </a>
                                   </li>
                                   <li class="navi-item">
-                                    <a href="#" class="navi-link">
+                                    <a href="javascript:;" @click="openChangeLocModal(asset)" class="navi-link">
                                       <span class="navi-icon"
                                         ><i class="la la-file-excel-o"></i
                                       ></span>
@@ -379,5 +389,18 @@ const openModal = (item) => {
       @onSuccess="selectedAsset = $event"
       @close="show = $event"
     />
+
+    <change-location-modal
+      unique_id="changeLocationModal"
+      title="Change Location"
+      :asset_id="selectedAsset.id"
+      :asset="selectedAsset"
+      :show="show_changeloc"
+      :locations="locations"
+      @onSuccess="selectedAsset = $event"
+      @close="show = $event"
+    />
+
+
   </BasicLayout>
 </template>

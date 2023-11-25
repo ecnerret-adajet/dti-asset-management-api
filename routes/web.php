@@ -48,6 +48,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/inventory',[AssetsController::class,'store'])->name('inventory');
     Route::get('/inventory/{asset_id}',[AssetsController::class,'edit'])->name('inventory-edit');
     Route::patch('/inventory/{asset}',[AssetsController::class,'update'])->name('inventory-update');
+    Route::patch('/asset-location/{asset}',[AssetsController::class,'changeLocation'])->name('asset-change-location');
+
 
     // users route
     Route::get('/users',[UsersController::class,'index'])->name('users');

@@ -1,23 +1,100 @@
 <script setup>
 import InventoryLayout from "../../Layouts/InventoryLayout.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { router, useForm, usePage } from "@inertiajs/vue3";
+
+import { useSweetAlert } from "../../Services/useSweetAlert";
+const sweetAlert = useSweetAlert();
+
+import { useToastr } from "../../Services/useToastr";
+const toast = useToastr();
+
+//api
+import NotesApi from "../../Api/NotesApi";
+const notesService = new NotesApi();
 
 const baseUrl = window.location.origin;
 
 const page = usePage();
 
+const notes = ref([]);
+const note_remarks = ref(null);
+const errors = ref(null);
+
 const roles = computed(() => page.props.auth.roles);
+const user_id = computed(() => page.props.auth.user.id);
 
 const props = defineProps({
   asset: Object,
+  audits: Array,
   locations: Array,
   asset_types: Array,
   status: Array,
 });
 
 const form = useForm(props.asset);
+
 const previewImage = ref(`${baseUrl}/${props.asset.image_path}`);
+
+const fetchNotes = () => {
+  notesService
+    .list(props.asset.id)
+    .then((response) => {
+      notes.value = response;
+      console.log("check notes: ", response);
+    })
+    .catch((error) => {
+      errors.value = error;
+    });
+};
+
+const submitNote = () => {
+  let noteObject = {
+    remarks: note_remarks.value,
+    asset_id: props.asset.id,
+    user_id: user_id.value,
+  };
+
+  notesService
+    .store(noteObject)
+    .then((response) => {
+      if (response.status === 201 || response.status === 200) {
+        toast.notify("Note added successfully");
+        note_remarks.value = null;
+        notes.value.unshift(response.data);
+      }
+    })
+    .catch((error) => {
+      toast.notify(`${error.message}`);
+    });
+};
+
+const deleteNote = (note_id) => {
+  Swal.fire({
+    title: "Note",
+    text: "Are you sure you want to delete this note?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirm",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      notesService
+        .delete(note_id)
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            const newNotes = notes.value.filter((item) => item.id != note_id);
+            notes.value = newNotes;
+            sweetAlert.basicAlert("Successfully deleted", "Note", "success");
+          }
+        })
+        .catch((error) => {
+          sweetAlert.basicAlert(error.message, "Note", "error");
+        });
+    }
+  });
+};
 
 const updateAsset = () => {
   form.patch(`/inventory/${props.asset.id}`);
@@ -26,7 +103,7 @@ const updateAsset = () => {
 const previewFile = (event) => {
   const file = event.target.files[0];
 
-  form.image_path
+  form.image_path;
 
   if (file) {
     const reader = new FileReader();
@@ -41,6 +118,14 @@ const previewFile = (event) => {
   }
 };
 
+const removeStrings = (text) => {
+  let parts = text.split("\\");
+  return parts[parts.length - 1];
+};
+
+onMounted(() => {
+  fetchNotes();
+});
 </script>
 <template>
   <InventoryLayout>
@@ -551,8 +636,6 @@ const previewFile = (event) => {
                   />
                 </div>
               </div>
-
-
             </form>
           </div>
           <!--end::Tab Content-->
@@ -562,133 +645,48 @@ const previewFile = (event) => {
             id="kt_apps_contacts_view_tab_4"
             role="tabpanel"
           >
+            <!-- {{ audits }} -->
             <form class="form">
+
               <div class="row">
-                <label class="col-xl-3"></label>
-                <div class="col-lg-9 col-xl-6">
-                  <h3 class="font-size-h6 mb-5">Setup Email Notification:</h3>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 text-right col-form-label"
-                  >Email Notification</label
-                >
-                <div class="col-lg-9 col-xl-6">
-                  <span class="switch">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked="checked"
-                        name="email_notification_1"
-                      />
-                      <span></span>
-                    </label>
-                  </span>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 text-right col-form-label"
-                  >Send Copy To Personal Email</label
-                >
-                <div class="col-lg-9 col-xl-6">
-                  <span class="switch">
-                    <label>
-                      <input type="checkbox" name="email_notification_2" />
-                      <span></span>
-                    </label>
-                  </span>
-                </div>
-              </div>
-              <div class="separator separator-dashed my-10"></div>
-              <!--begin::Heading-->
-              <div class="row">
-                <div class="col-lg-9 col-xl-6 offset-xl-3">
-                  <h3 class="font-size-h6 mb-5">Activity Related Emails:</h3>
-                </div>
-              </div>
-              <!--end::Heading-->
-              <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 text-right"
-                  >When To Email</label
-                >
-                <div class="col-lg-9 col-xl-6">
-                  <div class="checkbox-list">
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>You have new notifications.</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>You're sent a direct message</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" checked="checked" />
-                      <span></span>Someone adds you as a connection</label
-                    >
+
+                <div class="col offset-xl-2">
+
+                <div class="timeline timeline-6 mt-3">
+
+                <!--begin::Item-->
+                <div v-for="(audit,a) in audits" :key="a" class="timeline-item align-items-start">
+                  <!--begin::Label-->
+                  <div
+                    class="timeline-label font-weight-bolder text-dark-75 font-size-lg"
+                  >
+                   ID: {{ audit.id }}
                   </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 text-right"
-                  >When To Escalate Emails</label
-                >
-                <div class="col-lg-9 col-xl-6">
-                  <div class="checkbox-list">
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>Upon new order.</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>New membership approval</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" checked="checked" />
-                      <span></span>Member registration</label
-                    >
+                  <!--end::Label--><!--begin::Badge-->
+                  <div class="timeline-badge">
+                    <i class="fa fa-genderless text-success icon-xl"></i>
                   </div>
-                </div>
-              </div>
-              <div class="separator separator-dashed my-10"></div>
-              <!--begin::Heading-->
-              <div class="row">
-                <div class="col-lg-9 col-xl-6 offset-xl-3">
-                  <h3 class="font-size-h6 mb-5">Updates From Keenthemes:</h3>
-                </div>
-              </div>
-              <!--end::Heading-->
-              <div class="form-group row">
-                <label class="col-xl-3 col-lg-3 text-right"
-                  >Email You With</label
-                >
-                <div class="col-lg-9 col-xl-6">
-                  <div class="checkbox-list">
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>News about Metronic product and feature
-                      updates</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" />
-                      <span></span>Tips on getting more out of Keen</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" checked="checked" />
-                      <span></span>Things you missed since you last logged into
-                      Keen</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" checked="checked" />
-                      <span></span>News about Metronic on partner products and
-                      other services</label
-                    >
-                    <label class="checkbox">
-                      <input type="checkbox" checked="checked" />
-                      <span></span>Tips on Metronic business products</label
-                    >
+                  <!--end::Badge--><!--begin::Content-->
+                  <div class="timeline-content d-flex">
+                    <span
+                      class="font-weight-bolder text-capitalize text-dark-75 pl-3 font-size-lg"
+                      >{{ audit.event }} Event: </span
+                    > <span class="text-dark-75 pl-3 font-size-lg">
+                      Old: {{ audit.old_values }} - New: {{ audit.new_values }}
+                        </span> <br/>
+
                   </div>
+                  <!--end::Content-->
+                </div>
+                <!--end::Item-->
+
+              </div>
+
                 </div>
               </div>
+
+
+              <!-- <div class="separator separator-dashed my-10"></div> -->
             </form>
           </div>
           <!--end::Tab Content-->
@@ -702,6 +700,7 @@ const previewFile = (event) => {
               <form class="form">
                 <div class="form-group">
                   <textarea
+                    v-model="note_remarks"
                     class="form-control form-control-lg form-control-solid"
                     id="exampleTextarea"
                     rows="3"
@@ -710,9 +709,13 @@ const previewFile = (event) => {
                 </div>
                 <div class="row">
                   <div class="col">
-                    <a href="#" class="btn btn-light-primary font-weight-bold"
-                      >Add notes</a
+                    <button
+                      type="button"
+                      @click="submitNote()"
+                      class="btn btn-light-primary font-weight-bold"
                     >
+                      Add notes
+                    </button>
                     <a href="#" class="btn btn-clean font-weight-bold"
                       >Cancel</a
                     >
@@ -720,382 +723,15 @@ const previewFile = (event) => {
                 </div>
               </form>
               <div class="separator separator-dashed my-10"></div>
+
               <!--begin::Timeline-->
               <div class="timeline timeline-3">
                 <div class="timeline-items">
-                  <div class="timeline-item">
-                    <div class="timeline-media">
-                      <img alt="Pic" src="assets/media/users/300_25.jpg" />
-                    </div>
-                    <div class="timeline-content">
-                      <div
-                        class="d-flex align-items-center justify-content-between mb-3"
-                      >
-                        <div class="mr-2">
-                          <a
-                            href="#"
-                            class="text-dark-75 text-hover-primary font-weight-bold"
-                            >New order has been placed</a
-                          >
-                          <span class="text-muted ml-2">Today</span>
-                          <span
-                            class="label label-light-success font-weight-bolder label-inline ml-2"
-                            >new</span
-                          >
-                        </div>
-                        <div
-                          class="dropdown ml-2"
-                          data-toggle="tooltip"
-                          title="Quick actions"
-                          data-placement="left"
-                        >
-                          <a
-                            href="#"
-                            class="btn btn-hover-light-primary btn-sm btn-icon"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            <i
-                              class="ki ki-more-hor font-size-lg text-primary"
-                            ></i>
-                          </a>
-                          <div
-                            class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right"
-                          >
-                            <!--begin::Navigation-->
-                            <ul class="navi navi-hover">
-                              <li class="navi-header font-weight-bold py-4">
-                                <span class="font-size-lg">Choose Label:</span>
-                                <i
-                                  class="flaticon2-information icon-md text-muted"
-                                  data-toggle="tooltip"
-                                  data-placement="right"
-                                  title="Click to learn more..."
-                                ></i>
-                              </li>
-                              <li class="navi-separator mb-3 opacity-70"></li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-success"
-                                      >Customer</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-danger"
-                                      >Partner</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-warning"
-                                      >Suplier</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-primary"
-                                      >Member</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-dark"
-                                      >Staff</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-separator mt-3 opacity-70"></li>
-                              <li class="navi-footer py-4">
-                                <a
-                                  class="btn btn-clean font-weight-bold btn-sm"
-                                  href="#"
-                                >
-                                  <i class="ki ki-plus icon-sm"></i>Add new</a
-                                >
-                              </li>
-                            </ul>
-                            <!--end::Navigation-->
-                          </div>
-                        </div>
-                      </div>
-                      <p class="p-0">
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-media">
-                      <i class="flaticon2-shield text-danger"></i>
-                    </div>
-                    <div class="timeline-content">
-                      <div
-                        class="d-flex align-items-center justify-content-between mb-3"
-                      >
-                        <div class="mr-2">
-                          <a
-                            href="#"
-                            class="text-dark-75 text-hover-primary font-weight-bold"
-                            >Member has sent a request.</a
-                          >
-                          <span class="text-muted ml-2">8:30PM 20 June</span>
-                          <span
-                            class="label label-light-danger font-weight-bolder label-inline ml-2"
-                            >pending</span
-                          >
-                        </div>
-                        <div
-                          class="dropdown ml-2"
-                          data-toggle="tooltip"
-                          title="Quick actions"
-                          data-placement="left"
-                        >
-                          <a
-                            href="#"
-                            class="btn btn-hover-light-primary btn-sm btn-icon"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            <i
-                              class="ki ki-more-hor font-size-lg text-primary"
-                            ></i>
-                          </a>
-                          <div
-                            class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right"
-                          >
-                            <!--begin::Navigation-->
-                            <ul class="navi navi-hover">
-                              <li class="navi-header font-weight-bold py-4">
-                                <span class="font-size-lg">Choose Label:</span>
-                                <i
-                                  class="flaticon2-information icon-md text-muted"
-                                  data-toggle="tooltip"
-                                  data-placement="right"
-                                  title="Click to learn more..."
-                                ></i>
-                              </li>
-                              <li class="navi-separator mb-3 opacity-70"></li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-success"
-                                      >Customer</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-danger"
-                                      >Partner</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-warning"
-                                      >Suplier</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-primary"
-                                      >Member</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-dark"
-                                      >Staff</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-separator mt-3 opacity-70"></li>
-                              <li class="navi-footer py-4">
-                                <a
-                                  class="btn btn-clean font-weight-bold btn-sm"
-                                  href="#"
-                                >
-                                  <i class="ki ki-plus icon-sm"></i>Add new</a
-                                >
-                              </li>
-                            </ul>
-                            <!--end::Navigation-->
-                          </div>
-                        </div>
-                      </div>
-                      <p class="p-0">
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
-                    <div class="timeline-media">
-                      <i class="flaticon2-layers text-warning"></i>
-                    </div>
-                    <div class="timeline-content">
-                      <div
-                        class="d-flex align-items-center justify-content-between mb-3"
-                      >
-                        <div class="mr-2">
-                          <a
-                            href="#"
-                            class="text-dark-75 text-hover-primary font-weight-bold"
-                            >System deployment has been completed.</a
-                          >
-                          <span class="text-muted ml-2">11:00AM 30 June</span>
-                          <span
-                            class="label label-light-warning font-weight-bolder label-inline ml-2"
-                            >done</span
-                          >
-                        </div>
-                        <div
-                          class="dropdown ml-2"
-                          data-toggle="tooltip"
-                          title="Quick actions"
-                          data-placement="left"
-                        >
-                          <a
-                            href="#"
-                            class="btn btn-hover-light-primary btn-sm btn-icon"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            <i
-                              class="ki ki-more-hor font-size-lg text-primary"
-                            ></i>
-                          </a>
-                          <div
-                            class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right"
-                          >
-                            <!--begin::Navigation-->
-                            <ul class="navi navi-hover">
-                              <li class="navi-header font-weight-bold py-4">
-                                <span class="font-size-lg">Choose Label:</span>
-                                <i
-                                  class="flaticon2-information icon-md text-muted"
-                                  data-toggle="tooltip"
-                                  data-placement="right"
-                                  title="Click to learn more..."
-                                ></i>
-                              </li>
-                              <li class="navi-separator mb-3 opacity-70"></li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-success"
-                                      >Customer</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-danger"
-                                      >Partner</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-warning"
-                                      >Suplier</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-primary"
-                                      >Member</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-dark"
-                                      >Staff</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-separator mt-3 opacity-70"></li>
-                              <li class="navi-footer py-4">
-                                <a
-                                  class="btn btn-clean font-weight-bold btn-sm"
-                                  href="#"
-                                >
-                                  <i class="ki ki-plus icon-sm"></i>Add new</a
-                                >
-                              </li>
-                            </ul>
-                            <!--end::Navigation-->
-                          </div>
-                        </div>
-                      </div>
-                      <p class="p-0">
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="timeline-item">
+                  <div
+                    v-for="(note, n) in notes"
+                    :key="n"
+                    class="timeline-item"
+                  >
                     <div class="timeline-media">
                       <i class="flaticon2-notification fl text-primary"></i>
                     </div>
@@ -1107,12 +743,14 @@ const previewFile = (event) => {
                           <a
                             href="#"
                             class="text-dark-75 text-hover-primary font-weight-bold"
-                            >Database backup has been completed.</a
+                            >{{ note.user?.name }}</a
                           >
-                          <span class="text-muted ml-2">2 months ago</span>
+                          <span class="text-muted ml-2">{{
+                            note.created_at
+                          }}</span>
                           <span
                             class="label label-light-primary font-weight-bolder label-inline ml-2"
-                            >delivered</span
+                            >note</span
                           >
                         </div>
                         <div
@@ -1147,64 +785,15 @@ const previewFile = (event) => {
                                 ></i>
                               </li>
                               <li class="navi-separator mb-3 opacity-70"></li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-success"
-                                      >Customer</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-danger"
-                                      >Partner</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-warning"
-                                      >Suplier</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-primary"
-                                      >Member</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-item">
-                                <a href="#" class="navi-link">
-                                  <span class="navi-text">
-                                    <span
-                                      class="label label-xl label-inline label-light-dark"
-                                      >Staff</span
-                                    >
-                                  </span>
-                                </a>
-                              </li>
-                              <li class="navi-separator mt-3 opacity-70"></li>
+
                               <li class="navi-footer py-4">
-                                <a
-                                  class="btn btn-clean font-weight-bold btn-sm"
-                                  href="#"
+                                <button
+                                  type="button"
+                                  @click="deleteNote(note.id)"
+                                  class="btn btn-danger font-weight-bold btn-sm"
                                 >
-                                  <i class="ki ki-plus icon-sm"></i>Add new</a
-                                >
+                                  <i class="ki ki-minus icon-sm"></i>Delete Note
+                                </button>
                               </li>
                             </ul>
                             <!--end::Navigation-->
@@ -1212,10 +801,7 @@ const previewFile = (event) => {
                         </div>
                       </div>
                       <p class="p-0">
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto.
+                        {{ note.remarks }}
                       </p>
                     </div>
                   </div>

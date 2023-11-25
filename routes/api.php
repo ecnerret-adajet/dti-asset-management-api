@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\AssetTypesApiController;
 use App\Http\Controllers\Api\ReportsApiController;
 use App\Http\Controllers\Api\AuditApiController;
 use App\Http\Controllers\Api\UserApiController;
+use App\Http\Controllers\Api\NotesApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -80,6 +81,11 @@ Route::group(['middleware' => ['api']], function() {
     Route::get('/order-statuses',[OrdersApiController::class,'orderStatus']);
     Route::get('/customer-orders/{customer_id}',[OrdersApiController::class,'customerOders']);
     Route::get('/customer-total-cost/{customer_id}',[OrdersApiController::class,'customerTotalCost']);
+
+    // Notes route
+    Route::get('/notes/{asset_id}',[NotesApiController::class,'notes']);
+    Route::post('/notes',[NotesApiController::class,'store']);
+    Route::delete('/notes/{note}',[NotesApiController::class,'delete']);
 
 });
 
