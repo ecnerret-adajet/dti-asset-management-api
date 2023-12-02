@@ -36,6 +36,9 @@ const form = useForm({
   local_price: null,
   status_id: 1,
   supplier_id: 1,
+  storage_location: null,
+  unit_price_currency: null,
+  import_price_currency: null,
 });
 
 const selected_supplier = ref(null);
@@ -233,6 +236,27 @@ const previewFile = (event) => {
               <div class="fv-plugins-message-container"></div>
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Storage Location</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.storage_location"
+                placeholder="Input Storage Location"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+              <div
+                v-if="form.errors.storage_location"
+                class="fv-plugins-message-container text-danger mt-3"
+              >
+                <div class="fv-help-block">
+                  {{ form.errors.storage_location }}
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <label class="col-xl-3"></label>
             <div class="col-lg-9 col-xl-6">
@@ -325,29 +349,70 @@ const previewFile = (event) => {
               />
             </div>
           </div>
-          <div class="form-group row">
-            <label class="col-xl-3 col-lg-3 col-form-label">Unit Price</label>
-            <div class="col-lg-9 col-xl-6">
-              <input
-                v-model="form.unit_price"
-                placeholder="Input Unit Price"
-                class="form-control form-control-lg form-control-solid"
-                type="number"
-              />
+
+          <div class="row">
+            <div class="col-2">
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label">Currency</label>
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.unit_price_currency"
+                    placeholder="Input Unit Price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label"
+                  >Unit Price</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.unit_price"
+                    placeholder="Input Unit Price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <!-- for admin viewer only -->
-          <div v-if="roles.includes('admin')" class="form-group row">
-            <label class="col-xl-3 col-lg-3 col-form-label">Import Price</label>
-            <div class="col-lg-9 col-xl-6">
-              <input
-                v-model="form.import_price"
-                placeholder="Input Import Price"
-                class="form-control form-control-lg form-control-solid"
-                type="number"
-              />
+
+          <div class="row" v-if="roles.includes('admin')">
+            <div class="col-2">
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label">Currency</label>
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.unit_price_currency"
+                    placeholder="Input Unit Price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <!-- for admin viewer only -->
+              <div v-if="roles.includes('admin')" class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label"
+                  >Import Price</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.import_price"
+                    placeholder="Input Import Price"
+                    class="form-control form-control-lg form-control-solid"
+                    type="number"
+                  />
+                </div>
+              </div>
             </div>
           </div>
+
           <!-- for admin viewer only -->
           <div v-if="roles.includes('admin')" class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Local Price</label>

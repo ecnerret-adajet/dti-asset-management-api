@@ -30,6 +30,9 @@ class Asset extends Model implements Auditable
         'supplier_id',
         'import_price',
         'local_price',
+        'storage_location',
+        'unit_price_currency',
+        'import_price_currency',
     ];
 
     public function user()

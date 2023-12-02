@@ -448,6 +448,27 @@ onMounted(() => {
                   >
                 </div>
               </div>
+              <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label"
+              >Storage Location</label
+            >
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.storage_location"
+                placeholder="Input Storage Location"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+              <div
+                v-if="form.errors.storage_location"
+                class="fv-plugins-message-container text-danger mt-3"
+              >
+                <div class="fv-help-block">
+                  {{ form.errors.storage_location }}
+                </div>
+              </div>
+            </div>
+          </div>
               <div class="separator separator-dashed my-10"></div>
               <!--begin::Heading-->
               <div class="row">
