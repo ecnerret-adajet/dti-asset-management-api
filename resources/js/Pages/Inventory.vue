@@ -181,6 +181,7 @@ const openChangeLocModal = (item) => {
                             Asset
                           </th>
                           <th style="min-width: 50px">Qty</th>
+                          <th style="min-width: 100px">Location</th>
                           <th style="min-width: 100px">Model</th>
                           <th style="min-width: 100px">Status</th>
                           <th style="min-width: 150px">Type</th>
@@ -216,6 +217,11 @@ const openChangeLocModal = (item) => {
                           <td>
                             <span class="text-capitalize">
                               {{ asset.current_value }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ asset?.location.name }} / {{ asset.storage_location }}
                             </span>
                           </td>
                           <td>

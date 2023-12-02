@@ -357,7 +357,7 @@ const previewFile = (event) => {
                 v-model="form.unit_price_currency"
                 placeholder="Input Currency"
                 class="form-control form-control-lg form-control-solid"
-                type="number"
+                type="text"
               />
             </div>
             <div class="col-lg-7 col-xl-4">
@@ -378,7 +378,7 @@ const previewFile = (event) => {
                 v-model="form.import_price_currency"
                 placeholder="Input Import Currency"
                 class="form-control form-control-lg form-control-solid"
-                type="number"
+                type="text"
               />
             </div>
             <div class="col-lg-7 col-xl-4">

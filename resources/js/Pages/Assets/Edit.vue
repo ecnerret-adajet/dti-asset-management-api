@@ -449,7 +449,7 @@ onMounted(() => {
                 </div>
               </div>
               <div class="form-group row">
-            <label class="col-xl-3 col-lg-3 col-form-label"
+            <label class="col-xl-3 col-lg-3 text-right col-form-label"
               >Storage Location</label
             >
             <div class="col-lg-9 col-xl-6">
