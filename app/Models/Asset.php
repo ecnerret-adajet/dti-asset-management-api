@@ -79,7 +79,8 @@ class Asset extends Model implements Auditable
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['name'] ?? null, function ($query, $name) {
-            $query->where('name', 'like', '%'.$name.'%');
+            $query->where('name', 'like', '%'.$name.'%')
+                  ->orWhere('description', 'like', '%'.$name.'%');
         })->when($filters['model'] ?? null, function ($query, $model) {
             $query->where('model', 'like', '%'.$model.'%');
         })->when($filters['serial_number'] ?? null, function ($query, $serial_number) {

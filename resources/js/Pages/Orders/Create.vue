@@ -340,7 +340,7 @@ onMounted(() => {
                                   <tr>
                                     <th>Ordered Items</th>
                                     <th class="text-center">Qty</th>
-                                    <th class="text-right">Price</th>
+                                    <th class="text-left">Price</th>
                                     <th></th>
                                   </tr>
                                 </thead>
@@ -381,9 +381,11 @@ onMounted(() => {
                                         >
                                           <i class="ki ki-minus icon-xs"></i>
                                         </button>
+
                                         <span class="mr-2 font-weight-bolder">{{
                                           order.qty
                                         }}</span>
+
                                         <button
                                           type="button"
                                           @click="updateQty('add', order)"
@@ -393,9 +395,15 @@ onMounted(() => {
                                         </button>
                                       </td>
                                       <td
+                                        width="15%"
                                         class="text-right align-middle font-weight-bolder font-size-h5"
                                       >
-                                        P {{ order.unit_price }}
+                                        <!-- P {{ order.unit_price }} -->
+                                        <input
+                                            v-model="order.unit_price"
+                                            class="form-control form-control-solid"
+                                            type="number"
+                                        />
                                       </td>
                                       <td class="text-right align-middle">
                                         <button
