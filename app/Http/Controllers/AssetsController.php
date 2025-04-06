@@ -57,6 +57,26 @@ class AssetsController extends Controller
         return Redirect::route('inventory')->with('success','Asset successfully created.');
     }
 
+    public function show($asset_id)
+    {
+        $asset = Asset::where('id', $asset_id)
+                    ->with('location','assetType','status','audits')
+                    ->first();
+
+        $locations = Location::activeLocations()->get();
+        $asset_types = AssetType::all();
+        $status = Status::all();
+        $audits = $asset->audits()->get();
+
+        return Inertia::render('Assets/Show',[
+            'asset' => $asset,
+            'audits' => $audits,
+            'locations' => $locations,
+            'asset_types' => $asset_types,
+            'status' => $status,
+        ]);
+    }
+
     public function edit($asset_id)
     {
         $asset = Asset::where('id', $asset_id)

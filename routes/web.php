@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/inventory/create',[AssetsController::class,'create'])->name('inventory-create');
     Route::post('/inventory',[AssetsController::class,'store'])->name('inventory');
     Route::get('/inventory/{asset_id}',[AssetsController::class,'edit'])->name('inventory-edit');
+    Route::get('/inventory/{asset_id}/show',[AssetsController::class,'show'])->name('inventory-show');
     Route::patch('/inventory/{asset}',[AssetsController::class,'update'])->name('inventory-update');
     Route::patch('/asset-location/{asset}',[AssetsController::class,'changeLocation'])->name('asset-change-location');
 

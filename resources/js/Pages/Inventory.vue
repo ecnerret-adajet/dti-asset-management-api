@@ -24,6 +24,7 @@ const show = ref(false);
 const show_changeloc = ref(false);
 
 const selectedAsset = ref({});
+const showImagePreview = ref(null);
 const props = defineProps({
   filters: Object,
   assets: Object,
@@ -193,26 +194,37 @@ const openChangeLocModal = (item) => {
                       <tbody>
                         <tr v-for="(asset, a) in assets.data" :key="a">
                           <td width="8%">
-                            <div class="symbol symbol-50 symbol-light mt-1">
-                              <span class="symbol-label">
+                            <div class="symbol symbol-50 symbol-light mt-1 position-relative">
+                              <span class="symbol-label d-flex align-items-center justify-content-center">
                                 <img
                                   :src="`${baseUrl}/${asset.image_path}`"
-                                  class="h-75 align-self-end"
+                                  class="h-75 w-75 object-fit-contain cursor-pointer"
                                   alt=""
+                                  @mouseover="showImagePreview = asset.id"
+                                  @mouseleave="showImagePreview = null"
                                 />
                               </span>
+                              <!-- Image Preview on Hover -->
+                              <div 
+                                v-if="showImagePreview === asset.id" 
+                                class="image-preview-popup"
+                                @mouseover="showImagePreview = asset.id"
+                                @mouseleave="showImagePreview = null"
+                              >
+                                <img 
+                                  :src="`${baseUrl}/${asset.image_path}`" 
+                                  alt="" 
+                                  class="preview-image"
+                                />
+                              </div>
                             </div>
                           </td>
                           <td class="pl-2">
-                            <a
-                              href="#"
-                              class="text-capitalize text-dark-75 font-weight-bolder font-size-lg mb-0"
-                              >{{ asset.name }}</a
-                            >
-                            <!-- <span
-                              class="text-muted text-capitalize text-muted d-block"
-                              >{{ asset.serial_number }}</span
-                            > -->
+                            <Link
+                              :href="`/inventory/${asset.id}/show`"
+                              class="text-capitalize font-size-lg mb-0"
+                              >{{ asset.name }}
+                            </Link>
                           </td>
                           <td>
                             <span class="text-capitalize">
@@ -410,3 +422,37 @@ const openChangeLocModal = (item) => {
 
   </BasicLayout>
 </template>
+
+<style scoped>
+/* Image preview popup styling */
+.position-relative {
+  position: relative;
+}
+
+.object-fit-contain {
+  object-fit: contain;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.image-preview-popup {
+  cursor: pointer;
+  position: absolute;
+  top: -10px;
+  left: 60px;
+  z-index: 100;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  transform: translateY(-50%);
+}
+
+.preview-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+</style>
