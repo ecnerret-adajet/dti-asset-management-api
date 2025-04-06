@@ -482,11 +482,26 @@ onMounted(() => {
               </div>
               <div class="form-group row">
                 <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Supplier Name</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.supplier.name"
+                    placeholder="Input Supplier Name"
+                    class="form-control form-control-lg form-control-solid"
+                    type="text"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
                   >Model</label
                 >
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.model"
+                    placeholder="Input Model"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                     disabled
@@ -500,6 +515,7 @@ onMounted(() => {
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.serial_number"
+                    placeholder="Input Serial Number"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                     disabled
@@ -513,6 +529,22 @@ onMounted(() => {
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.manufacturer"
+                    placeholder="Input Manufacturer"
+                    class="form-control form-control-lg form-control-solid"
+                    type="text"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Part Number</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.part_number"
+                    placeholder="Input Part Number"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                     disabled

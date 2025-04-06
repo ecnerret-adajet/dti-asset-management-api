@@ -60,7 +60,7 @@ class AssetsController extends Controller
     public function show($asset_id)
     {
         $asset = Asset::where('id', $asset_id)
-                    ->with('location','assetType','status','audits')
+                    ->with('location','assetType','status','supplier','audits')
                     ->first();
 
         $locations = Location::activeLocations()->get();
@@ -80,13 +80,14 @@ class AssetsController extends Controller
     public function edit($asset_id)
     {
         $asset = Asset::where('id', $asset_id)
-                    ->with('location','assetType','status','audits')
+                    ->with('location','assetType','status','supplier','audits')
                     ->first();
 
         $locations = Location::activeLocations()->get();
-        $asset_types = AssetType::all();
-        $status = Status::all();
+        $asset_types = AssetType::select('id', 'name')->get();
+        $status = Status::select('id', 'name')->get();
         $audits = $asset->audits()->get();
+        $suppliers = Supplier::select('id', 'name')->get();
 
         return Inertia::render('Assets/Edit',[
             'asset' => $asset,
@@ -94,6 +95,7 @@ class AssetsController extends Controller
             'locations' => $locations,
             'asset_types' => $asset_types,
             'status' => $status,
+            'suppliers' => $suppliers
         ]);
     }
 

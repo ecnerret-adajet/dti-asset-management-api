@@ -4,6 +4,10 @@ import { ref, computed, onMounted } from "vue";
 import { router, useForm, usePage } from "@inertiajs/vue3";
 
 import { useSweetAlert } from "../../Services/useSweetAlert";
+import VueMultiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.css";
+
+
 const sweetAlert = useSweetAlert();
 
 import { useToastr } from "../../Services/useToastr";
@@ -17,6 +21,18 @@ const baseUrl = window.location.origin;
 
 const page = usePage();
 
+const props = defineProps({
+  asset: Object,
+  audits: Array,
+  locations: Array,
+  asset_types: Array,
+  status: Array,
+  suppliers: Array,
+});
+
+// Initialize selected_supplier with the actual supplier object, not just the ID
+const selected_supplier = ref(props.asset.supplier);
+
 const notes = ref([]);
 const note_remarks = ref(null);
 const errors = ref(null);
@@ -24,15 +40,10 @@ const errors = ref(null);
 const roles = computed(() => page.props.auth.roles);
 const user_id = computed(() => page.props.auth.user.id);
 
-const props = defineProps({
-  asset: Object,
-  audits: Array,
-  locations: Array,
-  asset_types: Array,
-  status: Array,
+const form = useForm({
+  ...props.asset,
+  supplier_id: props.asset.supplier_id,
 });
-
-const form = useForm(props.asset);
 
 const previewImage = ref(`${baseUrl}/${props.asset.image_path}`);
 
@@ -97,15 +108,18 @@ const deleteNote = (note_id) => {
 };
 
 const updateAsset = () => {
-  form.patch(`/inventory/${props.asset.id}`);
+  // Make sure to update the supplier_id from the selected supplier
+  form.supplier_id = selected_supplier.value?.id;
+  form.post(`/inventory/${props.asset.id}`);
 };
 
 const previewFile = (event) => {
   const file = event.target.files[0];
 
-  form.image_path;
-
+  // Properly set the image_path in the form
   if (file) {
+    form.image_path = file;
+    
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -395,6 +409,30 @@ onMounted(() => {
               </div>
               <div class="form-group row">
                 <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Supplier</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                <VueMultiselect
+                  v-model="selected_supplier"
+                  :options="suppliers"
+                  :close-on-select="true"
+                  :clear-on-select="false"
+                  placeholder="Search supplier"
+                  label="name"
+                  track-by="id"
+                />
+                <div
+                v-if="form.errors.supplier_id"
+                class="fv-plugins-message-container text-danger mt-3"
+              >
+                <div class="fv-help-block">
+                  {{ form.errors.supplier_id }}
+                </div>
+              </div>
+            </div>
+          </div>
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
                   >Name</label
                 >
                 <div class="col-lg-9 col-xl-6">
@@ -514,6 +552,7 @@ onMounted(() => {
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.model"
+                    placeholder="Input Model"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                   />
@@ -526,6 +565,7 @@ onMounted(() => {
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.serial_number"
+                    placeholder="Input Serial Number"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                   />
@@ -538,6 +578,21 @@ onMounted(() => {
                 <div class="col-lg-9 col-xl-6">
                   <input
                     v-model="form.manufacturer"
+                    placeholder="Input Manufacturer"
+                    class="form-control form-control-lg form-control-solid"
+                    type="text"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 text-right col-form-label"
+                  >Part Number</label
+                >
+                <div class="col-lg-9 col-xl-6">
+                  <input
+                    v-model="form.part_number"
+                    placeholder="Input Part Number"
                     class="form-control form-control-lg form-control-solid"
                     type="text"
                   />

@@ -181,11 +181,12 @@ const openChangeLocModal = (item) => {
                           <th class="pr-0" colspan="2" style="width: 300px">
                             Asset
                           </th>
-                          <th style="min-width: 50px">Qty</th>
-                          <th style="min-width: 100px">Location</th>
-                          <th style="min-width: 100px">Model</th>
-                          <th style="min-width: 100px">Status</th>
-                          <th style="min-width: 150px">Type</th>
+                          <th style="min-width: 50px" class="text-center">Qty</th>
+                          <th class="min-w-150px">Location</th>
+                          <th class="min-w-250px">Model</th>
+                          <th class="min-w-150px">Part Number</th>
+                          <th class="min-w-150px">Status</th>
+                          <th class="min-w-150px">Type</th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
                           </th>
@@ -239,6 +240,11 @@ const openChangeLocModal = (item) => {
                           <td>
                             <span class="text-capitalize">
                               {{ asset.model }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ asset.part_number ?? 'N/A' }}
                             </span>
                           </td>
                           <td>

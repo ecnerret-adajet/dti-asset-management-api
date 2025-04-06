@@ -33,6 +33,7 @@ class Asset extends Model implements Auditable
         'storage_location',
         'unit_price_currency',
         'import_price_currency',
+        'part_number',
     ];
 
     public function user()
@@ -81,6 +82,7 @@ class Asset extends Model implements Auditable
         $query->when($filters['name'] ?? null, function ($query, $name) {
             $query->where('name', 'like', '%'.$name.'%')
                   ->orWhere('description', 'like', '%'.$name.'%')
+                  ->orWhere('part_number', 'like', '%'.$name.'%')
                   ->orWhere('serial_number', 'like', '%'.$name.'%');
         })->when($filters['model'] ?? null, function ($query, $model) {
             $query->where('model', 'like', '%'.$model.'%');

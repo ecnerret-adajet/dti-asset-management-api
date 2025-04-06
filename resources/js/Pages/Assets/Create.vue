@@ -28,6 +28,7 @@ const form = useForm({
   asset_type_id: null,
   model: null,
   serial_number: null,
+  part_number: null,
   purchase_date: null,
   current_value: null,
   manufacturer: null,
@@ -312,6 +313,17 @@ const previewFile = (event) => {
               <input
                 v-model="form.manufacturer"
                 placeholder="Input Manufacturer"
+                class="form-control form-control-lg form-control-solid"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Part Number</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.part_number"
+                placeholder="Input Part Number"
                 class="form-control form-control-lg form-control-solid"
                 type="text"
               />
