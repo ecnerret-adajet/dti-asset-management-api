@@ -40,6 +40,8 @@ const form = useForm({
   location: props.filters.location,
   status: props.filters.status,
   asset_type: props.filters.asset_type,
+  sort: props.filters.sort || '',
+  direction: props.filters.direction || 'asc',
 });
 
 const breadcrumbs = ref([{ id: 1, name: "Inventory", url: "/inventory" }]);
@@ -62,6 +64,31 @@ const openModal = (item) => {
 const openChangeLocModal = (item) => {
   selectedAsset.value = item;
   show_changeloc.value = !show_changeloc.value;
+};
+
+// Sorting functionality
+const sort = (column) => {
+  if (form.sort === column) {
+    form.direction = form.direction === 'asc' ? 'desc' : 'asc';
+  } else {
+    form.sort = column;
+    form.direction = 'asc';
+  }
+  
+  router.get('/inventory', pickBy(form), {
+    preserveState: true,
+  });
+};
+
+// Helper function to determine sort icon class
+const sortIconClass = (column) => {
+  if (form.sort !== column) {
+    return 'fa fa-sort text-muted';
+  }
+  
+  return form.direction === 'asc' 
+    ? 'fa fa-sort-up text-primary' 
+    : 'fa fa-sort-down text-primary';
 };
 
 
@@ -178,15 +205,27 @@ const openChangeLocModal = (item) => {
                     >
                       <thead>
                         <tr class="text-left">
-                          <th class="pr-0" colspan="2" style="width: 300px">
-                            Asset
+                          <th class="pr-0" colspan="2" style="width: 300px; cursor: pointer;" @click="sort('name')">
+                            Asset <i :class="sortIconClass('name')"></i>
                           </th>
-                          <th style="min-width: 50px" class="text-center">Qty</th>
-                          <th class="min-w-150px">Location</th>
-                          <th class="min-w-250px">Model</th>
-                          <th class="min-w-150px">Part Number</th>
-                          <th class="min-w-150px">Status</th>
-                          <th class="min-w-150px">Type</th>
+                          <th style="cursor: pointer;" class="min-w-100px" @click="sort('current_value')">
+                            Qty <i :class="sortIconClass('current_value')"></i>
+                          </th>
+                          <th class="min-w-150px cursor-pointer" @click="sort('location')">
+                            Location <i :class="sortIconClass('location')"></i>
+                          </th>
+                          <th class="min-w-250px cursor-pointer" @click="sort('model')">
+                            Model <i :class="sortIconClass('model')"></i>
+                          </th>
+                          <th class="min-w-150px cursor-pointer" @click="sort('part_number')">
+                            Part Number <i :class="sortIconClass('part_number')"></i>
+                          </th>
+                          <th class="min-w-150px cursor-pointer" @click="sort('status')">
+                            Status <i :class="sortIconClass('status')"></i>
+                          </th>
+                          <th class="min-w-150px cursor-pointer" @click="sort('asset_type')">
+                            Type <i :class="sortIconClass('asset_type')"></i>
+                          </th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
                           </th>
@@ -460,5 +499,14 @@ const openChangeLocModal = (item) => {
   width: 200px;
   height: 200px;
   object-fit: contain;
+}
+
+/* Sorting styles */
+th i {
+  margin-left: 5px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

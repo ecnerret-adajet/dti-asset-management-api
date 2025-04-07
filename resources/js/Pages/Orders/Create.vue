@@ -171,9 +171,68 @@ const storeOrder = () => {
   });
 };
 
+// Initialize the wizard component
+const initWizard = () => {
+  if (typeof KTWizard !== 'undefined') {
+    const wizardEl = document.getElementById('kt_wizard');
+    const formEl = document.getElementById('kt_form');
+    
+    if (wizardEl) {
+      // Initialize the wizard
+      const wizard = new KTWizard(wizardEl, {
+        startStep: 1,
+        clickableSteps: false
+      });
+
+      // Handle next button clicks manually to ensure proper step progression
+      const nextButtons = wizardEl.querySelectorAll('[data-wizard-type="action-next"]');
+      if (nextButtons.length > 0) {
+        nextButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const currentStep = wizard.getStep();
+            
+            // Validate current step
+            if (currentStep === 1 && !form.selected_customer) {
+              toast.notify('Please select a customer before proceeding', 'error');
+              return false;
+            } else if (currentStep === 2 && asset_orders.value.length === 0) {
+              toast.notify('Please add at least one item to your order', 'error');
+              return false;
+            }
+            
+            // Move to the next step (explicitly go to step + 1)
+            wizard.goTo(currentStep + 1);
+          });
+        });
+      }
+      
+      // Handle previous button clicks
+      const prevButtons = wizardEl.querySelectorAll('[data-wizard-type="action-prev"]');
+      if (prevButtons.length > 0) {
+        prevButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentStep = wizard.getStep();
+            wizard.goTo(currentStep - 1);
+          });
+        });
+      }
+    }
+  }
+};
+
 onMounted(() => {
   fetchCustomers();
   fetchAssets();
+  
+  // Initialize wizard after a short delay to ensure DOM is fully loaded
+  setTimeout(() => {
+    initWizard();
+  }, 100);
 });
 </script>
 <template>
