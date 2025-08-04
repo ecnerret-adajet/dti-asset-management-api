@@ -4,6 +4,7 @@ import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import { router, Link, useForm, usePage } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 // layouts
 import BasicLayout from "../Layouts/BasicLayout.vue";
 import Pagination from "../Components/Pagination.vue";
@@ -89,6 +90,43 @@ const sortIconClass = (column) => {
   return form.direction === 'asc' 
     ? 'fa fa-sort-up text-primary' 
     : 'fa fa-sort-down text-primary';
+};
+
+// Delete asset functionality
+const confirmDelete = (asset) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: `Do you want to delete ${asset.name}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteAsset(asset);
+    }
+  });
+};
+
+const deleteAsset = (asset) => {
+  router.delete(`/inventory/${asset.id}`, {}, {
+    onSuccess: () => {
+      Swal.fire(
+        'Deleted!',
+        'Asset has been deleted successfully.',
+        'success'
+      );
+    },
+    onError: (errors) => {
+      Swal.fire(
+        'Error!',
+        'There was a problem deleting the asset.',
+        'error'
+      );
+      console.error(errors);
+    }
+  });
 };
 
 
@@ -366,6 +404,16 @@ const sortIconClass = (column) => {
                                       ></span>
                                       <span class="navi-text"
                                         >Update Location</span
+                                      >
+                                    </a>
+                                  </li>
+                                  <li class="navi-item">
+                                    <a href="javascript:;" @click="confirmDelete(asset)" class="navi-link">
+                                      <span class="navi-icon"
+                                        ><i class="la la-trash"></i
+                                      ></span>
+                                      <span class="navi-text text-danger"
+                                        >Delete Asset</span
                                       >
                                     </a>
                                   </li>

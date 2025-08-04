@@ -146,4 +146,15 @@ class AssetsController extends Controller
 
         return Redirect::route('inventory')->with('success','Asset successfully created.');
     }
+
+    public function destroy(Asset $asset)
+    {
+        // Soft delete the asset (using SoftDeletes trait)
+        $asset->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Asset successfully deleted.'
+        ]);
+    }
 }

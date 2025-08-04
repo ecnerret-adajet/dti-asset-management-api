@@ -10,14 +10,26 @@ var KTEcommerceCheckout = function () {
 
 	// Private functions
 	var _initWizard = function () {
-		// Initialize form wizard
-		_wizardObj = new KTWizard(_wizardEl, {
-			startStep: 1, // initial active step number
-			clickableSteps: false  // allow step clicking
-		});
+    // Defensive: check if KTWizard and wizard element exist
+    if (typeof KTWizard === 'undefined') {
+        console.error('KTWizard is not defined!');
+        return;
+    }
+    if (!_wizardEl) {
+        console.error('Wizard element not found!');
+        return;
+    }
 
-		// Validation before going to next page
-		_wizardObj.on('change', function (wizard) {
+    // Initialize form wizard
+    _wizardObj = new KTWizard(_wizardEl, {
+        startStep: 1, // initial active step number
+        clickableSteps: false  // allow step clicking
+    });
+
+    // Only attach events if _wizardObj is valid
+    if (_wizardObj && typeof _wizardObj.on === 'function') {
+        // Validation before going to next page
+        _wizardObj.on('change', function (wizard) {
 			if (wizard.getStep() > wizard.getNewStep()) {
 				return; // Skip if stepped back
 			}
@@ -50,13 +62,13 @@ var KTEcommerceCheckout = function () {
 			return false;  // Do not change wizard step, further action will be handled by he validator
 		});
 
-		// Change event
-		_wizardObj.on('changed', function (wizard) {
-			KTUtil.scrollTop();
-		});
+        // Change event
+        _wizardObj.on('changed', function (wizard) {
+            KTUtil.scrollTop();
+        });
 
-		// Submit event
-		_wizardObj.on('submit', function (wizard) {
+        // Submit event
+        _wizardObj.on('submit', function (wizard) {
 			// Swal.fire({
 			// 	text: "Are you sure you want to proceed this order?",
 			// 	icon: "info",

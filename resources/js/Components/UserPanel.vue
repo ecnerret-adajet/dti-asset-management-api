@@ -1,6 +1,14 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps, defineEmits } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
+
+const props = defineProps({
+  open: {
+    type: Boolean,
+    required: true,
+  }
+});
+const emit = defineEmits(['close']);
 
 const confirmLogout = () => {
   Swal.fire({
@@ -31,7 +39,7 @@ const confirmLogout = () => {
 </script>
 <template>
   <!-- begin::User Panel-->
-  <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+  <div v-if="open" id="kt_quick_user" class="offcanvas offcanvas-right p-10">
     <!--begin::Header-->
     <div
       class="offcanvas-header d-flex align-items-center justify-content-between pb-5"
@@ -44,6 +52,7 @@ const confirmLogout = () => {
         href="#"
         class="btn btn-xs btn-icon btn-light btn-hover-primary"
         id="kt_quick_user_close"
+        @click.prevent="emit('close')"
       >
         <i class="ki ki-close icon-xs text-muted"></i>
       </a>

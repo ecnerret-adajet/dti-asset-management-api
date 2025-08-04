@@ -366,7 +366,17 @@ onMounted(() => {
                                   :options="assets"
                                   :option-height="104"
                                   :show-labels="false"
-                                />
+                                >
+                                  <template v-slot:option="props">
+                                    <div>
+                                      <span class="font-weight-bold">{{ props.option.title }}</span>
+                                      <div class="small text-muted">
+                                        <span v-if="props.option.serial_number">SN: {{ props.option.serial_number }}</span>
+                                        <span v-if="props.option.part_number" class="ml-2">PN: {{ props.option.part_number }}</span>
+                                      </div>
+                                    </div>
+                                  </template>
+                                </VueMultiselect>
                                 <button
                                   @click="addOrder()"
                                   class="btn ml-3"

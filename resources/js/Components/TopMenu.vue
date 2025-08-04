@@ -339,6 +339,7 @@ import { Link } from "@inertiajs/vue3";
             <div
               class="btn btn-icon btn-hover-transparent-white d-flex align-items-center btn-lg px-md-2 w-md-auto"
               id="kt_quick_user_toggle"
+              @click="$emit('toggle-user-panel')"
             >
               <span
                 class="text-white opacity-70 font-weight-bold font-size-base d-none d-md-inline mr-1"

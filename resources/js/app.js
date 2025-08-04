@@ -14,6 +14,14 @@ const pinia = createPinia();
 createInertiaApp({
   resolve: name => require(`./Pages/${name}`),
   setup({ el, App, props, plugin }) {
+    const app = createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .use(pinia)
+      .use(VueSweetalert2);
+    window.Swal = app.config.globalProperties.$swal;
+    app.mount(el);
+  },
+  setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(pinia)
@@ -22,7 +30,7 @@ createInertiaApp({
   },
 });
 
-window.Swal =  app.config.globalProperties.$swal;
+
 
 
 InertiaProgress.init({ color: '#ffab40' });

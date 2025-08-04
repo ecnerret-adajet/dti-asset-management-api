@@ -152,6 +152,7 @@ const openShowDetails = (item) => {
                               class="btn btn-sm btn-clean btn-icon mr-2"
                               title="Open Order"
                             >
+                            Details
                               <span class="svg-icon svg-icon-md">
                                 <span
                                   class="svg-icon svg-icon-primary svg-icon-2x"

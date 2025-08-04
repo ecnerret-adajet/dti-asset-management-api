@@ -34,6 +34,8 @@ class AssetsApiController extends Controller
             return [
                 'id' => $item->id,
                 'title' => $item->name,
+                'serial_number' => $item->serial_number,
+                'part_number' => $item->part_number,
                 'desc' => $item->description,
                 'img' => $item->image_path,
                 'unit_price' => $item->unit_price,

@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/inventory/{asset_id}/show',[AssetsController::class,'show'])->name('inventory-show');
     Route::post('/inventory/{asset}',[AssetsController::class,'update'])->name('inventory-update');
     Route::patch('/asset-location/{asset}',[AssetsController::class,'changeLocation'])->name('asset-change-location');
+    Route::delete('/inventory/{asset}',[AssetsController::class,'destroy'])->name('inventory-delete');
 
 
     // users route
