@@ -2,8 +2,8 @@
 import BasicLayout from "../../Layouts/BasicLayout.vue";
 import CreateModal from "./CreateModal.vue";
 import EditModal from './EditModal.vue';
-import { router, Link, useForm } from "@inertiajs/vue3";
-import { ref, watch } from "vue";
+import { router, Link, useForm, usePage } from "@inertiajs/vue3";
+import { ref, watch, computed } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
@@ -16,6 +16,9 @@ const props = defineProps({
   asset_types: Object,
   filters: Object,
 });
+
+const permissions = computed(() => usePage().props.auth.permissions);
+const canCreateAssetType = computed(() => permissions.value.includes('create-asset-type'));
 
 const form = useForm({
   name: props.filters.name,
@@ -71,6 +74,7 @@ const openEditModal = (item) => {
                   <div class="card-toolbar">
                     <!--begin::Button-->
                     <button
+                      v-if="canCreateAssetType"
                       @click="openModal()"
                       class="btn btn-primary font-weight-bolder"
                     >

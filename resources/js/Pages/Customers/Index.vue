@@ -3,7 +3,7 @@ import BasicLayout from "../../Layouts/BasicLayout.vue";
 import Pagination from "../../Components/Pagination.vue";
 import SubHeader from "../../Components/SubHeader.vue";
 import { ref, watch, computed } from "vue";
-import { router, Link, useForm } from "@inertiajs/vue3";
+import { router, Link, useForm, usePage } from "@inertiajs/vue3";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
@@ -12,6 +12,9 @@ const props = defineProps({
   customers: Object,
   filters: Object,
 });
+
+const permissions = computed(() => usePage().props.auth.permissions);
+const canCreateCustomer = computed(() => permissions.value.includes('create-customer'));
 
 const form = useForm({
   name: props.filters.name,
@@ -106,6 +109,7 @@ watch(
               <!--end::Input-->
             </div>
             <Link
+              v-if="canCreateCustomer"
               href="/accounts/customers/create"
               class="btn btn-primary btn-lg font-weight-bold ml-4 py-3 px-6"
               >Create</Link

@@ -7,6 +7,7 @@ import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
+import Pagination from "../../Components/Pagination.vue";
 
 const show = ref(false);
 const show_edit = ref(false);
@@ -124,6 +125,10 @@ const openEditModal = (item) => {
           </div>
           <!--end::Table-->
           <!--end: Datatable-->
+          
+          <!--begin::Pagination-->
+          <Pagination class="mt-6" :links="permissions.links" />
+          <!--end::Pagination-->
         </div>
         <!--end::Body-->
       </div>

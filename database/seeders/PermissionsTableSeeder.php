@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class PermissionsTableSeeder extends Seeder
 {
@@ -14,7 +14,8 @@ class PermissionsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->insert([
+        $permissions = [
+            // Basic permissions
             [
                 'name' => 'read',
                 'description' => 'read',
@@ -35,16 +36,27 @@ class PermissionsTableSeeder extends Seeder
                 'description' => 'delete',
                 'slug' => 'delete',
             ],
+            
+            // User permissions
             [
                 'name' => 'show user',
                 'description' => 'show user',
                 'slug' => 'show-user',
             ],
             [
+                'name' => 'view users',
+                'description' => 'View users section',
+                'slug' => 'view-users',
+            ],
+            
+            // Settings permissions
+            [
                 'name' => 'settings',
                 'description' => 'settings',
                 'slug' => 'settings',
             ],
+            
+            // Orders permissions
             [
                 'name' => 'orders-show',
                 'description' => 'orders-show',
@@ -65,6 +77,8 @@ class PermissionsTableSeeder extends Seeder
                 'description' => 'orders-delete',
                 'slug' => 'orders-delete',
             ],
+            
+            // Request permissions
             [
                 'name' => 'request-show',
                 'description' => 'request-show',
@@ -85,6 +99,49 @@ class PermissionsTableSeeder extends Seeder
                 'description' => 'request-delete',
                 'slug' => 'request-delete',
             ],
-        ]);
+            
+            // Account permissions
+            [
+                'name' => 'view customers',
+                'description' => 'View customers section',
+                'slug' => 'view-customers',
+            ],
+            [
+                'name' => 'view suppliers',
+                'description' => 'View suppliers section',
+                'slug' => 'view-suppliers',
+            ],
+            [
+                'name' => 'create supplier',
+                'description' => 'Create supplier section',
+                'slug' => 'create-supplier',
+            ],
+            [
+                'name' => 'create asset type',
+                'description' => 'Create asset type',
+                'slug' => 'create-asset-type',
+            ],
+            [
+                'name' => 'create location',
+                'description' => 'Create location',
+                'slug' => 'create-location',
+            ],
+            [
+                'name' => 'create customer',
+                'description' => 'Create customer',
+                'slug' => 'create-customer',
+            ],
+        ];
+        
+        // Check if each permission exists before inserting
+        foreach ($permissions as $permission) {
+            $exists = DB::table('permissions')
+                ->where('slug', $permission['slug'])
+                ->exists();
+                
+            if (!$exists) {
+                DB::table('permissions')->insert($permission);
+            }
+        }
     }
 }
