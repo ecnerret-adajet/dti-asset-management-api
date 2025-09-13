@@ -1,6 +1,26 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+import { Link, usePage } from "@inertiajs/vue3";
 import BasicLayout from "../Layouts/BasicLayout.vue";
+
+// Get permissions from page props
+const page = usePage();
+const permissions = computed(() => page.props.auth?.permissions || []);
+
+// Search functionality
+const searchQuery = ref('');
+const cards = ref([
+  { id: 1, title: 'Users', icon: 'Group', link: '/users', user_permission: 'view-users' },
+  { id: 2, title: 'Customers', icon: 'Briefcase', link: '/accounts/customers', user_permission: 'view-customers' },
+  { id: 3, title: 'Suppliers', icon: 'Box2', link: '/accounts/suppliers', user_permission: 'view-suppliers' }
+]);
+
+const filteredCards = computed(() => {
+  if (!searchQuery.value) return cards.value;
+  return cards.value.filter(card => 
+    card.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 </script>
 <template>
   <BasicLayout>
@@ -54,6 +74,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
               <!--end::Icon-->
               <!--begin::Input-->
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-control h-auto border-0 py-4 px-1 font-size-h6"
                 placeholder="Search menu..."
@@ -65,8 +86,17 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
 
           <!--begin::Row-->
           <div class="row">
-            <!--begin::Column-->
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+            <!-- No results message -->
+            <div v-if="filteredCards.length === 0" class="col-12 text-center py-5">
+              <h3 class="text-muted">No results found for "{{ searchQuery }}"</h3>
+            </div>
+            
+            <!-- Card items -->
+            <div
+              v-for="card in filteredCards"
+              :key="card.id"
+              class="col-xl-4 col-lg-6 col-md-6 col-sm-6"
+            >
               <!--begin::Card-->
               <div class="card card-custom gutter-b card-stretch">
                 <!--begin::Body-->
@@ -74,9 +104,10 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                   <!--begin::User-->
                   <div class="mt-20">
                     <div class="symbol symbol-circle symbol-lg-90">
-                      <!-- <img src="/assets/media/project-logos/1.png" alt="image" /> -->
-                      <span class="svg-icon svg-icon-primary svg-icon-4x"
-                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Communication\Group.svg--><svg
+                      <span class="svg-icon svg-icon-primary svg-icon-4x">
+                        <!-- Icon will vary based on card type -->
+                        <svg
+                          v-if="card.icon === 'Group'"
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
                           width="24px"
@@ -84,12 +115,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                           viewBox="0 0 24 24"
                           version="1.1"
                         >
-                          <g
-                            stroke="none"
-                            stroke-width="1"
-                            fill="none"
-                            fill-rule="evenodd"
-                          >
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <polygon points="0 0 24 0 24 24 0 24" />
                             <path
                               d="M18,14 C16.3431458,14 15,12.6568542 15,11 C15,9.34314575 16.3431458,8 18,8 C19.6568542,8 21,9.34314575 21,11 C21,12.6568542 19.6568542,14 18,14 Z M9,11 C6.790861,11 5,9.209139 5,7 C5,4.790861 6.790861,3 9,3 C11.209139,3 13,4.790861 13,7 C13,9.209139 11.209139,11 9,11 Z"
@@ -102,49 +128,11 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                               fill="#000000"
                               fill-rule="nonzero"
                             />
-                          </g></svg
-                        ><!--end::Svg Icon--></span
-                      >
-                    </div>
-                  </div>
-                  <!--end::User-->
-                  <!--begin::Name-->
-                  <div class="my-4">
-                    <Link
-                      href="/users"
-                      class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Users</Link
-                    >
-                  </div>
-                  <!--end::Name-->
-
-                  <!--begin::Buttons-->
-                  <div class="mt-9">
-                    <Link
-                      href="/users"
-                      class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</Link
-                    >
-                  </div>
-                  <!--end::Buttons-->
-                </div>
-                <!--end::Body-->
-              </div>
-              <!--end::Card-->
-            </div>
-            <!--end::Column-->
-            <!--begin::Column-->
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <!--begin::Card-->
-              <div class="card card-custom gutter-b card-stretch">
-                <!--begin::Body-->
-                <div class="card-body text-center pt-4">
-                  <!--begin::User-->
-                  <div class="mt-20">
-                    <div class="symbol symbol-circle symbol-lg-90">
-                      <!-- <img src="/assets/media/project-logos/1.png" alt="image" /> -->
-                      <span class="svg-icon svg-icon-primary svg-icon-4x"
-                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Clothes\Briefcase.svg--><svg
+                          </g>
+                        </svg>
+                        
+                        <svg
+                          v-else-if="card.icon === 'Briefcase'"
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
                           width="24px"
@@ -152,12 +140,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                           viewBox="0 0 24 24"
                           version="1.1"
                         >
-                          <g
-                            stroke="none"
-                            stroke-width="1"
-                            fill="none"
-                            fill-rule="evenodd"
-                          >
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <rect x="0" y="0" width="24" height="24" />
                             <path
                               d="M5.84026576,8 L18.1597342,8 C19.1999115,8 20.0664437,8.79732479 20.1528258,9.83390904 L20.8194924,17.833909 C20.9112219,18.9346631 20.0932459,19.901362 18.9924919,19.9930915 C18.9372479,19.9976952 18.8818364,20 18.8264009,20 L5.1735991,20 C4.0690296,20 3.1735991,19.1045695 3.1735991,18 C3.1735991,17.9445645 3.17590391,17.889153 3.18050758,17.833909 L3.84717425,9.83390904 C3.93355627,8.79732479 4.80008849,8 5.84026576,8 Z M10.5,10 C10.2238576,10 10,10.2238576 10,10.5 L10,11.5 C10,11.7761424 10.2238576,12 10.5,12 L13.5,12 C13.7761424,12 14,11.7761424 14,11.5 L14,10.5 C14,10.2238576 13.7761424,10 13.5,10 L10.5,10 Z"
@@ -169,49 +152,11 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                               fill-rule="nonzero"
                               opacity="0.3"
                             />
-                          </g></svg
-                        ><!--end::Svg Icon--></span
-                      >
-                    </div>
-                  </div>
-                  <!--end::User-->
-                  <!--begin::Name-->
-                  <div class="my-4">
-                    <Link
-                      href="/accounts/customers"
-                      class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Customers</link
-                    >
-                  </div>
-                  <!--end::Name-->
-
-                  <!--begin::Buttons-->
-                  <div class="mt-9">
-                    <Link
-                      href="/accounts/customers"
-                      class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</Link
-                    >
-                  </div>
-                  <!--end::Buttons-->
-                </div>
-                <!--end::Body-->
-              </div>
-              <!--end::Card-->
-            </div>
-            <!--end::Column-->
-            <!--begin::Column-->
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
-              <!--begin::Card-->
-              <div class="card card-custom gutter-b card-stretch">
-                <!--begin::Body-->
-                <div class="card-body text-center pt-4">
-                  <!--begin::User-->
-                  <div class="mt-20">
-                    <div class="symbol symbol-circle symbol-lg-90">
-                      <!-- <img src="/assets/media/project-logos/1.png" alt="image" /> -->
-                      <span class="svg-icon svg-icon-primary svg-icon-4x"
-                        ><!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo2\dist/../src/media/svg/icons\Shopping\Box2.svg--><svg
+                          </g>
+                        </svg>
+                        
+                        <svg
+                          v-else
                           xmlns="http://www.w3.org/2000/svg"
                           xmlns:xlink="http://www.w3.org/1999/xlink"
                           width="24px"
@@ -219,12 +164,7 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                           viewBox="0 0 24 24"
                           version="1.1"
                         >
-                          <g
-                            stroke="none"
-                            stroke-width="1"
-                            fill="none"
-                            fill-rule="evenodd"
-                          >
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <rect x="0" y="0" width="24" height="24" />
                             <path
                               d="M4,9.67471899 L10.880262,13.6470401 C10.9543486,13.689814 11.0320333,13.7207107 11.1111111,13.740321 L11.1111111,21.4444444 L4.49070127,17.526473 C4.18655139,17.3464765 4,17.0193034 4,16.6658832 L4,9.67471899 Z M20,9.56911707 L20,16.6658832 C20,17.0193034 19.8134486,17.3464765 19.5092987,17.526473 L12.8888889,21.4444444 L12.8888889,13.6728275 C12.9050191,13.6647696 12.9210067,13.6561758 12.9368301,13.6470401 L20,9.56911707 Z"
@@ -235,29 +175,27 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
                               fill="#000000"
                               opacity="0.3"
                             />
-                          </g></svg
-                        ><!--end::Svg Icon--></span
-                      >
+                          </g>
+                        </svg>
+                      </span>
                     </div>
                   </div>
                   <!--end::User-->
                   <!--begin::Name-->
                   <div class="my-4">
                     <Link
-                      href="/accounts/suppliers"
+                      :href="card.link"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
-                      >Suppliers</Link
-                    >
+                    >{{ card.title }}</Link>
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
                     <Link
-                      href="/accounts/suppliers"
+                      :href="card.link"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
-                      >Visit</Link
-                    >
+                    >Visit</Link>
                   </div>
                   <!--end::Buttons-->
                 </div>
@@ -265,7 +203,6 @@ import BasicLayout from "../Layouts/BasicLayout.vue";
               </div>
               <!--end::Card-->
             </div>
-            <!--end::Column-->
           </div>
           <!--end::Row-->
         </div>
