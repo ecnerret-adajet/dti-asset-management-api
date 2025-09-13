@@ -137,6 +137,8 @@ const openShowDetails = (item) => {
                                   receiving.receiving_status.id === 3,
                                 ' label-light-success ':
                                   receiving.receiving_status.id === 4,
+                                ' label-light-danger ':
+                                  receiving.receiving_status.id === 5,
                               }"
                               class="label label-lg font-weight-bold text-capitalize label-inline"
                               >{{ receiving.receiving_status.name }}</span

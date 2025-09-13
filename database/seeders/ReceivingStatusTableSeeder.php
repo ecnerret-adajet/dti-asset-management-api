@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class ReceivingStatusTableSeeder extends Seeder
 {
@@ -15,31 +15,45 @@ class ReceivingStatusTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('receiving_statuses')->insert([
+        $statuses = [
             [
                 'name' => 'To Order',
                 'slug' => 'to-order',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Ordered',
                 'slug' => 'ordered',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'In Transit',
                 'slug' => 'in-transit',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Added',
                 'slug' => 'added',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ],
-        ]);
+            [
+                'name' => 'Cancelled',
+                'slug' => 'cancelled',
+            ],
+        ];
+
+        foreach ($statuses as $status) {
+            // Check if the name or slug already exists
+            $exists = DB::table('receiving_statuses')
+                ->where('name', $status['name'])
+                ->orWhere('slug', $status['slug'])
+                ->exists();
+
+            // Only insert if it doesn't exist
+            if (!$exists) {
+                DB::table('receiving_statuses')->insert([
+                    'name' => $status['name'],
+                    'slug' => $status['slug'],
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+        }
     }
 }
