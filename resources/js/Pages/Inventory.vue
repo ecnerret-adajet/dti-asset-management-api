@@ -23,6 +23,7 @@ const baseUrl = window.location.origin;
 
 const show = ref(false);
 const show_changeloc = ref(false);
+const isDeleting = ref(false);
 
 const selectedAsset = ref({});
 const showImagePreview = ref(null);
@@ -94,6 +95,11 @@ const sortIconClass = (column) => {
 
 // Delete asset functionality
 const confirmDelete = (asset) => {
+  // Don't allow delete action if already deleting
+  if (isDeleting.value) return;
+  
+  selectedAsset.value = asset;
+  
   Swal.fire({
     title: 'Are you sure?',
     text: `Do you want to delete ${asset.name}?`,
@@ -105,26 +111,57 @@ const confirmDelete = (asset) => {
   }).then((result) => {
     if (result.isConfirmed) {
       deleteAsset(asset);
+    } else {
+      // Reset selected asset if canceled
+      selectedAsset.value = {};
     }
   });
 };
 
 const deleteAsset = (asset) => {
+  isDeleting.value = true;
+  
   router.delete(`/inventory/${asset.id}`, {}, {
     onSuccess: () => {
-      Swal.fire(
-        'Deleted!',
-        'Asset has been deleted successfully.',
-        'success'
-      );
+      isDeleting.value = false;
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'Asset has been deleted successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        // Refresh the page to update the asset list
+        router.visit('/inventory', {
+          only: ['assets'],
+          preserveState: true,
+          preserveScroll: true
+        });
+      });
     },
     onError: (errors) => {
-      Swal.fire(
-        'Error!',
-        'There was a problem deleting the asset.',
-        'error'
-      );
-      console.error(errors);
+      isDeleting.value = false;
+      let errorMessage = 'There was a problem deleting the asset.';
+      
+      // Check for specific error messages from the backend
+      if (errors && errors.message) {
+        errorMessage = errors.message;
+      } else if (errors && errors.error) {
+        errorMessage = errors.error;
+      } else if (errors && typeof errors === 'object') {
+        // Try to extract any error message from the errors object
+        const firstError = Object.values(errors)[0];
+        if (Array.isArray(firstError) && firstError.length > 0) {
+          errorMessage = firstError[0];
+        }
+      }
+      
+      Swal.fire({
+        title: 'Error!',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      console.error('Delete asset error:', errors);
     }
   });
 };
@@ -339,7 +376,7 @@ const deleteAsset = (asset) => {
                             </span>
                           </td>
                           <td class="pr-0 text-right">
-                            <div v-if="permissions.includes('create')" class="dropdown dropdown-inline">
+                            <div v-if="permissions.includes('delete')" class="dropdown dropdown-inline">
                               <a
                                 href="javascript::void(0)"
                                 class="btn btn-sm btn-clean btn-icon mr-2"
@@ -408,20 +445,21 @@ const deleteAsset = (asset) => {
                                     </a>
                                   </li>
                                   <li class="navi-item">
-                                    <a href="javascript:;" @click="confirmDelete(asset)" class="navi-link">
-                                      <span class="navi-icon"
-                                        ><i class="la la-trash"></i
-                                      ></span>
-                                      <span class="navi-text text-danger"
-                                        >Delete Asset</span
-                                      >
+                                    <a href="javascript:;" @click="confirmDelete(asset)" class="navi-link" :class="{ 'disabled': isDeleting }">
+                                      <span class="navi-icon">
+                                        <i v-if="isDeleting && selectedAsset.id === asset.id" class="la la-spinner fa-spin"></i>
+                                        <i v-else class="la la-trash"></i>
+                                      </span>
+                                      <span class="navi-text text-danger">
+                                        {{ isDeleting && selectedAsset.id === asset.id ? 'Deleting...' : 'Delete Asset' }}
+                                      </span>
                                     </a>
                                   </li>
                                 </ul>
                               </div>
                             </div>
 
-                            <Link v-if="permissions.includes('create')"
+                            <Link v-if="permissions.includes('update')"
                               :href="`/inventory/${asset.id}`"
                               class="btn btn-sm btn-clean btn-icon mr-2"
                               title="Edit details"

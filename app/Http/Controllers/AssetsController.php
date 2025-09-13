@@ -149,12 +149,41 @@ class AssetsController extends Controller
 
     public function destroy(Asset $asset)
     {
-        // Soft delete the asset (using SoftDeletes trait)
-        $asset->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Asset successfully deleted.'
-        ]);
+        try {
+            // Check for related receivings that might be active
+            $activeReceivings = $asset->receivings()->where('status', 'pending')->orWhere('status', 'in_progress')->count();
+            
+            if ($activeReceivings > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete this asset. It has active receivings associated with it.'
+                ], 422);
+            }
+            
+            // Check for related orders that might be active
+            $activeOrders = $asset->orders()->whereHas('order', function($query) {
+                $query->where('status', 'pending')->orWhere('status', 'in_progress');
+            })->count();
+            
+            if ($activeOrders > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete this asset. It has active orders associated with it.'
+                ], 422);
+            }
+            
+            // Soft delete the asset (using SoftDeletes trait)
+            $asset->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Asset successfully deleted.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the asset: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
