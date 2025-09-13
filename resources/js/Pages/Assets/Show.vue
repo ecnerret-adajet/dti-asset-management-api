@@ -30,6 +30,7 @@ const props = defineProps({
   locations: Array,
   asset_types: Array,
   status: Array,
+  currencies: Array,
 });
 
 const form = useForm(props.asset);
@@ -633,12 +634,20 @@ onMounted(() => {
                   >Unit Price</label
                 >
                 <div class="col-lg-9 col-xl-6">
-                  <input
-                    v-model="form.unit_price"
-                    class="form-control form-control-lg form-control-solid"
-                    type="number"
-                    disabled
-                  />
+                  <div class="input-group">
+                    <input
+                      v-model="form.unit_price"
+                      class="form-control form-control-lg form-control-solid"
+                      type="number"
+                      disabled
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">
+                        {{ form.unit_price_currency ? form.unit_price_currency : '' }}
+                        {{ form.unit_price_currency ? currencies.find(c => c.code === form.unit_price_currency)?.symbol : '' }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -647,12 +656,20 @@ onMounted(() => {
                   >Import Price</label
                 >
                 <div class="col-lg-9 col-xl-6">
-                  <input
-                    v-model="form.import_price"
-                    class="form-control form-control-lg form-control-solid"
-                    type="number"
-                    disabled
-                  />
+                  <div class="input-group">
+                    <input
+                      v-model="form.import_price"
+                      class="form-control form-control-lg form-control-solid"
+                      type="number"
+                      disabled
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">
+                        {{ form.import_price_currency ? form.import_price_currency : '' }}
+                        {{ form.import_price_currency ? currencies.find(c => c.code === form.import_price_currency)?.symbol : '' }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -661,12 +678,17 @@ onMounted(() => {
                   >Local Price</label
                 >
                 <div class="col-lg-9 col-xl-6">
-                  <input
-                    v-model="form.local_price"
-                    class="form-control form-control-lg form-control-solid"
-                    type="number"
-                    disabled
-                  />
+                  <div class="input-group">
+                    <input
+                      v-model="form.local_price"
+                      class="form-control form-control-lg form-control-solid"
+                      type="number"
+                      disabled
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">PHP</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>

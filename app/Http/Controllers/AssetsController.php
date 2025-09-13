@@ -12,6 +12,7 @@ use App\Models\Status;
 use App\Models\Asset;
 use Carbon\Carbon;
 use Inertia\Inertia;
+use App\Models\Currency;
 
 class AssetsController extends Controller
 {
@@ -27,12 +28,14 @@ class AssetsController extends Controller
         $asset_types = AssetType::all();
         $status = Status::all();
         $suppliers = Supplier::all();
+        $currencies = Currency::all();
 
         return Inertia::render('Assets/Create',[
             'suppliers' => $suppliers,
             'locations' => $locations,
             'asset_types' => $asset_types,
-            'statuses' => $status
+            'statuses' => $status,
+            'currencies' => $currencies
         ]);
     }
 
@@ -67,6 +70,7 @@ class AssetsController extends Controller
         $asset_types = AssetType::all();
         $status = Status::all();
         $audits = $asset->audits()->get();
+        $currencies = Currency::all();
 
         return Inertia::render('Assets/Show',[
             'asset' => $asset,
@@ -74,6 +78,7 @@ class AssetsController extends Controller
             'locations' => $locations,
             'asset_types' => $asset_types,
             'status' => $status,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -88,6 +93,7 @@ class AssetsController extends Controller
         $status = Status::select('id', 'name')->get();
         $audits = $asset->audits()->get();
         $suppliers = Supplier::select('id', 'name')->get();
+        $currencies = Currency::all();
 
         return Inertia::render('Assets/Edit',[
             'asset' => $asset,
@@ -95,7 +101,8 @@ class AssetsController extends Controller
             'locations' => $locations,
             'asset_types' => $asset_types,
             'status' => $status,
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
+            'currencies' => $currencies
         ]);
     }
 
@@ -151,7 +158,9 @@ class AssetsController extends Controller
     {
         try {
             // Check for related receivings that might be active
-            $activeReceivings = $asset->receivings()->where('status', 'pending')->orWhere('status', 'in_progress')->count();
+            // Using receiving_status_id instead of status
+            // Assuming pending and in_progress status IDs are 1 and 2 respectively
+            $activeReceivings = $asset->receivings()->whereIn('receiving_status_id', [1, 2])->count();
             
             if ($activeReceivings > 0) {
                 return response()->json([
@@ -161,8 +170,10 @@ class AssetsController extends Controller
             }
             
             // Check for related orders that might be active
-            $activeOrders = $asset->orders()->whereHas('order', function($query) {
-                $query->where('status', 'pending')->orWhere('status', 'in_progress');
+            // Using order_status_id instead of status
+            // Assuming pending and in_progress status IDs are 1 and 2 respectively
+            $activeOrders = $asset->orders()->whereHas('orderStatus', function($query) {
+                $query->whereIn('id', [1, 2]); // IDs for pending and in_progress statuses
             })->count();
             
             if ($activeOrders > 0) {

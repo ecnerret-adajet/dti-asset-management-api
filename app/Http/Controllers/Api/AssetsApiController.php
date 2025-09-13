@@ -27,7 +27,7 @@ class AssetsApiController extends Controller
     public function list()
     {
         $assets = Asset::orderBy('id','desc')
-                    ->select('id','name','image_path','description','unit_price','current_value')
+                    ->select('id','name','image_path','description','unit_price','current_value','serial_number','part_number')
                     ->get();
 
         return $assets->map(function ($item) {

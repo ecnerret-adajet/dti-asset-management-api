@@ -5,6 +5,7 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import { router, Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import axios from "axios";
 // layouts
 import BasicLayout from "../Layouts/BasicLayout.vue";
 import Pagination from "../Components/Pagination.vue";
@@ -121,9 +122,12 @@ const confirmDelete = (asset) => {
 const deleteAsset = (asset) => {
   isDeleting.value = true;
   
-  router.delete(`/inventory/${asset.id}`, {}, {
-    onSuccess: () => {
+  // Use axios directly instead of Inertia router to have more control over the response
+  axios.delete(`/inventory/${asset.id}`)
+    .then(response => {
       isDeleting.value = false;
+      
+      // Show success message with SweetAlert
       Swal.fire({
         title: 'Deleted!',
         text: 'Asset has been deleted successfully.',
@@ -137,12 +141,13 @@ const deleteAsset = (asset) => {
           preserveScroll: true
         });
       });
-    },
-    onError: (errors) => {
+    })
+    .catch(error => {
       isDeleting.value = false;
       let errorMessage = 'There was a problem deleting the asset.';
       
       // Check for specific error messages from the backend
+      const errors = error.response?.data;
       if (errors && errors.message) {
         errorMessage = errors.message;
       } else if (errors && errors.error) {
@@ -161,9 +166,8 @@ const deleteAsset = (asset) => {
         icon: 'error',
         confirmButtonText: 'OK'
       });
-      console.error('Delete asset error:', errors);
-    }
-  });
+      console.error('Delete asset error:', error);
+    });
 };
 
 
@@ -594,5 +598,43 @@ th i {
 
 .cursor-pointer {
   cursor: pointer;
+}
+</style>
+
+<style>
+/* Fix SweetAlert icon alignment */
+.swal2-icon {
+  margin: 1.25em auto 1.875em !important;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.swal2-icon .swal2-icon-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Ensure the success checkmark is centered */
+.swal2-success-circular-line-left,
+.swal2-success-circular-line-right,
+.swal2-success-fix {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Center the warning icon exclamation mark */
+.swal2-icon.swal2-warning .swal2-icon-content,
+.swal2-icon.swal2-error .swal2-icon-content,
+.swal2-icon.swal2-info .swal2-icon-content,
+.swal2-icon.swal2-question .swal2-icon-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 3.75em !important;
 }
 </style>

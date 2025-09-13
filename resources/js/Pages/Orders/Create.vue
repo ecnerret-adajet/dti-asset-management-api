@@ -30,6 +30,7 @@ const assets = ref([]);
 const selected_customer_id = ref(0);
 const selected_asset_item = ref(null);
 const asset_orders = ref([]);
+const isSubmitting = ref(false);
 
 const fetchCustomers = () => {
   return customersService
@@ -70,6 +71,17 @@ const currencyFormatter = (amount) => {
     currency: "PHP", // Change to your desired currency code (e.g., 'EUR' for Euro)
   });
   return currencyAmount.format(amount);
+};
+
+const customLabel = (option) => {
+  let label = option.title;
+  if (option.serial_number) {
+    label += ` - SN: ${option.serial_number}`;
+  }
+  if (option.part_number) {
+    label += ` - PN: ${option.part_number}`;
+  }
+  return label;
 };
 
 // add asset to orders arry
@@ -159,6 +171,7 @@ const form = useForm({
 });
 
 const storeOrder = () => {
+  isSubmitting.value = true;
   form
     .transform((data) => ({
         ...data,
@@ -167,7 +180,14 @@ const storeOrder = () => {
     .post("/orders", {
     onSuccess: () => {
       sweetAlert.basicAlert("Succesfully created!", "New Order", "success");
+      isSubmitting.value = false;
     },
+    onError: () => {
+      isSubmitting.value = false;
+    },
+    onFinish: () => {
+      isSubmitting.value = false;
+    }
   });
 };
 
@@ -362,18 +382,28 @@ onMounted(() => {
                                   v-model="selected_asset_item"
                                   placeholder="Select Asset"
                                   label="title"
-                                  track-by="title"
+                                  track-by="id"
                                   :options="assets"
                                   :option-height="104"
                                   :show-labels="false"
+                                  :custom-label="customLabel"
                                 >
                                   <template v-slot:option="props">
                                     <div>
                                       <span class="font-weight-bold">{{ props.option.title }}</span>
-                                      <div class="small text-muted">
+                                      <div class="small font-weight-bold">
                                         <span v-if="props.option.serial_number">SN: {{ props.option.serial_number }}</span>
                                         <span v-if="props.option.part_number" class="ml-2">PN: {{ props.option.part_number }}</span>
                                       </div>
+                                    </div>
+                                  </template>
+                                  <template v-slot:singleLabel="props">
+                                    <div>
+                                      <span class="font-weight-bold">{{ props.option.title }}</span>
+                                      <span class="small font-weight-bold ml-2">
+                                        <span v-if="props.option.serial_number">SN: {{ props.option.serial_number }}</span>
+                                        <span v-if="props.option.part_number" class="ml-2">PN: {{ props.option.part_number }}</span>
+                                      </span>
                                     </div>
                                   </template>
                                 </VueMultiselect>
@@ -392,9 +422,9 @@ onMounted(() => {
                                 </button>
                               </div>
 
-                              <span class="form-text text-muted"
+                              <!-- <span class="form-text text-muted"
                                 >Please enter your Card Name.</span
-                              >
+                              > -->
                             </div>
                             <!--end::Input-->
                           </div>
@@ -650,8 +680,10 @@ onMounted(() => {
                             class="btn btn-success font-weight-bolder text-uppercase px-9 py-4"
                             @click="storeOrder()"
                             data-wizard-type="action-submit"
+                            :disabled="isSubmitting"
                           >
-                            Submit
+                            <span v-if="isSubmitting" class="spinner spinner-white mr-2"></span>
+                            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
                           </button>
                           <button
                             type="button"

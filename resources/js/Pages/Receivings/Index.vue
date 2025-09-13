@@ -113,7 +113,7 @@ const openShowDetails = (item) => {
                         <tr v-for="(receiving, l) in receivings.data" :key="l">
                           <td class="pr-2">
                             <span class="text-capitalize">
-                              {{ receiving.asset.name }}
+                              {{ receiving.asset ? receiving.asset.name : 'Asset Deleted' }}
                             </span>
                           </td>
                           <td>

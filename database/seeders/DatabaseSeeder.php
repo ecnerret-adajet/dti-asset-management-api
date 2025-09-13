@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             OrderStatusSeeder::class,
             ReceivingStatusTableSeeder::class,
             StatusTableSeeder::class,
+            CurrenciesTableSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
     }
