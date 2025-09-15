@@ -14,7 +14,7 @@ class AddDeletedAtToAssetsTable extends Migration
     public function up()
     {
         Schema::table('assets', function (Blueprint $table) {
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 
@@ -26,7 +26,7 @@ class AddDeletedAtToAssetsTable extends Migration
     public function down()
     {
         Schema::table('assets', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+            // $table->dropSoftDeletes();
         });
     }
 }
