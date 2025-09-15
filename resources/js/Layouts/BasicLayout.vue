@@ -34,7 +34,6 @@ watch(userPanelOpen, (val) => console.log('UserPanel open:', val));
 
     <QuickPanel/>
 
-    <button @click="userPanelOpen = !userPanelOpen" style="position:fixed;top:10px;right:10px;z-index:9999;">Toggle UserPanel (Debug)</button>
 
     <UserPanel :open="userPanelOpen" @close="userPanelOpen = false" />
 
