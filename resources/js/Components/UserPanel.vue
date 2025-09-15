@@ -39,8 +39,11 @@ const confirmLogout = () => {
 };
 </script>
 <template>
+  <!-- begin::User Panel Overlay -->
+  <div v-if="open" class="offcanvas-overlay" @click="emit('close')"></div>
+
   <!-- begin::User Panel-->
-  <div v-if="open" id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+  <div id="kt_quick_user" class="offcanvas offcanvas-right p-10" :class="{ 'offcanvas-on': open }">
     <!--begin::Header-->
     <div
       class="offcanvas-header d-flex align-items-center justify-content-between pb-5"
