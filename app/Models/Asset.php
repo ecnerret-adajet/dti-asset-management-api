@@ -82,6 +82,7 @@ class Asset extends Model implements Auditable
         $query->when($filters['name'] ?? null, function ($query, $name) {
             $query->where('name', 'like', '%'.$name.'%')
                   ->orWhere('description', 'like', '%'.$name.'%')
+                  ->orWhere('model', 'like', '%'.$name.'%')
                   ->orWhere('part_number', 'like', '%'.$name.'%')
                   ->orWhere('serial_number', 'like', '%'.$name.'%');
         })->when($filters['model'] ?? null, function ($query, $model) {

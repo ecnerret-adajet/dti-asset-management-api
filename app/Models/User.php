@@ -70,6 +70,26 @@ class User extends Authenticatable implements Auditable
         return $this->roles->load('permissions')->pluck('permissions')->flatten()->pluck('slug')->unique();
     }
 
+    public function getAllPermissions()
+    {
+        return $this->roles->load('permissions')->pluck('permissions')->flatten()->unique('id');
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->permissions()->contains($permission);
+    }
+
+    public function hasAnyPermission($permissions)
+    {
+        return $this->permissions()->intersect($permissions)->isNotEmpty();
+    }
+
+    public function hasAllPermissions($permissions)
+    {
+        return $this->permissions()->intersect($permissions)->count() === count($permissions);
+    }
+
     /**
      * Asset relationshipt
      */

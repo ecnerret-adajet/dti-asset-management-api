@@ -25,7 +25,7 @@ class PagesController extends Controller
         // Define allowed sort columns
         $allowedSorts = [
             'name', 'model', 'current_value', 'part_number', 'created_at',
-            'location', 'status', 'asset_type'
+            'location', 'status', 'asset_type', 'serial_number'
         ];
         
         // Validate sort column
@@ -33,20 +33,44 @@ class PagesController extends Controller
             $sort = 'created_at';
         }
         
-        
         // Get locations, asset types and statuses
         $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $statuses = Status::all();
+        
+        // Start building the query
+        $query = Asset::with('location', 'assetType', 'status');
+        
+        // Handle special sorting cases for relationships
+        if ($sort === 'location') {
+            // Join with locations table to sort by location name
+            $query->join('locations', 'assets.location_id', '=', 'locations.id')
+                  ->orderBy('locations.name', $direction)
+                  ->select('assets.*'); // Make sure we only select from assets table
+        } 
+        elseif ($sort === 'status') {
+            // Join with statuses table to sort by status name
+            $query->join('statuses', 'assets.status_id', '=', 'statuses.id')
+                  ->orderBy('statuses.name', $direction)
+                  ->select('assets.*');
+        }
+        elseif ($sort === 'asset_type') {
+            // Join with asset_types table to sort by asset type name
+            $query->join('asset_types', 'assets.asset_type_id', '=', 'asset_types.id')
+                  ->orderBy('asset_types.name', $direction)
+                  ->select('assets.*');
+        }
+        else {
+            // For regular columns, sort directly
+            $query->orderBy($sort, $direction);
+        }
         
         return Inertia::render('Inventory',[
             'filters' => $request->all('name','model','driver','serial_number','location','status','asset_type','sort','direction'),
             'locations' => $locations,
             'asset_types' => $asset_types,
             'statuses' => $statuses,
-            'assets' => Asset::orderBy($sort, $direction)
-                        ->with('location','assetType','status')
-                        ->filter($request->only(
+            'assets' => $query->filter($request->only(
                                 'name',
                                 'model',
                                 'serial_number',

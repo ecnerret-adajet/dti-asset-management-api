@@ -31,6 +31,8 @@ const selected_customer_id = ref(0);
 const selected_asset_item = ref(null);
 const asset_orders = ref([]);
 const isSubmitting = ref(false);
+const showCustomerModal = ref(false);
+const isCreatingCustomer = ref(false);
 
 const fetchCustomers = () => {
   return customersService
@@ -169,6 +171,102 @@ const form = useForm({
   grand_total: null,
   total_qty_orders: null,
 });
+
+const customerForm = ref({
+  name: '',
+  email: '',
+  phone_number: '',
+  address: '',
+  representative_name: '',
+});
+
+const customerFormErrors = ref({
+  name: '',
+  email: '',
+  phone_number: '',
+});
+
+const openCustomerModal = () => {
+  showCustomerModal.value = true;
+  customerForm.value = {
+    name: '',
+    email: '',
+    phone_number: '',
+    address: '',
+    representative_name: '',
+  };
+  customerFormErrors.value = {
+    name: '',
+    email: '',
+    phone_number: '',
+  };
+};
+
+const closeCustomerModal = () => {
+  showCustomerModal.value = false;
+};
+
+const createCustomer = () => {
+  // Reset errors
+  customerFormErrors.value = {
+    name: '',
+    email: '',
+    phone_number: '',
+  };
+
+  // Validate required fields
+  let hasError = false;
+  if (!customerForm.value.name) {
+    customerFormErrors.value.name = 'Customer name is required';
+    hasError = true;
+  }
+  if (!customerForm.value.email) {
+    customerFormErrors.value.email = 'Email is required';
+    hasError = true;
+  }
+  if (!customerForm.value.phone_number) {
+    customerFormErrors.value.phone_number = 'Phone number is required';
+    hasError = true;
+  }
+
+  if (hasError) {
+    return;
+  }
+
+  isCreatingCustomer.value = true;
+  customersService
+    .store(customerForm.value)
+    .then((response) => {
+      if (response.status && response.status >= 400) {
+        // Handle validation errors from backend
+        if (response.data && response.data.errors) {
+          customerFormErrors.value = {
+            name: response.data.errors.name ? response.data.errors.name[0] : '',
+            email: response.data.errors.email ? response.data.errors.email[0] : '',
+            phone_number: response.data.errors.phone_number ? response.data.errors.phone_number[0] : '',
+          };
+        }
+        toast.notify('Failed to create customer', 'error');
+      } else {
+        // Success - add to customers list and select it
+        const newCustomer = {
+          id: response.id,
+          name: response.name,
+        };
+        customers.value.push(newCustomer);
+        form.selected_customer = newCustomer;
+        closeCustomerModal();
+        toast.notify('Customer created successfully');
+      }
+    })
+    .catch((error) => {
+      toast.notify('Failed to create customer', 'error');
+      console.error(error);
+    })
+    .finally(() => {
+      isCreatingCustomer.value = false;
+    });
+};
 
 const storeOrder = () => {
   isSubmitting.value = true;
@@ -331,9 +429,19 @@ onMounted(() => {
                         data-wizard-type="step-content"
                         data-wizard-state="current"
                       >
-                        <h4 class="mb-10 font-weight-bold text-dark">
-                          Select from Customers
-                        </h4>
+                        <div class="d-flex justify-content-between align-items-center mb-10">
+                          <h4 class="font-weight-bold text-dark mb-0">
+                            Select from Customers
+                          </h4>
+                          <button
+                            type="button"
+                            @click="openCustomerModal()"
+                            class="btn btn-sm btn-light-primary font-weight-bold"
+                          >
+                            <i class="ki ki-plus icon-sm"></i>
+                            Add New Customer
+                          </button>
+                        </div>
                         <!--begin::Input-->
                         <div class="form-group">
                           <label>Customer Name</label>
@@ -709,5 +817,95 @@ onMounted(() => {
       <!--end::Section-->
     </div>
     <!--end::Layout-->
+
+    <!-- Quick Add Customer Modal -->
+    <div v-if="showCustomerModal" class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title font-weight-bold">Add New Customer</h5>
+            <button type="button" class="close" @click="closeCustomerModal()">
+              <i aria-hidden="true" class="ki ki-close"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="createCustomer()">
+              <div class="form-group">
+                <label class="font-weight-bold">Customer Name <span class="text-danger">*</span></label>
+                <input
+                  v-model="customerForm.name"
+                  type="text"
+                  class="form-control"
+                  :class="{'is-invalid': customerFormErrors.name}"
+                  placeholder="Enter customer name"
+                />
+                <div v-if="customerFormErrors.name" class="invalid-feedback d-block">
+                  {{ customerFormErrors.name }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold">Email <span class="text-danger">*</span></label>
+                <input
+                  v-model="customerForm.email"
+                  type="email"
+                  class="form-control"
+                  :class="{'is-invalid': customerFormErrors.email}"
+                  placeholder="Enter email address"
+                />
+                <div v-if="customerFormErrors.email" class="invalid-feedback d-block">
+                  {{ customerFormErrors.email }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold">Phone Number <span class="text-danger">*</span></label>
+                <input
+                  v-model="customerForm.phone_number"
+                  type="text"
+                  class="form-control"
+                  :class="{'is-invalid': customerFormErrors.phone_number}"
+                  placeholder="Enter phone number"
+                />
+                <div v-if="customerFormErrors.phone_number" class="invalid-feedback d-block">
+                  {{ customerFormErrors.phone_number }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold">Address</label>
+                <input
+                  v-model="customerForm.address"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter address (optional)"
+                />
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold">Representative Name</label>
+                <input
+                  v-model="customerForm.representative_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter representative name (optional)"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light-secondary font-weight-bold" @click="closeCustomerModal()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary font-weight-bold"
+              @click="createCustomer()"
+              :disabled="isCreatingCustomer"
+            >
+              <span v-if="isCreatingCustomer" class="spinner spinner-white mr-2"></span>
+              {{ isCreatingCustomer ? 'Creating...' : 'Create Customer' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </InventoryLayout>
 </template>

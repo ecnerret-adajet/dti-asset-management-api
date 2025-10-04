@@ -12,6 +12,7 @@ import Pagination from "../Components/Pagination.vue";
 import StockOutModal from "../Pages/Assets/StockOutModal.vue";
 import ChangeLocationModal from '../Pages/Assets/ChangeLocationModal.vue'
 import ReceivingCreateModal from "../Pages/Assets/ReceivingCreateModal.vue";
+import AssetDetailsModal from "../Pages/Assets/AssetDetailsModal.vue";
 import InventoryAsideFilter from "../Components/InventoryAsideFilter.vue";
 import InventoryAsideRecent from "../Components/InventoryAsideRecent.vue";
 import SubHeader from "../Components/SubHeader.vue";
@@ -24,7 +25,16 @@ const baseUrl = window.location.origin;
 
 const show = ref(false);
 const show_changeloc = ref(false);
+const showAssetDetails = ref(false);
 const isDeleting = ref(false);
+const showImageModal = ref(false);
+const zoomLevel = ref(1);
+const selectedImagePath = ref('');
+const isDragging = ref(false);
+const startX = ref(0);
+const startY = ref(0);
+const translateX = ref(0);
+const translateY = ref(0);
 
 const selectedAsset = ref({});
 const showImagePreview = ref(null);
@@ -67,6 +77,15 @@ const openModal = (item) => {
 const openChangeLocModal = (item) => {
   selectedAsset.value = item;
   show_changeloc.value = !show_changeloc.value;
+};
+
+const openAssetDetailsModal = (item) => {
+  selectedAsset.value = item;
+  showAssetDetails.value = true;
+};
+
+const closeAssetDetailsModal = () => {
+  showAssetDetails.value = false;
 };
 
 // Sorting functionality
@@ -168,6 +187,128 @@ const deleteAsset = (asset) => {
       });
       console.error('Delete asset error:', error);
     });
+};
+
+// Image modal functions
+const openImageModal = (imagePath) => {
+  selectedImagePath.value = imagePath;
+  showImageModal.value = true;
+  zoomLevel.value = 1; // Reset zoom level when opening modal
+  translateX.value = 0; // Reset position
+  translateY.value = 0;
+  
+  // Add keyboard event listener when modal opens
+  setTimeout(() => {
+    window.addEventListener('keydown', handleKeyDown);
+  }, 100);
+};
+
+const closeImageModal = () => {
+  showImageModal.value = false;
+  selectedImagePath.value = '';
+  // Remove keyboard event listener when modal closes
+  window.removeEventListener('keydown', handleKeyDown);
+};
+
+const zoomIn = () => {
+  if (zoomLevel.value < 3) { // Limit max zoom
+    zoomLevel.value += 0.25;
+  }
+};
+
+const zoomOut = () => {
+  if (zoomLevel.value > 0.5) { // Limit min zoom
+    zoomLevel.value -= 0.25;
+  }
+};
+
+const resetZoom = () => {
+  zoomLevel.value = 1;
+  translateX.value = 0;
+  translateY.value = 0;
+};
+
+// Handle keyboard shortcuts
+const handleKeyDown = (event) => {
+  if (!showImageModal.value) return;
+  
+  switch(event.key) {
+    case '+': // Plus key
+    case '=': // Equal key (usually same as plus without shift)
+      zoomIn();
+      event.preventDefault();
+      break;
+    case '-': // Minus key
+      zoomOut();
+      event.preventDefault();
+      break;
+    case '0': // Zero key
+      resetZoom();
+      event.preventDefault();
+      break;
+    case 'Escape': // Escape key
+      closeImageModal();
+      event.preventDefault();
+      break;
+    case 'ArrowUp': // Up arrow
+      translateY.value += 20;
+      event.preventDefault();
+      break;
+    case 'ArrowDown': // Down arrow
+      translateY.value -= 20;
+      event.preventDefault();
+      break;
+    case 'ArrowLeft': // Left arrow
+      translateX.value += 20;
+      event.preventDefault();
+      break;
+    case 'ArrowRight': // Right arrow
+      translateX.value -= 20;
+      event.preventDefault();
+      break;
+  }
+};
+
+// Mouse drag handlers for panning
+const startDrag = (event) => {
+  if (zoomLevel.value <= 1) return; // Only allow panning when zoomed in
+  
+  isDragging.value = true;
+  startX.value = event.clientX;
+  startY.value = event.clientY;
+  event.preventDefault();
+};
+
+const doDrag = (event) => {
+  if (!isDragging.value) return;
+  
+  const dx = event.clientX - startX.value;
+  const dy = event.clientY - startY.value;
+  
+  translateX.value += dx;
+  translateY.value += dy;
+  
+  startX.value = event.clientX;
+  startY.value = event.clientY;
+};
+
+const endDrag = () => {
+  isDragging.value = false;
+};
+
+// Handle mouse wheel for zooming
+const handleWheel = (event) => {
+  if (!showImageModal.value) return;
+  
+  // Prevent default scrolling behavior
+  event.preventDefault();
+  
+  // Zoom in or out based on wheel direction
+  if (event.deltaY < 0) {
+    zoomIn();
+  } else {
+    zoomOut();
+  }
 };
 
 
@@ -288,22 +429,25 @@ const deleteAsset = (asset) => {
                             Asset <i :class="sortIconClass('name')"></i>
                           </th>
                           <th style="cursor: pointer;" class="min-w-100px" @click="sort('current_value')">
-                            Qty <i :class="sortIconClass('current_value')"></i>
+                            Qty
                           </th>
                           <th class="min-w-150px cursor-pointer" @click="sort('location')">
                             Location <i :class="sortIconClass('location')"></i>
                           </th>
                           <th class="min-w-250px cursor-pointer" @click="sort('model')">
                             Model <i :class="sortIconClass('model')"></i>
+                          </th> 
+                          <th class="min-w-250px cursor-pointer" @click="sort('serial_number')">
+                            Serial No. <i :class="sortIconClass('serial_number')"></i>
                           </th>
                           <th class="min-w-150px cursor-pointer" @click="sort('part_number')">
                             Part Number <i :class="sortIconClass('part_number')"></i>
                           </th>
                           <th class="min-w-150px cursor-pointer" @click="sort('status')">
-                            Status <i :class="sortIconClass('status')"></i>
+                            Status 
                           </th>
                           <th class="min-w-150px cursor-pointer" @click="sort('asset_type')">
-                            Type <i :class="sortIconClass('asset_type')"></i>
+                            Type 
                           </th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
@@ -321,6 +465,7 @@ const deleteAsset = (asset) => {
                                   alt=""
                                   @mouseover="showImagePreview = asset.id"
                                   @mouseleave="showImagePreview = null"
+                                  @click="openImageModal(asset.image_path)"
                                 />
                               </span>
                               <!-- Image Preview on Hover -->
@@ -339,11 +484,13 @@ const deleteAsset = (asset) => {
                             </div>
                           </td>
                           <td class="pl-2">
-                            <Link
-                              :href="`/inventory/${asset.id}/show`"
-                              class="text-capitalize font-size-lg mb-0"
+                            <a
+                              href="javascript:void(0)"
+                              class="text-capitalize font-size-lg mb-0 text-primary"
+                              style="cursor: pointer;"
+                              @click="openAssetDetailsModal(asset)"
                               >{{ asset.name }}
-                            </Link>
+                            </a>
                           </td>
                           <td>
                             <span class="text-capitalize">
@@ -358,6 +505,11 @@ const deleteAsset = (asset) => {
                           <td>
                             <span class="text-capitalize">
                               {{ asset.model }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ asset.serial_number }}
                             </span>
                           </td>
                           <td>
@@ -508,6 +660,47 @@ const deleteAsset = (asset) => {
                                 </svg>
                               </span>
                             </Link>
+
+                            <Link
+                              :href="`/inventory/${asset.id}/show`"
+                              class="btn btn-sm btn-clean btn-icon mr-2"
+                              title="View details"
+                            >
+                              <span class="svg-icon svg-icon-md">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                                  width="24px"
+                                  height="24px"
+                                  viewBox="0 0 24 24"
+                                  version="1.1"
+                                >
+                                  <g
+                                    stroke="none"
+                                    stroke-width="1"
+                                    fill="none"
+                                    fill-rule="evenodd"
+                                  >
+                                    <rect
+                                      x="0"
+                                      y="0"
+                                      width="24"
+                                      height="24"
+                                    ></rect>
+                                    <path
+                                      d="M12,15 C10.3431458,15 9,13.6568542 9,12 C9,10.3431458 10.3431458,9 12,9 C13.6568542,9 15,10.3431458 15,12 C15,13.6568542 13.6568542,15 12,15 Z"
+                                      fill="#000000"
+                                    ></path>
+                                    <path
+                                      d="M21.8182454,12.5337868 C21.9372347,12.4389891 22,12.3074878 22,12.1063301 C22,11.9051724 21.9372347,11.7736711 21.8182454,11.6788734 C20.3261282,10.4346733 16.4513941,7 12,7 C7.54860591,7 3.67387183,10.4346733 2.18175463,11.6788734 C2.06276526,11.7736711 2,11.9051724 2,12.1063301 C2,12.3074878 2.06276526,12.4389891 2.18175463,12.5337868 C3.67387183,13.7779869 7.54860591,17.2126602 12,17.2126602 C16.4513941,17.2126602 20.3261282,13.7779869 21.8182454,12.5337868 Z"
+                                      fill="#000000"
+                                      opacity="0.3"
+                                    ></path>
+                                  </g>
+                                </svg>
+                              </span>
+                            </Link>
+
                           </td>
                         </tr>
                       </tbody>
@@ -551,9 +744,53 @@ const deleteAsset = (asset) => {
       :show="show_changeloc"
       :locations="locations"
       @onSuccess="selectedAsset = $event"
-      @close="show = $event"
+      @close="show_changeloc = $event"
+    />
+    
+    <asset-details-modal
+      :show="showAssetDetails"
+      :asset="selectedAsset"
+      @close="closeAssetDetailsModal"
+      @openImageModal="openImageModal"
     />
 
+    <!-- Image Modal -->
+    <div v-if="showImageModal" class="image-modal-overlay" @click="closeImageModal">
+      <div class="image-modal-content" @click.stop>
+        <div class="image-modal-header">
+          <div class="zoom-controls">
+            <button @click="zoomOut" class="zoom-btn" title="Zoom Out">
+              <i class="fa fa-search-minus"></i>
+            </button>
+            <button @click="resetZoom" class="zoom-btn" title="Reset Zoom">
+              <i class="fa fa-undo"></i>
+            </button>
+            <button @click="zoomIn" class="zoom-btn" title="Zoom In">
+              <i class="fa fa-search-plus"></i>
+            </button>
+          </div>
+          <button @click="closeImageModal" class="close-btn">&times;</button>
+        </div>
+        <div class="image-modal-body" @wheel="handleWheel">
+          <div 
+            class="image-container"
+            :style="{ transform: `translate(${translateX}px, ${translateY}px)` }"
+            @mousedown="startDrag"
+            @mousemove="doDrag"
+            @mouseup="endDrag"
+            @mouseleave="endDrag"
+          >
+            <img 
+              :src="`${baseUrl}/${selectedImagePath}`" 
+              :style="{ transform: `scale(${zoomLevel})` }" 
+              class="modal-image"
+              alt="Asset Image"
+              draggable="false"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
 
   </BasicLayout>
 </template>
@@ -636,5 +873,87 @@ th i {
   align-items: center !important;
   justify-content: center !important;
   font-size: 3.75em !important;
+}
+
+/* Image Modal Styles */
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.image-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.image-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.zoom-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.zoom-btn {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+  background-color: #e9ecef;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+}
+
+.image-modal-body {
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  position: relative;
+}
+
+.image-container {
+  position: relative;
+  transition: transform 0.1s ease;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  user-select: none;
 }
 </style>

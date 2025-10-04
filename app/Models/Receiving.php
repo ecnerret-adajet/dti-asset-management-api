@@ -20,7 +20,9 @@ class Receiving extends Model implements Auditable
         'receiving_status_id',
         'remarks',
         'is_added',
-        'po_number',
+        'reference_number',
+        'serial_number',
+        'part_number',
     ];
 
     public function user()

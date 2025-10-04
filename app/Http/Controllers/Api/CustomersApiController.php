@@ -38,7 +38,8 @@ class CustomersApiController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'address' => 'required'
+            'email' => 'required|email',
+            'phone_number' => 'required'
         ]);
 
         return Customer::create($request->all());
