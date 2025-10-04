@@ -107,6 +107,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/orders',[OrdersController::class,'index'])->name('orders');
     Route::get('/orders/create',[OrdersController::class,'create'])->name('orders-create');
     Route::post('/orders',[OrdersController::class,'store'])->name('orders-store');
+    Route::get('/orders/{id}/edit',[OrdersController::class,'edit'])->name('orders-edit');
+    Route::patch('/orders/{id}',[OrdersController::class,'update'])->name('orders-update');
     Route::patch('/orders/status/{id}',[OrdersController::class,'updateOrderStatus'])->name('orders-status-update');
 
     // receiving

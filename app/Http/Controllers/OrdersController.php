@@ -65,6 +65,7 @@ class OrdersController extends Controller
         $order->order_status_id = 1; // default as pending;
         $order->total_cost = $request->grand_total;
         $order->total_orders = $request->total_qty_orders; // temporarily
+        $order->reference = $request->reference;
         $order->save();
 
         if(count($selected_orders) > 0) {
@@ -84,6 +85,67 @@ class OrdersController extends Controller
 
         return Redirect::route('inventory')->with('success','Asset successfully created.');
         // return Redirect::back()->with('success','Order successfully created.');
+    }
+
+    public function edit($id)
+    {
+        $order = Order::where('id', $id)
+            ->with('user', 'customer', 'orderStatus', 'assets')
+            ->firstOrFail();
+
+        $order_statuses = OrderStatus::all();
+
+        return Inertia::render('Orders/Edit', [
+            'order' => $order,
+            'order_statuses' => $order_statuses,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request,[
+            'selected_customer' => 'required',
+            'selected_orders' => 'required',
+        ]);
+
+        $selected_customer = $request->selected_customer;
+        $selected_orders = $request->selected_orders;
+
+        $order = Order::where('id', $id)->firstOrFail();
+
+        // First, restore the stock for previously ordered items
+        foreach($order->assets as $previousAsset) {
+            $asset = Asset::where('id', $previousAsset->id)->first();
+            $asset->current_value = $asset->current_value + $previousAsset->pivot->qty;
+            $asset->save();
+        }
+
+        // Detach all previous assets
+        $order->assets()->detach();
+
+        // Update order details
+        $order->customer_id = $selected_customer['id'];
+        $order->total_cost = $request->grand_total;
+        $order->total_orders = $request->total_qty_orders;
+        $order->reference = $request->reference;
+        $order->save();
+
+        // Attach new/updated assets and reduce stock
+        if(count($selected_orders) > 0) {
+            foreach($selected_orders as $item) {
+                $asset = Asset::where('id', $item['id'])->first();
+                $asset->current_value = $asset->current_value - $item['qty'];
+                $asset->save();
+
+                $order->assets()->attach($item['id'],[
+                   'qty' =>  $item['qty'],
+                   'unit_price' => $item['unit_price'],
+                   'total_amount' => $item['unit_price_total']
+                ]);
+            }
+        }
+
+        return Redirect::route('orders')->with('success','Order successfully updated.');
     }
 
     public function updateOrderStatus(Request $request, $id)

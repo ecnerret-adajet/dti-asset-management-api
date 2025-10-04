@@ -22,6 +22,7 @@ const toast = useToastr();
 
 const props = defineProps({
   order_statuses: Array,
+  order: Object,
 });
 
 const errors = ref(null);
@@ -269,16 +270,16 @@ const createCustomer = () => {
     });
 };
 
-const storeOrder = () => {
+const updateOrder = () => {
   isSubmitting.value = true;
   form
     .transform((data) => ({
         ...data,
         total_qty_orders: getTotalQtyOrders.value,
     }))
-    .post("/orders", {
+    .patch(`/orders/${props.order.id}`, {
     onSuccess: () => {
-      sweetAlert.basicAlert("Succesfully created!", "New Order", "success");
+      sweetAlert.basicAlert("Succesfully updated!", "Order Updated", "success");
       isSubmitting.value = false;
     },
     onError: () => {
@@ -295,7 +296,7 @@ const initWizard = () => {
   if (typeof KTWizard !== 'undefined') {
     const wizardEl = document.getElementById('kt_wizard');
     const formEl = document.getElementById('kt_form');
-    
+
     if (wizardEl) {
       // Initialize the wizard
       const wizard = new KTWizard(wizardEl, {
@@ -310,9 +311,9 @@ const initWizard = () => {
           button.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             const currentStep = wizard.getStep();
-            
+
             // Validate current step
             if (currentStep === 1 && !form.selected_customer) {
               toast.notify('Please select a customer before proceeding', 'error');
@@ -321,13 +322,13 @@ const initWizard = () => {
               toast.notify('Please add at least one item to your order', 'error');
               return false;
             }
-            
+
             // Move to the next step (explicitly go to step + 1)
             wizard.goTo(currentStep + 1);
           });
         });
       }
-      
+
       // Handle previous button clicks
       const prevButtons = wizardEl.querySelectorAll('[data-wizard-type="action-prev"]');
       if (prevButtons.length > 0) {
@@ -344,10 +345,35 @@ const initWizard = () => {
   }
 };
 
+// Load existing order data
+const loadOrderData = () => {
+  // Set customer
+  form.selected_customer = {
+    id: props.order.customer.id,
+    name: props.order.customer.name,
+  };
+
+  // Set reference
+  form.reference = props.order.reference;
+
+  // Set asset orders
+  asset_orders.value = props.order.assets.map((asset) => ({
+    id: asset.id,
+    title: asset.title,
+    img: asset.img,
+    serial_number: asset.serial_number,
+    part_number: asset.part_number,
+    qty: asset.pivot.qty,
+    unit_price: parseFloat(asset.pivot.unit_price),
+    current_value: asset.current_value + asset.pivot.qty, // Add back the ordered qty to current stock for validation
+  }));
+};
+
 onMounted(() => {
   fetchCustomers();
   fetchAssets();
-  
+  loadOrderData();
+
   // Initialize wizard after a short delay to ensure DOM is fully loaded
   setTimeout(() => {
     initWizard();
@@ -420,7 +446,7 @@ onMounted(() => {
                   <div class="col-xl-12 col-xxl-7">
                     <!--begin: Wizard Form-->
                     <form
-                      @submit.prevent="storeOrder()"
+                      @submit.prevent="updateOrder()"
                       class="form mt-0 mt-lg-10"
                       id="kt_form"
                     >
@@ -465,14 +491,8 @@ onMounted(() => {
                       <!--begin: Wizard Step 2-->
                       <div class="pb-5" data-wizard-type="step-content">
                         <h4 class="mb-10 font-weight-bold text-dark">
-                          Add orders from assets
+                          Edit order items
                         </h4>
-
-                        <!-- <div class="row">
-                            <div class="col-xl-12">
-                                <DropdownSearch :options="customers" />
-                            </div>
-                         </div> -->
 
                         <div class="row">
                           <div class="col-xl-12">
@@ -498,13 +518,6 @@ onMounted(() => {
                             <!--begin::Input-->
                             <div class="form-group">
                               <label>Select Asset</label>
-                              <!-- <input
-                                type="text"
-                                class="form-control form-control-solid form-control-lg"
-                                name="ccname"
-                                placeholder="Card Name"
-                                value="John Wick"
-                              /> -->
                               <div class="d-flex justify-content-between">
                                 <VueMultiselect
                                   v-model="selected_asset_item"
@@ -549,10 +562,6 @@ onMounted(() => {
                                   Add
                                 </button>
                               </div>
-
-                              <!-- <span class="form-text text-muted"
-                                >Please enter your Card Name.</span
-                              > -->
                             </div>
                             <!--end::Input-->
                           </div>
@@ -625,7 +634,6 @@ onMounted(() => {
                                         width="15%"
                                         class="text-right align-middle font-weight-bolder font-size-h5"
                                       >
-                                        <!-- P {{ order.unit_price }} -->
                                         <input
                                             v-model="order.unit_price"
                                             class="form-control form-control-solid"
@@ -806,12 +814,12 @@ onMounted(() => {
                           <button
                             type="button"
                             class="btn btn-success font-weight-bolder text-uppercase px-9 py-4"
-                            @click="storeOrder()"
+                            @click="updateOrder()"
                             data-wizard-type="action-submit"
                             :disabled="isSubmitting"
                           >
                             <span v-if="isSubmitting" class="spinner spinner-white mr-2"></span>
-                            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+                            {{ isSubmitting ? 'Updating...' : 'Update' }}
                           </button>
                           <button
                             type="button"
