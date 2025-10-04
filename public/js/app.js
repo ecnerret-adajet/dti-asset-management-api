@@ -23169,6 +23169,12 @@ __webpack_require__.r(__webpack_exports__);
     var form = (0,_inertiajs_vue3__WEBPACK_IMPORTED_MODULE_1__.useForm)({
       order_status_id: props.order.order_status_id
     });
+
+    // Check if order status is delivered (id: 3) or failed (id: 4)
+    var isOrderStatusLocked = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      var _props$order$order_st, _props$order$order_st2;
+      return ((_props$order$order_st = props.order.order_status) === null || _props$order$order_st === void 0 ? void 0 : _props$order$order_st.id) === 3 || ((_props$order$order_st2 = props.order.order_status) === null || _props$order$order_st2 === void 0 ? void 0 : _props$order$order_st2.id) === 4;
+    });
     var currencyFormatter = function currencyFormatter(amount) {
       var currencyAmount = new Intl.NumberFormat("en-US", {
         style: "currency",
@@ -23211,11 +23217,13 @@ __webpack_require__.r(__webpack_exports__);
       emit: emit,
       props: props,
       form: form,
+      isOrderStatusLocked: isOrderStatusLocked,
       currencyFormatter: currencyFormatter,
       closeModal: closeModal,
       handleSubmit: handleSubmit,
       watch: vue__WEBPACK_IMPORTED_MODULE_0__.watch,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
+      computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
       get router() {
         return _inertiajs_vue3__WEBPACK_IMPORTED_MODULE_1__.router;
       },
@@ -34493,23 +34501,29 @@ var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 var _hoisted_29 = {
   "class": "col-10"
 };
-var _hoisted_30 = ["value"];
-var _hoisted_31 = {
+var _hoisted_30 = ["disabled"];
+var _hoisted_31 = ["value"];
+var _hoisted_32 = {
   key: 0,
   "class": "fv-plugins-message-container text-danger mt-3"
 };
-var _hoisted_32 = {
+var _hoisted_33 = {
   "class": "fv-help-block"
 };
-var _hoisted_33 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-  "class": "form-text text-muted"
-}, "Select the order status and click the \"Submit\" button to save changes.", -1 /* HOISTED */);
 var _hoisted_34 = {
+  key: 1,
+  "class": "form-text text-danger"
+};
+var _hoisted_35 = {
+  key: 2,
+  "class": "form-text text-muted"
+};
+var _hoisted_36 = {
   "class": "modal-footer"
 };
-var _hoisted_35 = ["disabled"];
+var _hoisted_37 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$order$custome, _$props$order$custome2, _$props$order$custome3;
+  var _$props$order$custome, _$props$order$custome2, _$props$order$custome3, _$props$order$order_s;
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Modal"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "modal fade",
     id: $props.unique_id,
@@ -34536,13 +34550,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $setup.form.order_status_id = $event;
     }),
-    "class": "form-control form-control-lg form-control-solid"
+    "class": "form-control form-control-lg form-control-solid",
+    disabled: $setup.isOrderStatusLocked
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.order_statuses, function (status, l) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: l,
       value: status.id
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(status.name), 9 /* TEXT, PROPS */, _hoisted_30);
-  }), 128 /* KEYED_FRAGMENT */))], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.form.order_status_id]]), $setup.form.errors.order_status_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.form.errors.order_status_id), 1 /* TEXT */)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_33])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(status.name), 9 /* TEXT, PROPS */, _hoisted_31);
+  }), 128 /* KEYED_FRAGMENT */))], 8 /* PROPS */, _hoisted_30), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.form.order_status_id]]), $setup.form.errors.order_status_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.form.errors.order_status_id), 1 /* TEXT */)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.isOrderStatusLocked ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_34, "This order has been " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$order$order_s = $props.order.order_status) === null || _$props$order$order_s === void 0 || (_$props$order$order_s = _$props$order$order_s.name) === null || _$props$order$order_s === void 0 ? void 0 : _$props$order$order_s.toLowerCase()) + " and cannot be edited.", 1 /* TEXT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_35, "Select the order status and click the \"Submit\" button to save changes."))])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     onClick: $setup.closeModal,
     "class": "btn btn-light-primary font-weight-bold",
@@ -34550,9 +34565,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, " Close "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     onClick: $setup.handleSubmit,
-    disabled: $setup.form.processing,
+    disabled: $setup.form.processing || $setup.isOrderStatusLocked,
     "class": "btn btn-primary font-weight-bold"
-  }, " Submit ", 8 /* PROPS */, _hoisted_35)])])])], 8 /* PROPS */, _hoisted_1)], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */);
+  }, " Submit ", 8 /* PROPS */, _hoisted_37)])])])], 8 /* PROPS */, _hoisted_1)], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */);
 }
 
 /***/ }),

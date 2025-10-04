@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref } from "vue";
+import { watch, ref, computed } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
 import { useSweetAlert } from "../../Services/useSweetAlert";
 
@@ -19,6 +19,11 @@ const props = defineProps({
 
 const form = useForm({
   order_status_id: props.order.order_status_id,
+});
+
+// Check if order status is delivered (id: 3) or failed (id: 4)
+const isOrderStatusLocked = computed(() => {
+  return props.order.order_status?.id === 3 || props.order.order_status?.id === 4;
 });
 
 const currencyFormatter = (amount) => {
@@ -181,6 +186,7 @@ const handleSubmit = () => {
               <select
                 v-model="form.order_status_id"
                 class="form-control form-control-lg form-control-solid"
+                :disabled="isOrderStatusLocked"
               >
                 <option
                   v-for="(status, l) in order_statuses"
@@ -198,7 +204,10 @@ const handleSubmit = () => {
                   {{ form.errors.order_status_id }}
                 </div>
               </div>
-              <span class="form-text text-muted"
+              <span v-if="isOrderStatusLocked" class="form-text text-danger"
+                >This order has been {{ order.order_status?.name?.toLowerCase() }} and cannot be edited.</span
+              >
+              <span v-else class="form-text text-muted"
                 >Select the order status and click the "Submit" button to save
                 changes.</span
               >
@@ -217,7 +226,7 @@ const handleSubmit = () => {
           <button
             type="button"
             @click="handleSubmit"
-            :disabled="form.processing"
+            :disabled="form.processing || isOrderStatusLocked"
             class="btn btn-primary font-weight-bold"
           >
             Submit
