@@ -45,6 +45,7 @@ class ReceivingsApiController extends Controller
         $receving->qty = $request->qty;
         $receving->user_id = Auth::user()->id;
         $receving->remarks = $request->remarks;
+        $receving->reference_number = $request->reference_number;
         $receving->asset()->associate($request->asset_id);
         $receving->receivingStatus()->associate($request->receiving_status_id);
         $receving->save();

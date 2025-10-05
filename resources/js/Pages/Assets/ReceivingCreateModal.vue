@@ -19,6 +19,7 @@ const props = defineProps({
   asset: Object,
   asset_id: Number,
   po_number: String,
+  reference_number: String,
   show: { type: Boolean, default: false },
 });
 
@@ -30,6 +31,7 @@ const form = useForm({
   remarks: null,
   asset_id: null,
   po_number: null,
+  reference_number: null,
 });
 
 const sweetAlert = useSweetAlert();
@@ -163,6 +165,17 @@ onMounted(() => {
                       {{ form.errors.qty }}
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-xl-3 col-lg-3 col-form-label">Reference Number</label>
+                <div class="col-lg-9 col-xl-9">
+                  <input
+                    v-model="form.reference_number"
+                    placeholder="Reference Number"
+                    class="form-control form-control-lg form-control-solid"
+                    type="text"
+                  />
                 </div>
               </div>
               <div class="form-group row">

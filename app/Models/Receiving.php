@@ -23,6 +23,7 @@ class Receiving extends Model implements Auditable
         'reference_number',
         'serial_number',
         'part_number',
+        'reference_number',
     ];
 
     public function user()

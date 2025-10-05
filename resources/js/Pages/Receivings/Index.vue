@@ -101,9 +101,13 @@ const openShowDetails = (item) => {
                       <thead>
                         <tr class="text-left">
                           <th class="pr-0" style="width: 300px">Asset Name</th>
+                          <th style="min-width: 150px">Serial Number</th>
+                          <th style="min-width: 150px">Part Number</th>
+                          <th style="min-width: 150px">Reference Number</th>
                           <th style="min-width: 150px">PO Number</th>
                           <th style="min-width: 150px">Quantity</th>
                           <th style="min-width: 150px">Status</th>
+                          <th style="min-width: 150px">Remarks</th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
                           </th>
@@ -114,6 +118,21 @@ const openShowDetails = (item) => {
                           <td class="pr-2">
                             <span class="text-capitalize">
                               {{ receiving.asset ? receiving.asset.name : 'Asset Deleted' }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ receiving.asset ? receiving.asset.serial_number : 'Asset Deleted' }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ receiving.asset ? receiving.asset.part_number : 'Asset Deleted' }}
+                            </span>
+                          </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ receiving.reference_number }}
                             </span>
                           </td>
                           <td>
@@ -144,11 +163,16 @@ const openShowDetails = (item) => {
                               >{{ receiving.receiving_status.name }}</span
                             >
                           </td>
+                          <td>
+                            <span class="text-capitalize">
+                              {{ receiving.remarks }}
+                            </span>
+                          </td>
                           <td class="pr-0 text-right">
 
 
                             <button
-                              v-show="receiving.receiving_status.id !=4"
+                              v-show="receiving.receiving_status.id !=4 || receiving.receiving_status.id !=5"
                               type="button"
                               @click="openShowDetails(receiving)"
                               class="btn btn-sm btn-clean btn-icon mr-2"
