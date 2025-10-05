@@ -38,6 +38,43 @@ const getItemsInRow = (rowIndex) => {
   return props.customers.data.slice(start, end);
 };
 
+const editingCustomer = ref(null);
+const editForm = useForm({
+  name: '',
+  email: '',
+  phone_number: '',
+});
+
+const startEdit = (customer) => {
+  editingCustomer.value = customer.id;
+  editForm.name = customer.name;
+  editForm.email = customer.email;
+  editForm.phone_number = customer.phone_number;
+};
+
+const cancelEdit = () => {
+  editingCustomer.value = null;
+  editForm.reset();
+};
+
+const updateCustomer = (customerId) => {
+  editForm.put(`/accounts/customers/${customerId}`, {
+    preserveScroll: true,
+    onSuccess: () => {
+      editingCustomer.value = null;
+      editForm.reset();
+    },
+  });
+};
+
+const deleteCustomer = (customer) => {
+  if (confirm(`Are you sure you want to delete ${customer.name}?`)) {
+    router.delete(`/accounts/customers/${customer.id}`, {
+      preserveScroll: true,
+    });
+  }
+};
+
 watch(
   () => form,
   throttle(() => {
@@ -127,48 +164,122 @@ watch(
               <div class="card card-custom gutter-b card-stretch">
                 <!--begin::Body-->
                 <div class="card-body">
-                  <!--begin::Info-->
-                  <div class="d-flex align-items-center">
-                    <!--begin::Pic-->
-                    <div
-                      class="flex-shrink-0 mr-4 symbol symbol-60 symbol-circle"
-                    >
-                      <div class="symbol symbol-lg-75 symbol-primary">
-                        <span
-                          class="symbol-label font-size-h3 font-weight-boldest"
-                          >{{ item.name[0] }}</span
-                        >
-                      </div>
-                    </div>
-                    <!--end::Pic-->
+                  <!-- View Mode -->
+                  <template v-if="editingCustomer !== item.id">
                     <!--begin::Info-->
-                    <div class="d-flex flex-column mr-auto">
-                      <!--begin: Title-->
-                      <div class="d-flex flex-column mr-auto">
-                        <Link
-                          :href="`/accounts/customers/${item.id}`"
-                          class="text-dark text-hover-primary font-size-h4 font-weight-bolder mb-1"
-                          >{{ item.name }}</Link
-                        >
-                        <span class="text-muted font-weight-bold"
-                          >Creates Limitless possibilities</span
-                        >
+                    <div class="d-flex align-items-center">
+                      <!--begin::Pic-->
+                      <div
+                        class="flex-shrink-0 mr-4 symbol symbol-60 symbol-circle"
+                      >
+                        <div class="symbol symbol-lg-75 symbol-primary">
+                          <span
+                            class="symbol-label font-size-h3 font-weight-boldest"
+                            >{{ item.name[0] }}</span
+                          >
+                        </div>
                       </div>
-                      <!--end::Title-->
+                      <!--end::Pic-->
+                      <!--begin::Info-->
+                      <div class="d-flex flex-column mr-auto">
+                        <!--begin: Title-->
+                        <div class="d-flex flex-column mr-auto">
+                          <Link
+                            :href="`/accounts/customers/${item.id}`"
+                            class="text-dark text-hover-primary font-size-h4 font-weight-bolder mb-1"
+                            >{{ item.name }}</Link
+                          >
+                          <span class="text-muted font-weight-bold"
+                            >{{ item.email }}</span
+                          >
+                          <span class="text-muted font-weight-bold"
+                            >{{ item.phone_number }}</span
+                          >
+                        </div>
+                        <!--end::Title-->
+                      </div>
+                      <!--end::Info-->
+                      <!--begin::Actions-->
+                      <div class="d-flex flex-column">
+                        <button
+                          @click="startEdit(item)"
+                          class="btn btn-sm btn-light-primary mb-2"
+                          type="button"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          @click="deleteCustomer(item)"
+                          class="btn btn-sm btn-light-danger"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <!--end::Actions-->
                     </div>
                     <!--end::Info-->
+                  </template>
 
-                  </div>
-                  <!--end::Info-->
-                  <!--begin::Description-->
-                  <div class="mb-10 mt-5 font-weight-bold">
-                    I distinguish three main text objectives.First, your
-                    objective could be merely to inform people.A second be to
-                    persuade people.
-                  </div>
-                  <!--end::Description-->
-
-                  <!--end::Data-->
+                  <!-- Edit Mode -->
+                  <template v-else>
+                    <form @submit.prevent="updateCustomer(item.id)">
+                      <div class="form-group">
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          v-model="editForm.name"
+                          class="form-control"
+                          :class="{ 'is-invalid': editForm.errors.name }"
+                        />
+                        <div v-if="editForm.errors.name" class="invalid-feedback">
+                          {{ editForm.errors.name }}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          v-model="editForm.email"
+                          class="form-control"
+                          :class="{ 'is-invalid': editForm.errors.email }"
+                        />
+                        <div v-if="editForm.errors.email" class="invalid-feedback">
+                          {{ editForm.errors.email }}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>Phone Number</label>
+                        <input
+                          type="text"
+                          v-model="editForm.phone_number"
+                          class="form-control"
+                          :class="{ 'is-invalid': editForm.errors.phone_number }"
+                        />
+                        <div v-if="editForm.errors.phone_number" class="invalid-feedback">
+                          {{ editForm.errors.phone_number }}
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-end">
+                        <button
+                          @click="cancelEdit"
+                          type="button"
+                          class="btn btn-light mr-2"
+                          :disabled="editForm.processing"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          :disabled="editForm.processing"
+                        >
+                          <span v-if="editForm.processing">Saving...</span>
+                          <span v-else>Save</span>
+                        </button>
+                      </div>
+                    </form>
+                  </template>
                 </div>
                 <!--end::Body-->
                 <!--begin::Footer-->

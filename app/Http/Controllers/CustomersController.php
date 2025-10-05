@@ -75,7 +75,7 @@ class CustomersController extends Controller
 
     public function delete(Customer $customer)
     {
-        $customer->destroy();
+        $customer->delete();
 
         return Redirect::route('customers')->with('success','Successfully deleted.');
     }
