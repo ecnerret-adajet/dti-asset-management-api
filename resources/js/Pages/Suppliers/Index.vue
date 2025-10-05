@@ -38,6 +38,18 @@ const getItemsInRow = (rowIndex) => {
   return props.suppliers.data.slice(start, end);
 };
 
+const navigateToEdit = (supplier) => {
+  router.visit(`/accounts/suppliers/${supplier.id}/edit`);
+};
+
+const deleteSupplier = (supplier) => {
+  if (confirm(`Are you sure you want to delete ${supplier.name}?`)) {
+    router.delete(`/accounts/suppliers/${supplier.id}`, {
+      preserveScroll: true,
+    });
+  }
+};
+
 watch(
   () => form,
   throttle(() => {
@@ -157,6 +169,24 @@ watch(
                       <!--end::Title-->
                     </div>
                     <!--end::Info-->
+                    <!--begin::Actions-->
+                    <div class="d-flex flex-column">
+                      <button
+                        @click="navigateToEdit(item)"
+                        class="btn btn-sm btn-light-primary mb-2"
+                        type="button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        @click="deleteSupplier(item)"
+                        class="btn btn-sm btn-light-danger"
+                        type="button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <!--end::Actions-->
                   </div>
                   <!--end::Info-->
                   <!--begin::Description-->

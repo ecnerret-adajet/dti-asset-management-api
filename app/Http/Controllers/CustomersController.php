@@ -59,6 +59,13 @@ class CustomersController extends Controller
                         ->through(fn ($order) => $order),
         ]);
     }
+    
+    public function edit(Customer $customer)
+    {
+        return Inertia::render('Customers/Edit',[
+            'customer' => $customer,
+        ]);
+    }
 
     public function update(Request $request, Customer $customer)
     {

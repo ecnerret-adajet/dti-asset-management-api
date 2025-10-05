@@ -93,15 +93,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/accounts/customers',[CustomersController::class,'index'])->name('customers');
     Route::get('/accounts/customers/create',[CustomersController::class,'create'])->name('customers-create');
     Route::get('/accounts/customers/{customer}',[CustomersController::class,'show'])->name('customers-show');
+    Route::get('/accounts/customers/{customer}/edit',[CustomersController::class,'edit'])->name('customers-edit');
     Route::post('/customers',[CustomersController::class,'store'])->name('customers-store');
     Route::patch('/customers/{customer}',[CustomersController::class,'update'])->name('customers-update');
+    Route::delete('/accounts/customers/{customer}',[CustomersController::class,'delete'])->name('customers-delete');
 
     // suppliers
     Route::get('/accounts/suppliers',[SuppliersController::class,'index'])->name('suppliers');
     Route::get('/accounts/suppliers/create',[SuppliersController::class,'create'])->name('suppliers-create');
     Route::get('/accounts/suppliers/{supplier}',[SuppliersController::class,'show'])->name('suppliers-show');
+    Route::get('/accounts/suppliers/{supplier}/edit',[SuppliersController::class,'edit'])->name('suppliers-edit');
     Route::post('/suppliers',[SuppliersController::class,'store'])->name('suppliers-store');
     Route::patch('/suppliers/{supplier}',[SuppliersController::class,'update'])->name('suppliers-update');
+    Route::delete('/accounts/suppliers/{supplier}',[SuppliersController::class,'delete'])->name('suppliers-delete');
 
     // orders
     Route::get('/orders',[OrdersController::class,'index'])->name('orders');

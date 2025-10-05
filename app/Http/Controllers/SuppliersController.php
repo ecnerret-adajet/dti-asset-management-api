@@ -62,6 +62,13 @@ class SuppliersController extends Controller
                         ->through(fn ($asset) => $asset),
         ]);
     }
+    
+    public function edit(Supplier $supplier)
+    {
+        return Inertia::render('Suppliers/Edit',[
+            'supplier' => $supplier,
+        ]);
+    }
 
     public function update(Request $request, Supplier $supplier)
     {
@@ -78,7 +85,7 @@ class SuppliersController extends Controller
 
     public function delete(Supplier $supplier)
     {
-        $supplier->destroy();
+        $supplier->delete();
 
         return Redirect::route('suppliers')->with('success','Successfully deleted.');
     }

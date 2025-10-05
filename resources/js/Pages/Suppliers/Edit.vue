@@ -5,27 +5,27 @@ import { ref } from "vue";
 import { router, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-  customer: Object,
+  supplier: Object,
 });
 
 const form = useForm({
-  name: props.customer.name,
-  email: props.customer.email,
-  phone_number: props.customer.phone_number,
-  address: props.customer.address || '',
-  representative_name: props.customer.representative_name || '',
+  name: props.supplier.name,
+  email: props.supplier.email,
+  phone_number: props.supplier.phone_number,
+  address: props.supplier.address || '',
+  representative_name: props.supplier.representative_name || '',
 });
 
 const breadcrumbs = ref([
   { id: 1, name: "Accounts", url: "/accounts" },
-  { id: 2, name: "Customers", url: "/accounts/customers" },
-  { id: 3, name: "Edit Customer", url: `/accounts/customers/${props.customer.id}/edit` },
+  { id: 2, name: "Suppliers", url: "/accounts/suppliers" },
+  { id: 3, name: "Edit Supplier", url: `/accounts/suppliers/${props.supplier.id}/edit` },
 ]);
 
-const updateCustomer = () => {
-  form.patch(`/customers/${props.customer.id}`, {
+const updateSupplier = () => {
+  form.patch(`/suppliers/${props.supplier.id}`, {
     onSuccess: () => {
-      router.visit('/accounts/customers');
+      router.visit('/accounts/suppliers');
     },
   });
 };
@@ -36,7 +36,7 @@ const updateCustomer = () => {
     <!--begin::Content-->
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
       <!-- sub header -->
-      <SubHeader title="Edit Customer" :breadcrumbs="breadcrumbs" />
+      <SubHeader title="Edit Supplier" :breadcrumbs="breadcrumbs" />
       <!-- end subheader -->
       <!--begin::Entry-->
       <div class="d-flex flex-column-fluid">
@@ -46,12 +46,12 @@ const updateCustomer = () => {
           <div class="card card-custom">
             <!--begin::Card header-->
             <div class="card-header">
-              <h3 class="card-title">Edit Customer Details</h3>
+              <h3 class="card-title">Edit Supplier Details</h3>
             </div>
             <!--end::Card header-->
             <!--begin::Card body-->
             <div class="card-body">
-              <form @submit.prevent="updateCustomer">
+              <form @submit.prevent="updateSupplier">
                 <div class="form-group row">
                   <div class="col-lg-6">
                     <label>Name:</label>
@@ -60,7 +60,7 @@ const updateCustomer = () => {
                       v-model="form.name" 
                       class="form-control" 
                       :class="{ 'is-invalid': form.errors.name }" 
-                      placeholder="Enter customer name"
+                      placeholder="Enter supplier name"
                     />
                     <div v-if="form.errors.name" class="invalid-feedback">
                       {{ form.errors.name }}
@@ -73,7 +73,7 @@ const updateCustomer = () => {
                       v-model="form.email" 
                       class="form-control" 
                       :class="{ 'is-invalid': form.errors.email }" 
-                      placeholder="Enter customer email"
+                      placeholder="Enter supplier email"
                     />
                     <div v-if="form.errors.email" class="invalid-feedback">
                       {{ form.errors.email }}
@@ -110,7 +110,7 @@ const updateCustomer = () => {
                     v-model="form.address" 
                     class="form-control" 
                     rows="3" 
-                    placeholder="Enter customer address"
+                    placeholder="Enter supplier address"
                   ></textarea>
                 </div>
                 <div class="card-footer">
@@ -119,7 +119,7 @@ const updateCustomer = () => {
                       <button 
                         type="button" 
                         class="btn btn-secondary" 
-                        @click="router.visit('/accounts/customers')"
+                        @click="router.visit('/accounts/suppliers')"
                       >
                         Cancel
                       </button>
