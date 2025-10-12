@@ -1,7 +1,7 @@
 <script setup>
 import AccountsLayout from "../../Layouts/AccountsLayout.vue";
-import { router, Link, useForm } from "@inertiajs/vue3";
-import { ref, watch } from "vue";
+import { router, Link, useForm, usePage } from "@inertiajs/vue3";
+import { ref, watch, computed } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
@@ -10,6 +10,8 @@ const props = defineProps({
   roles: Object,
   filters: Object,
 });
+
+const permissions = computed(() => usePage().props.auth.permissions);
 
 const form = useForm({
   name: props.filters.name,
@@ -44,6 +46,7 @@ watch(
           <div class="card-toolbar">
             <!--begin::Button-->
             <Link
+              v-if="permissions.includes('create-role')"
               href="/roles/create"
               class="btn btn-primary font-weight-bolder"
             >
@@ -149,6 +152,7 @@ watch(
                   </td>
                   <td class="pr-0 text-right">
                     <Link
+                      v-if="permissions.includes('update-role')"
                       :href="`/roles/${role.id}`"
                       class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3"
                     >

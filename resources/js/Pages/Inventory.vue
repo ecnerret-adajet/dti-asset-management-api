@@ -576,7 +576,7 @@ const handleWheel = (event) => {
                                   >
                                     Choose an action:
                                   </li>
-                                  <li class="navi-item">
+                                  <li class="navi-item" v-if="permissions.includes('add-request-to-inventory')">
                                     <a
                                       href="javascript:;"
                                       @click="openModal(asset)"

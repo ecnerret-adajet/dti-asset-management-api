@@ -175,6 +175,7 @@ watch(
                     <!--begin::Actions-->
                     <div class="d-flex flex-column">
                       <button
+                        v-if="permissions.includes('edit-customer')"
                         @click="navigateToEdit(item)"
                         class="btn btn-sm btn-light-primary mb-2"
                         type="button"
@@ -182,6 +183,7 @@ watch(
                         Edit
                       </button>
                       <button
+                        v-if="permissions.includes('delete-customer')"
                         @click="deleteCustomer(item)"
                         class="btn btn-sm btn-light-danger"
                         type="button"

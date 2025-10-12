@@ -18,20 +18,18 @@ createInertiaApp({
       .use(plugin)
       .use(pinia)
       .use(VueSweetalert2);
+    
+    // Make Swal available globally
     window.Swal = app.config.globalProperties.$swal;
+    
+    // Make route helper available globally if Ziggy is present
+    if (window.route) {
+      app.config.globalProperties.route = window.route;
+    }
+    
     app.mount(el);
   },
-  setup({ el, App, props, plugin }) {
-    createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .use(pinia)
-      .use(VueSweetalert2)
-      .mount(el)
-  },
 });
-
-
-
 
 InertiaProgress.init({ color: '#ffab40' });
 

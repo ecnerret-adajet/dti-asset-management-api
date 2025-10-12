@@ -44,9 +44,39 @@ class PermissionsTableSeeder extends Seeder
                 'slug' => 'show-user',
             ],
             [
+                'name' => 'create user',
+                'description' => 'create user',
+                'slug' => 'create-user',
+            ],
+            [
                 'name' => 'view users',
                 'description' => 'View users section',
                 'slug' => 'view-users',
+            ],
+            [
+                'name' => 'view roles',
+                'description' => 'View roles section',
+                'slug' => 'view-roles',
+            ],
+            [
+                'name' => 'create role',
+                'description' => 'create role',
+                'slug' => 'create-role',
+            ],
+            [
+                'name' => 'update role',
+                'description' => 'update role',
+                'slug' => 'update-role',
+            ],
+            [
+                'name' => 'delete role',
+                'description' => 'delete role',
+                'slug' => 'delete-role',
+            ],
+            [
+                'name' => 'view permissions',
+                'description' => 'View permissions section',
+                'slug' => 'view-permissions',
             ],
             
             // Settings permissions
@@ -117,6 +147,16 @@ class PermissionsTableSeeder extends Seeder
                 'slug' => 'create-supplier',
             ],
             [
+                'name' => 'edit supplier',
+                'description' => 'Edit supplier section',
+                'slug' => 'edit-supplier',
+            ],
+            [
+                'name' => 'delete supplier',
+                'description' => 'Delete supplier section',
+                'slug' => 'delete-supplier',
+            ],
+            [
                 'name' => 'create asset type',
                 'description' => 'Create asset type',
                 'slug' => 'create-asset-type',
@@ -130,6 +170,16 @@ class PermissionsTableSeeder extends Seeder
                 'name' => 'create customer',
                 'description' => 'Create customer',
                 'slug' => 'create-customer',
+            ],
+            [
+                'name' => 'edit customer',
+                'description' => 'Edit customer',
+                'slug' => 'edit-customer',
+            ],
+            [
+                'name' => 'delete customer',
+                'description' => 'Delete customer',
+                'slug' => 'delete-customer',
             ],
         ];
         

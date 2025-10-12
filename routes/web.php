@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AssetsController;
@@ -43,6 +44,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/master-data',[PagesController::class,'masterData'])->name('master-data');
     Route::get('/accounts',[PagesController::class,'accounts'])->name('accounts');
 
+    // Enhanced Inventory Dashboard
+    // Route::get('/dashboard', function() {
+    //     return Inertia::render('HomeEnhanced');
+    // })->name('dashboard.enhanced');
+
     // asset routes
     Route::get('/inventory/create',[AssetsController::class,'create'])->name('inventory-create');
     Route::post('/inventory',[AssetsController::class,'store'])->name('inventory');
@@ -61,6 +67,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::patch('/users/{user}',[UsersController::class,'update'])->name('users-update');
     Route::delete('/users/{user}',[UsersController::class,'delete'])->name('users-delete');
     Route::patch('/users/change-pass/{user}',[UsersController::class,'changePassword'])->name('users-change-pass');
+    
+    // user profile routes
+    Route::get('/profile',[UsersController::class,'profile'])->name('profile');
+    Route::patch('/profile/update',[UsersController::class,'updateProfile'])->name('profile-update');
+    Route::patch('/profile/change-password',[UsersController::class,'updatePassword'])->name('profile-change-password');
 
     // roles route
     Route::get('/roles',[RolesController::class,'index'])->name('roles');

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { router, useForm, Link } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 
 const props = defineProps({
@@ -118,16 +118,25 @@ const confirmLogout = () => {
                   </span>
                 </span>
                 <span class="navi-text text-muted text-hover-primary"
-                  >jm@softplus.com</span
+                  >{{ $page.props.auth.user.email }}</span
                 >
               </span>
             </a>
-            <button
-              @click="confirmLogout()"
-              class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"
-            >
-              Sign Out
-            </button>
+            <div class="d-flex mt-2">
+              <Link
+                :href="route('profile')"
+                class="btn btn-sm btn-light-success font-weight-bolder py-2 px-5 mr-2"
+                @click="emit('close')"
+              >
+                Update Profile
+              </Link>
+              <button
+                @click="confirmLogout()"
+                class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -138,9 +147,10 @@ const confirmLogout = () => {
       <!--begin::Nav-->
       <div class="navi navi-spacer-x-0 p-0">
         <!--begin::Item-->
-        <a
-          href="custom/apps/user/profile-1/personal-information.html"
+        <Link
+          :href="route('profile')"
           class="navi-item"
+          @click="emit('close')"
         >
           <div class="navi-link">
             <div class="symbol symbol-40 bg-light mr-3">
@@ -190,7 +200,7 @@ const confirmLogout = () => {
               </div>
             </div>
           </div>
-        </a>
+        </Link>
         <!--end:Item-->
         <!--begin::Item-->
         <a href="custom/apps/user/profile-3.html" class="navi-item">

@@ -1,5 +1,10 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+
+const page = usePage();
+const permissions = computed(() => page.props.auth.permissions);
+
 </script>
 <template>
   <!--begin::Aside-->
@@ -14,7 +19,7 @@ import { Link } from "@inertiajs/vue3";
 
         <!--begin::Nav-->
         <div class="navi navi-bold navi-hover navi-active navi-link-rounded pt-4">
-          <div class="navi-item mb-2">
+          <div class="navi-item mb-2" v-if="permissions.includes('view-users')">
             <Link
               href="/users"
               class="navi-link py-4 "
@@ -56,7 +61,7 @@ import { Link } from "@inertiajs/vue3";
               <span class="navi-text font-size-lg">Users</span>
             </Link>
           </div>
-          <div class="navi-item mb-2">
+          <div class="navi-item mb-2" v-if="permissions.includes('view-roles')">
             <Link
               href="/roles"
               class="navi-link py-4"
@@ -99,7 +104,7 @@ import { Link } from "@inertiajs/vue3";
               <span class="navi-text font-size-lg">Roles</span>
             </Link>
           </div>
-          <div class="navi-item mb-2">
+          <div class="navi-item mb-2" v-if="permissions.includes('view-permissions')">
             <Link
               href="/permissions"
               class="navi-link py-4"

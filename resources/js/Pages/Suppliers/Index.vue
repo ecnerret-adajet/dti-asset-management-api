@@ -172,6 +172,7 @@ watch(
                     <!--begin::Actions-->
                     <div class="d-flex flex-column">
                       <button
+                        v-if="permissions.includes('edit-supplier')"
                         @click="navigateToEdit(item)"
                         class="btn btn-sm btn-light-primary mb-2"
                         type="button"
@@ -179,6 +180,7 @@ watch(
                         Edit
                       </button>
                       <button
+                        v-if="permissions.includes('delete-supplier')"
                         @click="deleteSupplier(item)"
                         class="btn btn-sm btn-light-danger"
                         type="button"

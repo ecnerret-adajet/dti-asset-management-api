@@ -6,6 +6,7 @@ defineProps({
   breadcrumbs: Array,
   button_name: String,
   button_link: String,
+  button_permission: String,
   second_button_name: String,
   second_button_link: String,
 });
@@ -56,12 +57,12 @@ const permissions = computed(() => page.props.auth.permissions);
       <!--begin:: toolbar -->
       <div  class="d-flex align-items-center">
         <!--begin::Button-->
-        <Link v-if="second_button_link && permissions.includes('create')"
+        <Link v-if="second_button_link && permissions.includes(button_permission || 'create')"
           :href="second_button_link"
           class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2"
           >{{ second_button_name }}</Link
         >
-        <Link v-if="button_link && permissions.includes('create')"
+        <Link v-if="button_link && permissions.includes(button_permission || 'create')"
           :href="button_link"
           class="btn btn-primary font-weight-bold py-3 px-6 mr-2"
           >{{ button_name }}</Link

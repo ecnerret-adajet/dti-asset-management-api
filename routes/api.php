@@ -65,11 +65,40 @@ Route::group(['middleware' => ['api']], function() {
     Route::get('receivings-statuses-stats',[ReceivingsApiController::class,'receivingStatus']);
     Route::post('receivings',[ReceivingsApiController::class,'store']);
 
-    // retport api
+    // report api - legacy endpoints
     Route::get('/total-assets',[ReportsApiController::class,'totalAssets']);
     Route::get('/total-spending',[ReportsApiController::class,'totalSpending']);
     Route::get('/total-sold',[ReportsApiController::class,'totalQuantitySold']);
     Route::get('/total-requests',[ReportsApiController::class,'totalQuantityRequest']);
+
+    // Dashboard API - New endpoints
+    Route::prefix('dashboard')->group(function () {
+        // Consolidated endpoint (recommended for performance)
+        Route::get('/all', [ReportsApiController::class, 'getAllDashboardData']);
+
+        // Summary Metrics
+        Route::get('/summary', [ReportsApiController::class, 'getDashboardSummary']);
+        Route::get('/inventory-value', [ReportsApiController::class, 'getTotalInventoryValue']);
+        Route::get('/low-stock-count', [ReportsApiController::class, 'getLowStockItemsCount']);
+        Route::get('/out-of-stock-count', [ReportsApiController::class, 'getOutOfStockItemsCount']);
+        Route::get('/orders-today', [ReportsApiController::class, 'getOrdersToday']);
+        Route::get('/pending-receivings', [ReportsApiController::class, 'getPendingReceivingsCount']);
+
+        // Charts Data
+        Route::get('/stock-distribution', [ReportsApiController::class, 'getStockDistribution']);
+        Route::get('/inventory-trend', [ReportsApiController::class, 'getInventoryTrend']);
+        Route::get('/daily-orders', [ReportsApiController::class, 'getDailyOrdersSummary']);
+        Route::get('/daily-receivings', [ReportsApiController::class, 'getDailyReceivingsSummary']);
+
+        // Detailed Lists
+        Route::get('/low-stock-alerts', [ReportsApiController::class, 'getLowStockAlerts']);
+        Route::get('/recent-orders', [ReportsApiController::class, 'getRecentOrders']);
+        Route::get('/recent-receivings', [ReportsApiController::class, 'getRecentReceivings']);
+
+        // Enhanced Status
+        Route::get('/order-status-details', [ReportsApiController::class, 'getOrderStatusDetails']);
+        Route::get('/receiving-status-details', [ReportsApiController::class, 'getReceivingStatusDetails']);
+    });
 
     // audits api
     Route::get('/audits-assets',[AuditApiController::class,'assets']);

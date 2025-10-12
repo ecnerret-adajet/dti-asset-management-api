@@ -13,7 +13,8 @@ class PagesController extends Controller
 {
     public function home()
     {
-        return Inertia::render('Home');
+        // return Inertia::render('Home');
+        return Inertia::render('HomeEnhanced');
     }
 
     public function inventory(Request $request)

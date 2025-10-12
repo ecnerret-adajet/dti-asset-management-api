@@ -3,6 +3,9 @@ import { ref, computed } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import BasicLayout from "../Layouts/BasicLayout.vue";
 
+// Check if in development mode
+const isDev = process.env.NODE_ENV === 'development';
+
 // Get permissions from page props
 const page = usePage();
 const permissions = computed(() => page.props.auth?.permissions || []);
@@ -15,9 +18,16 @@ const cards = ref([
   { id: 3, title: 'Suppliers', icon: 'Box2', link: '/accounts/suppliers', user_permission: 'view-suppliers' }
 ]);
 
+// Filter cards based on both search query and user permissions
 const filteredCards = computed(() => {
-  if (!searchQuery.value) return cards.value;
-  return cards.value.filter(card => 
+  // First filter by permissions
+  const permissionFilteredCards = cards.value.filter(card => 
+    permissions.value.includes(card.user_permission)
+  );
+  
+  // Then filter by search query if one exists
+  if (!searchQuery.value) return permissionFilteredCards;
+  return permissionFilteredCards.filter(card => 
     card.title.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
@@ -87,8 +97,13 @@ const filteredCards = computed(() => {
           <!--begin::Row-->
           <div class="row">
             <!-- No results message -->
-            <div v-if="filteredCards.length === 0" class="col-12 text-center py-5">
+            <div v-if="filteredCards.length === 0 && searchQuery" class="col-12 text-center py-5">
               <h3 class="text-muted">No results found for "{{ searchQuery }}"</h3>
+            </div>
+            
+            <!-- No permissions message -->
+            <div v-else-if="filteredCards.length === 0" class="col-12 text-center py-5">
+              <h3 class="text-muted">You don't have permission to access any accounts modules</h3>
             </div>
             
             <!-- Card items -->
@@ -184,18 +199,29 @@ const filteredCards = computed(() => {
                   <!--begin::Name-->
                   <div class="my-4">
                     <Link
+                      v-if="permissions.includes(card.user_permission)"
                       :href="card.link"
                       class="text-dark font-weight-bold text-hover-primary font-size-h4"
                     >{{ card.title }}</Link>
+                    <span 
+                      v-else
+                      class="text-dark font-weight-bold font-size-h4"
+                    >{{ card.title }}</span>
                   </div>
                   <!--end::Name-->
 
                   <!--begin::Buttons-->
                   <div class="mt-9">
                     <Link
+                      v-if="permissions.includes(card.user_permission)"
                       :href="card.link"
                       class="btn btn-light-primary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
                     >Visit</Link>
+                    <button 
+                      v-else
+                      disabled
+                      class="btn btn-light-secondary font-weight-bolder btn-sm py-3 px-6 text-uppercase"
+                    >No Access</button>
                   </div>
                   <!--end::Buttons-->
                 </div>
@@ -205,6 +231,8 @@ const filteredCards = computed(() => {
             </div>
           </div>
           <!--end::Row-->
+          
+          
         </div>
         <!--end::Container-->
       </div>

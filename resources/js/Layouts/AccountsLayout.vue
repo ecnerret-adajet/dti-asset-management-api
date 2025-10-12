@@ -33,6 +33,7 @@ const breadcrumbs = ref([{ id: 1, name: "Accounts", url: "/accounts" }]);
               button_name="New User"
               button_link="/users/create"
               :breadcrumbs="breadcrumbs"
+              button_permission="create-user"
             />
             <!-- end subheader -->
 

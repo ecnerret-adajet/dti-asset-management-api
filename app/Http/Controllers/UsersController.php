@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use Inertia\Inertia;
+use Illuminate\Validation\Rules\Password;
 
 class UsersController extends Controller
 {
@@ -112,5 +113,76 @@ class UsersController extends Controller
         $user->save();
 
         return Redirect::route('users')->with('success','User successfully updated.');
+    }
+    
+    /**
+     * Show the user profile page
+     */
+    public function profile()
+    {
+        $user = Auth::user();
+        
+        return Inertia::render('Profile/Edit', [
+            'user' => $user
+        ]);
+    }
+    
+    /**
+     * Update the authenticated user's profile
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $this->validate($request, [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+            'contact_number' => 'nullable|string|max:20',
+            'image_path' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+        
+        $user->update([
+            'name' => $request->first_name.' '.$request->last_name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'contact_number' => $request->contact_number,
+        ]);
+        
+        if ($request->hasFile('image_path')) {
+            $user->update([
+                'image_path' => $request->file('image_path')->store('images'),
+            ]);
+        }
+        
+        return back()->with('success', 'Profile updated successfully.');
+    }
+    
+    /**
+     * Update the authenticated user's password
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        
+        $this->validate($request, [
+            'current_password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                if (!Hash::check($value, $user->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()],
+        ]);
+        
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+        
+        return back()->with('success', 'Password updated successfully.');
     }
 }

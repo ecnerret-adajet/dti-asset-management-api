@@ -14,6 +14,7 @@
     <link href="{{ mix('/css/prismjs.bundle.css') }}" rel="stylesheet" />
     <link href="{{ mix('/css/style.bundle.css') }}" rel="stylesheet" />
 
+    @routes
     <script src="{{ mix('/js/app.js') }}" defer></script>
 
     <title>Asset Inventory</title>
