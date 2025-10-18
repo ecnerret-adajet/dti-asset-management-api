@@ -18,7 +18,7 @@ const form = useForm({
   last_name: props.user.last_name,
   image_path: props.user.image_path,
   email: props.user.email,
-  role_id: props.user.roles ? props.user.roles[0].id : null,
+  role_id: props.user.roles && props.user.roles.length > 0 ? props.user.roles[0].id : null,
   contact_number: props.user.contact_number,
 });
 

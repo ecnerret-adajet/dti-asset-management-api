@@ -148,6 +148,35 @@ class OrdersController extends Controller
         return Redirect::route('orders')->with('success','Order successfully updated.');
     }
 
+    public function uploadReferenceDocument(Request $request)
+    {
+        $request->validate([
+            'upload_reference' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240',
+            'order_id' => 'required|exists:orders,id'
+        ]);
+
+        $order = Order::findOrFail($request->order_id);
+
+        if ($request->hasFile('upload_reference')) {
+            // Delete old file if exists
+            if ($order->upload_reference && \Storage::exists($order->upload_reference)) {
+                \Storage::delete($order->upload_reference);
+            }
+            
+            // Store the new file
+            $path = $request->file('upload_reference')->store('reference_documents', 'public');
+            $order->upload_reference = $path;
+            $order->save();
+
+            return response()->json([
+                'message' => 'Reference document uploaded successfully',
+                'path' => $path
+            ]);
+        }
+
+        return response()->json(['message' => 'No file was uploaded'], 400);
+    }
+
     public function updateOrderStatus(Request $request, $id)
     {
         $this->validate($request,[

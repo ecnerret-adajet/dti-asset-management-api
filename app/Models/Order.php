@@ -22,6 +22,7 @@ class Order extends Model implements Auditable
         'total_orders',
         'remarks',
         'order_reference',
+        'upload_reference'
     ];
 
     /**

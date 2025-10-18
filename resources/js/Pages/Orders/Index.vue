@@ -7,11 +7,35 @@ import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
+import { useForm as useInertiaForm } from '@inertiajs/vue3';
 
 import ShowModal from "./ShowModal.vue";
 
 const show = ref(false);
+const showUploadModal = ref(false);
 const selected_order = ref({});
+const uploadForm = useInertiaForm({
+  upload_reference: null,
+  order_id: null,
+});
+
+const openUploadModal = (order) => {
+  selected_order.value = order;
+  uploadForm.order_id = order.id;
+  showUploadModal.value = true;
+};
+
+const submitUpload = () => {
+  uploadForm.post(route('orders.upload-reference'), {
+    preserveScroll: true,
+    onSuccess: () => {
+      showUploadModal.value = false;
+      uploadForm.reset();
+      // Refresh the page to show the updated reference
+      router.visit(route('orders.index'), { only: ['orders'] });
+    },
+  });
+};
 
 const props = defineProps({
   orders: Object,
@@ -250,6 +274,24 @@ const openShowDetails = (item) => {
                                 >
                               </span>
                             </button>
+
+                            <button
+                              type="button"
+                              @click="openUploadModal(order)"
+                              class="btn btn-sm btn-clean btn-icon mr-2"
+                              title="Upload Reference"
+                            >
+                              <span class="svg-icon svg-icon-md">
+                                <span class="svg-icon svg-icon-primary svg-icon-2x">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                      <rect x="0" y="0" width="24" height="24"/>
+                                      <path d="M14,13 L14,17 L10,17 L10,13 L7,13 L12,8 L17,13 L14,13 Z M12,3 C16.418278,3 20,6.581722 20,11 C20,15.418278 16.418278,19 12,19 C7.581722,19 4,15.418278 4,11 C4,6.581722 7.581722,3 12,3 Z" fill="#000000" fill-rule="nonzero"/>
+                                    </g>
+                                  </svg>
+                                </span>
+                              </span>
+                            </button>
                           </td>
                         </tr>
                       </tbody>
@@ -284,5 +326,44 @@ const openShowDetails = (item) => {
       :order="selected_order"
       :order_statuses="order_statuses"
     />
+
+    <!-- Upload Reference Document Modal -->
+    <div class="modal fade" :class="{'show d-block': showUploadModal}" tabindex="-1" role="dialog" v-if="showUploadModal">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Upload Reference Document</h5>
+            <button type="button" class="close" @click="showUploadModal = false" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="submitUpload">
+              <div class="form-group">
+                <label>Reference Document</label>
+                <input 
+                  type="file" 
+                  class="form-control" 
+                  @input="uploadForm.upload_reference = $event.target.files[0]"
+                  accept="image/*,.pdf,.doc,.docx"
+                  required
+                >
+                <div v-if="uploadForm.errors.upload_reference" class="text-danger">
+                  {{ uploadForm.errors.upload_reference }}
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" @click="showUploadModal = false">Cancel</button>
+                <button type="submit" class="btn btn-primary font-weight-bold" :disabled="uploadForm.processing">
+                  <span v-if="uploadForm.processing" class="spinner-border spinner-border-sm"></span>
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="showUploadModal" class="modal-backdrop fade show"></div>
   </BasicLayout>
 </template>
