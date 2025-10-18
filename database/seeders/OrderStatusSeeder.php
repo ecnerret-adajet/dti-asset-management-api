@@ -15,7 +15,7 @@ class OrderStatusSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('order_statuses')->insert([
+        $order_statuses = [
             [
                 'name' => 'Pending',
                 'slug' => 'pending',
@@ -40,6 +40,23 @@ class OrderStatusSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-        ]);
+            [
+                'name' => 'Return',
+                'slug' => 'return',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]; 
+
+        // Check if each permission exists before inserting
+        foreach ($order_statuses as $order_status) {
+            $exists = DB::table('order_statuses')
+                ->where('slug', $order_status['slug'])
+                ->exists();
+                
+            if (!$exists) {
+                DB::table('order_statuses')->insert($order_status);
+            }
+        }
     }
 }

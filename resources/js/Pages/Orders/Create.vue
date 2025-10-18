@@ -137,6 +137,41 @@ const updateQty = (mode, item) => {
   asset_orders.value = filteredAssetOrder;
 };
 
+const setMinQty = (item) => {
+  const filteredAssetOrder = asset_orders.value.map((order) => {
+    if (order.id === item.id) {
+      return {
+        ...order,
+        qty: 1,
+        unit_price_total: 1 * parseFloat(order.unit_price),
+      };
+    }
+    return order;
+  });
+  asset_orders.value = filteredAssetOrder;
+  toast.notify("Quantity set to minimum (1)");
+};
+
+const setMaxQty = (item) => {
+  // Determine the max available quantity
+  const maxAvailable = item.max_qty && item.max_qty < item.current_value
+    ? item.max_qty
+    : item.current_value;
+
+  const filteredAssetOrder = asset_orders.value.map((order) => {
+    if (order.id === item.id) {
+      return {
+        ...order,
+        qty: maxAvailable,
+        unit_price_total: maxAvailable * parseFloat(order.unit_price),
+      };
+    }
+    return order;
+  });
+  asset_orders.value = filteredAssetOrder;
+  toast.notify(`Quantity set to maximum (${maxAvailable})`);
+};
+
 const orderedItems = computed(() => {
   const getOrderedItems = asset_orders.value.map((order) => {
     return {
@@ -164,6 +199,60 @@ const getTotalQtyOrders = computed(() => {
         return accumlator + item.qty;
     }, 0);
 })
+
+// Handle direct input changes on quantity field
+const handleQtyInput = (order) => {
+  // Determine the max available quantity
+  const maxAvailable = order.max_qty && order.max_qty < order.current_value
+    ? order.max_qty
+    : order.current_value;
+
+  // Parse the quantity as a number
+  let qty = parseInt(order.qty);
+
+  // If not a valid number, set to 1
+  if (isNaN(qty) || qty < 1) {
+    order.qty = 1;
+    toast.notify("Quantity must be at least 1");
+  }
+  // If entered qty exceeds available stock
+  else if (qty > maxAvailable) {
+    order.qty = maxAvailable;
+    toast.notify("Opps!, the current stock is less than the order qty");
+  } else {
+    order.qty = qty;
+  }
+
+  // Update the total price
+  order.unit_price_total = order.qty * parseFloat(order.unit_price);
+};
+
+// Handle blur event to ensure final validation
+const handleQtyBlur = (order) => {
+  // Determine the max available quantity
+  const maxAvailable = order.max_qty && order.max_qty < order.current_value
+    ? order.max_qty
+    : order.current_value;
+
+  // Parse the quantity as a number
+  let qty = parseInt(order.qty);
+
+  // If not a valid number, set to 1
+  if (isNaN(qty) || qty < 1) {
+    order.qty = 1;
+    toast.notify("Quantity must be at least 1");
+  }
+  // If entered qty exceeds available stock
+  else if (qty > maxAvailable) {
+    order.qty = maxAvailable;
+    toast.notify("Opps!, the current stock is less than the order qty");
+  } else {
+    order.qty = qty;
+  }
+
+  // Update the total price
+  order.unit_price_total = order.qty * parseFloat(order.unit_price);
+};
 
 const form = useForm({
   selected_customer: null,
@@ -601,25 +690,52 @@ onMounted(() => {
                                         >
                                       </td>
                                       <td class="text-center align-middle">
-                                        <button
-                                          type="button"
-                                          @click="updateQty('deduct', order)"
-                                          class="btn btn-xs btn-light-success btn-icon mr-2"
-                                        >
-                                          <i class="ki ki-minus icon-xs"></i>
-                                        </button>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                          <button
+                                            type="button"
+                                            @click="setMinQty(order)"
+                                            class="btn btn-xs btn-light-info btn-icon"
+                                            title="Set to minimum (1)"
+                                          >
+                                            <i class="flaticon2-fast-back icon-xs"></i>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            @click="updateQty('deduct', order)"
+                                            class="btn btn-xs btn-light-success btn-icon ml-1"
+                                            title="Decrease quantity"
+                                          >
+                                            <i class="ki ki-minus icon-xs"></i>
+                                          </button>
 
-                                        <span class="mr-2 font-weight-bolder">{{
-                                          order.qty
-                                        }}</span>
+                                          <input
+                                            v-model.number="order.qty"
+                                            @input="handleQtyInput(order)"
+                                            @blur="handleQtyBlur(order)"
+                                            class="form-control form-control-solid text-center mx-2"
+                                            style="min-width: 80px; max-width: 100px;"
+                                            type="number"
+                                            min="1"
+                                            :max="order.max_qty && order.max_qty < order.current_value ? order.max_qty : order.current_value"
+                                          />
 
-                                        <button
-                                          type="button"
-                                          @click="updateQty('add', order)"
-                                          class="btn btn-xs btn-light-success btn-icon"
-                                        >
-                                          <i class="ki ki-plus icon-xs"></i>
-                                        </button>
+                                          <button
+                                            type="button"
+                                            @click="updateQty('add', order)"
+                                            class="btn btn-xs btn-light-success btn-icon"
+                                            title="Increase quantity"
+                                          >
+                                            <i class="ki ki-plus icon-xs"></i>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            @click="setMaxQty(order)"
+                                            class="btn btn-xs btn-light-info btn-icon ml-1"
+                                            title="Set to maximum available"
+                                          >
+                                            <i class="flaticon2-fast-next icon-xs"></i>
+                                          </button>
+                                        </div>
                                       </td>
                                       <td
                                         width="15%"

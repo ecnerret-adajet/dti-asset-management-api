@@ -54,6 +54,15 @@ const updateRole = () => {
       },
     });
 };
+
+const chunkPermissions = computed(() => {
+  const chunkSize = 10;
+  const chunks = [];
+  for (let i = 0; i < props.permissions.length; i += chunkSize) {
+    chunks.push(props.permissions.slice(i, i + chunkSize));
+  }
+  return chunks;
+});
 </script>
 <template>
   <InventoryLayout>
@@ -147,18 +156,22 @@ const updateRole = () => {
           <div class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label">Permisions</label>
             <div class="col-lg-9 col-xl-6">
-              <div class="checkbox-list">
-                <template v-for="(permission, p) in permissions" :key="p">
-                  <label class="checkbox" :for="'checkbox' + p">
-                    <input
-                      type="checkbox"
-                      :checked="selectedPermissions.includes(permission.id)"
-                      :value="permission.id"
-                      @change="handlePermissionChange(permission.id)"
-                      :id="'checkbox' + p"
-                    />
-                    <span></span>{{ permission.name }}</label
-                  >
+              <div class="checkbox-list row">
+                <template v-for="(chunk, chunkIndex) in chunkPermissions" :key="'chunk-' + chunkIndex">
+                  <div class="col-md-6">
+                    <template v-for="(permission, p) in chunk" :key="permission.id">
+                      <label class="checkbox" :for="'checkbox-' + permission.id">
+                        <input
+                          type="checkbox"
+                          :checked="selectedPermissions.includes(permission.id)"
+                          :value="permission.id"
+                          @change="handlePermissionChange(permission.id)"
+                          :id="'checkbox-' + permission.id"
+                        />
+                        <span></span>{{ permission.name }}</label
+                      >
+                    </template>
+                  </div>
                 </template>
               </div>
             </div>

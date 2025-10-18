@@ -348,6 +348,7 @@ const previewFile = (event) => {
               <h5 class="font-weight-bold mt-10 mb-6">Inventory Details</h5>
             </div>
           </div>
+
           <div class="form-group row">
             <label class="col-xl-3 col-lg-3 col-form-label"
               >Current Stock</label
@@ -356,6 +357,18 @@ const previewFile = (event) => {
               <input
                 v-model="form.current_value"
                 placeholder="Input Serial Number"
+                class="form-control form-control-lg form-control-solid"
+                type="number"
+              />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-xl-3 col-lg-3 col-form-label">Max Quantity</label>
+            <div class="col-lg-9 col-xl-6">
+              <input
+                v-model="form.max_quantity"
+                placeholder="Input Max Quantity"
                 class="form-control form-control-lg form-control-solid"
                 type="number"
               />

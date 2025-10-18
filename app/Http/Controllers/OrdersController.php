@@ -187,8 +187,20 @@ class OrdersController extends Controller
         $order->order_status_id = $request->order_status_id;
         $order->save();
 
+        //  failed and return has the same return stock to the asset
+
         // if failed
         if($request->order_status_id === 4)
+        {
+            foreach($order->assets as $orderAsset) {
+                $asset = Asset::where('id', $orderAsset->id)->first();
+                $asset->current_value = $asset->current_value + $orderAsset->pivot->qty;
+                $asset->save();
+            }
+        }
+
+        // if returned
+        if($request->order_status_id === 5)
         {
             foreach($order->assets as $orderAsset) {
                 $asset = Asset::where('id', $orderAsset->id)->first();

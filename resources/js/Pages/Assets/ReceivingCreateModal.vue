@@ -21,6 +21,7 @@ const props = defineProps({
   po_number: String,
   reference_number: String,
   show: { type: Boolean, default: false },
+  max_quantity: Number,
 });
 
 const errors = ref(null);
@@ -79,6 +80,10 @@ const myChangeEvent = (val) => {
 
 const mySelectEvent = ({ id, text }) => {
   console.log({ id, text });
+};
+
+const setMaxQuantity = () => {
+  form.qty = props.max_quantity;
 };
 
 watch(
@@ -151,12 +156,24 @@ onMounted(() => {
               <div class="form-group row">
                 <label class="col-xl-3 col-lg-3 col-form-label">Quantity</label>
                 <div class="col-lg-9 col-xl-9">
-                  <input
-                    v-model="form.qty"
-                    placeholder="0"
-                    class="form-control form-control-lg form-control-solid"
-                    type="number"
-                  />
+                  <div class="input-group">
+                    <input
+                      v-model="form.qty"
+                      placeholder="0"
+                      class="form-control form-control-lg form-control-solid"
+                      type="number"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        @click="setMaxQuantity"
+                        type="button"
+                        class="btn btn-secondary"
+                        :disabled="!max_quantity"
+                      >
+                        Max
+                      </button>
+                    </div>
+                  </div>
                   <div
                     v-if="form.errors.qty"
                     class="fv-plugins-message-container text-danger mt-3"

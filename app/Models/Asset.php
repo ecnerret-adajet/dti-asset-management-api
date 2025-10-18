@@ -34,6 +34,7 @@ class Asset extends Model implements Auditable
         'unit_price_currency',
         'import_price_currency',
         'part_number',
+        'max_quantity',
     ];
 
     public function user()
