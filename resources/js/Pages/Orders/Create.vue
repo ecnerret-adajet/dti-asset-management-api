@@ -683,11 +683,18 @@ onMounted(() => {
                                           ></div>
                                         </div>
                                         <!--end::Symbol-->
-                                        <a
-                                          href="#"
-                                          class="text-dark text-hover-primary"
-                                          >{{ order.title }}</a
-                                        >
+                                        <div>
+                                          <a
+                                            href="#"
+                                            class="text-dark text-hover-primary d-block"
+                                            >{{ order.title }}</a
+                                          >
+                                          <div class="text-muted font-size-sm font-weight-normal">
+                                            <span v-if="order.serial_number">SN: {{ order.serial_number }}</span>
+                                            <span v-if="order.serial_number && order.part_number"> | </span>
+                                            <span v-if="order.part_number">PN: {{ order.part_number }}</span>
+                                          </div>
+                                        </div>
                                       </td>
                                       <td class="text-center align-middle">
                                         <div class="d-flex align-items-center justify-content-center">
@@ -850,11 +857,18 @@ onMounted(() => {
                                         ></div>
                                       </div>
                                       <!--end::Symbol-->
-                                      <a
-                                        href="#"
-                                        class="text-dark text-hover-primary"
-                                        >{{ order.title }}</a
-                                      >
+                                      <div>
+                                        <a
+                                          href="#"
+                                          class="text-dark text-hover-primary d-block"
+                                          >{{ order.title }}</a
+                                        >
+                                        <div class="text-muted font-size-sm font-weight-normal">
+                                          <span v-if="order.serial_number">SN: {{ order.serial_number }}</span>
+                                          <span v-if="order.serial_number && order.part_number"> | </span>
+                                          <span v-if="order.part_number">PN: {{ order.part_number }}</span>
+                                        </div>
+                                      </div>
                                     </td>
                                     <td
                                       class="border-0 text-right pt-7 align-middle"
