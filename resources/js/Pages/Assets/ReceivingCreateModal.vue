@@ -83,7 +83,13 @@ const mySelectEvent = ({ id, text }) => {
 };
 
 const setMaxQuantity = () => {
-  form.qty = props.max_quantity;
+  console.log('set max qty')
+  console.log(props.asset)
+  if (props.asset.max_quantity) {
+    const currentValue = Number(props.asset.current_value) || 0;
+    const remaining = props.asset.max_quantity - currentValue;
+    form.qty = remaining > 0 ? remaining : props.asset.max_quantity;
+  }
 };
 
 watch(
@@ -168,7 +174,6 @@ onMounted(() => {
                         @click="setMaxQuantity"
                         type="button"
                         class="btn btn-secondary"
-                        :disabled="!max_quantity"
                       >
                         Max
                       </button>
