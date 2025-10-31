@@ -38,6 +38,16 @@ const notes = ref([]);
 const note_remarks = ref(null);
 const errors = ref(null);
 
+// Image modal state
+const showImageModal = ref(false);
+const zoomLevel = ref(1);
+const selectedImagePath = ref('');
+const isDragging = ref(false);
+const startX = ref(0);
+const startY = ref(0);
+const translateX = ref(0);
+const translateY = ref(0);
+
 const roles = computed(() => page.props.auth.roles);
 const user_id = computed(() => page.props.auth.user.id);
 
@@ -136,6 +146,128 @@ const previewFile = (event) => {
 const removeStrings = (text) => {
   let parts = text.split("\\");
   return parts[parts.length - 1];
+};
+
+// Image modal functions
+const openImageModal = (imagePath) => {
+  selectedImagePath.value = imagePath;
+  showImageModal.value = true;
+  zoomLevel.value = 1; // Reset zoom level when opening modal
+  translateX.value = 0; // Reset position
+  translateY.value = 0;
+
+  // Add keyboard event listener when modal opens
+  setTimeout(() => {
+    window.addEventListener('keydown', handleKeyDown);
+  }, 100);
+};
+
+const closeImageModal = () => {
+  showImageModal.value = false;
+  selectedImagePath.value = '';
+  // Remove keyboard event listener when modal closes
+  window.removeEventListener('keydown', handleKeyDown);
+};
+
+const zoomIn = () => {
+  if (zoomLevel.value < 3) { // Limit max zoom
+    zoomLevel.value += 0.25;
+  }
+};
+
+const zoomOut = () => {
+  if (zoomLevel.value > 0.5) { // Limit min zoom
+    zoomLevel.value -= 0.25;
+  }
+};
+
+const resetZoom = () => {
+  zoomLevel.value = 1;
+  translateX.value = 0;
+  translateY.value = 0;
+};
+
+// Handle keyboard shortcuts
+const handleKeyDown = (event) => {
+  if (!showImageModal.value) return;
+
+  switch(event.key) {
+    case '+': // Plus key
+    case '=': // Equal key (usually same as plus without shift)
+      zoomIn();
+      event.preventDefault();
+      break;
+    case '-': // Minus key
+      zoomOut();
+      event.preventDefault();
+      break;
+    case '0': // Zero key
+      resetZoom();
+      event.preventDefault();
+      break;
+    case 'Escape': // Escape key
+      closeImageModal();
+      event.preventDefault();
+      break;
+    case 'ArrowUp': // Up arrow
+      translateY.value += 20;
+      event.preventDefault();
+      break;
+    case 'ArrowDown': // Down arrow
+      translateY.value -= 20;
+      event.preventDefault();
+      break;
+    case 'ArrowLeft': // Left arrow
+      translateX.value += 20;
+      event.preventDefault();
+      break;
+    case 'ArrowRight': // Right arrow
+      translateX.value -= 20;
+      event.preventDefault();
+      break;
+  }
+};
+
+// Mouse drag handlers for panning
+const startDrag = (event) => {
+  if (zoomLevel.value <= 1) return; // Only allow panning when zoomed in
+
+  isDragging.value = true;
+  startX.value = event.clientX;
+  startY.value = event.clientY;
+  event.preventDefault();
+};
+
+const doDrag = (event) => {
+  if (!isDragging.value) return;
+
+  const dx = event.clientX - startX.value;
+  const dy = event.clientY - startY.value;
+
+  translateX.value += dx;
+  translateY.value += dy;
+
+  startX.value = event.clientX;
+  startY.value = event.clientY;
+};
+
+const endDrag = () => {
+  isDragging.value = false;
+};
+
+// Handle mouse wheel for zooming
+const handleWheel = (event) => {
+  if (!showImageModal.value) return;
+
+  // Prevent default scrolling behavior
+  event.preventDefault();
+
+  // Zoom in or out based on wheel direction
+  if (event.deltaY < 0) {
+    zoomIn();
+  } else {
+    zoomOut();
+  }
 };
 
 onMounted(() => {
@@ -367,10 +499,12 @@ onMounted(() => {
                     "
                   >
                     <div
-                      class="image-input-wrapper"
+                      class="image-input-wrapper cursor-pointer"
                       :style="`
                         background-image: url(${previewImage});
                       `"
+                      @click="openImageModal(props.asset.image_path)"
+                      title="Click to view full size"
                     ></div>
                     <label
                       class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -944,5 +1078,138 @@ onMounted(() => {
       <!--end::Body-->
     </div>
     <!--end::Card-->
+
+    <!-- Image Modal -->
+    <div v-if="showImageModal" class="image-modal-overlay" @click="closeImageModal">
+      <div class="image-modal-content" @click.stop>
+        <div class="image-modal-header">
+          <div class="zoom-controls">
+            <button @click="zoomOut" class="zoom-btn" title="Zoom Out">
+              <i class="fa fa-search-minus"></i>
+            </button>
+            <button @click="resetZoom" class="zoom-btn" title="Reset Zoom">
+              <i class="fa fa-undo"></i>
+            </button>
+            <button @click="zoomIn" class="zoom-btn" title="Zoom In">
+              <i class="fa fa-search-plus"></i>
+            </button>
+          </div>
+          <button @click="closeImageModal" class="close-btn">&times;</button>
+        </div>
+        <div class="image-modal-body" @wheel="handleWheel">
+          <div
+            class="image-container"
+            :style="{ transform: `translate(${translateX}px, ${translateY}px)` }"
+            @mousedown="startDrag"
+            @mousemove="doDrag"
+            @mouseup="endDrag"
+            @mouseleave="endDrag"
+          >
+            <img
+              :src="`${baseUrl}/${selectedImagePath}`"
+              :style="{ transform: `scale(${zoomLevel})` }"
+              class="modal-image"
+              alt="Asset Image"
+              draggable="false"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
   </InventoryLayout>
 </template>
+
+<style scoped>
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  opacity: 0.9;
+}
+</style>
+
+<style>
+/* Image Modal Styles */
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.image-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.image-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.zoom-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.zoom-btn {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+  background-color: #e9ecef;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+}
+
+.image-modal-body {
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  position: relative;
+}
+
+.image-container {
+  position: relative;
+  transition: transform 0.1s ease;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  user-select: none;
+}
+</style>

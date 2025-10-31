@@ -182,8 +182,20 @@ class OrdersController extends Controller
         $this->validate($request,[
             'order_status_id' => 'required'
         ]);
+        
 
         $order = Order::where('id',$id)->first();
+
+        // if delivery status is more than 7 days, do not allow to update
+        if($order->order_status_id === 3)
+        {
+            if(Carbon::now()->diffInDays($order->updated_at) > 7)
+            {
+                return Redirect::route('orders')->with('error','Order status cannot be updated.');
+            }
+        }
+
+
         $order->order_status_id = $request->order_status_id;
         $order->save();
 
