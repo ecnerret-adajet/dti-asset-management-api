@@ -212,3 +212,16 @@
             -ms-flex: 0 0 100%;
             flex: 0 0 100%;
             padding: 0.5rem 2rem; } }
+
+/* SweetAlert2 Icon Centering Fix */
+.swal2-popup .swal2-icon {
+  margin: 1.5em auto !important;
+}
+
+.swal2-icon-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}

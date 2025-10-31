@@ -157,7 +157,8 @@ const openShowDetails = (item) => {
                     >
                       <thead>
                         <tr class="text-left">
-                          <th class="pr-0" style="width: 100px">Oder Id</th>
+                          <th class="pr-0" style="width: 100px">Order ID</th>
+                          <th class="pr-0" style="width: 100px">Order Reference</th>
                           <th class="pr-0" style="width: 300px">Customer</th>
                           <th style="min-width: 150px">Total Item</th>
                           <th style="min-width: 150px">Total Cost</th>
@@ -173,6 +174,11 @@ const openShowDetails = (item) => {
                           <td class="pr-2">
                             <span class="text-capitalize">
                               {{ order.order_reference }}
+                            </span>
+                          </td>
+                          <td class="pr-2">
+                            <span class="text-capitalize">
+                              {{ order.reference }}
                             </span>
                           </td>
                           <td>
@@ -212,7 +218,7 @@ const openShowDetails = (item) => {
                             >
                           </td>
                           <td class="pr-0 text-right">
-                            <Link
+                            <!-- <Link
                               :href="`/orders/${order.id}/edit`"
                               class="btn btn-sm btn-clean btn-icon mr-2"
                               title="Edit Order"
@@ -228,7 +234,7 @@ const openShowDetails = (item) => {
                                   </svg>
                                 </span>
                               </span>
-                            </Link>
+                            </Link> -->
 
                             <button
                               type="button"

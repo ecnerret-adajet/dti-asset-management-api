@@ -197,6 +197,7 @@ class OrdersController extends Controller
 
 
         $order->order_status_id = $request->order_status_id;
+        $order->reference = $request->reference;
         $order->save();
 
         //  failed and return has the same return stock to the asset

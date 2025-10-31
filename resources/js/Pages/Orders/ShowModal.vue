@@ -19,6 +19,7 @@ const props = defineProps({
 
 const form = useForm({
   order_status_id: props.order.order_status_id,
+  reference: props.order.reference,
 });
 
 // Check if order status is delivered (id: 3) or failed (id: 4)
@@ -180,6 +181,22 @@ const handleSubmit = () => {
           </div>
 
           <div class="separator separator-dashed my-5"></div>
+
+          <div class="form-group row">
+            <label class="col-2 text-right col-form-label">Order Reference</label>
+            <div class="col-10">
+              <input
+                v-model="form.reference"
+                type="text"
+                class="form-control form-control-solid form-control-lg"
+                placeholder="Enter reference"
+              />
+              <span class="form-text text-muted"
+                >Optional reference for this order.</span
+              >
+            </div>
+          </div>
+
           <div class="form-group row">
             <label class="col-2 text-right col-form-label">Order Status</label>
             <div class="col-10">
@@ -213,6 +230,8 @@ const handleSubmit = () => {
               >
             </div>
           </div>
+
+
         </div>
         <div class="modal-footer">
           <button

@@ -4,7 +4,11 @@ const basicAlert = (message, title, icon = "success") => {
         text: message,
         icon: icon,
         showConfirmButton: false,
-        timer: 3000
+        timer: 3000,
+        customClass: {
+            popup: 'swal2-center',
+            icon: 'swal2-icon-center'
+        }
     });
 }
 
