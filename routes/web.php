@@ -125,7 +125,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/orders/{id}/edit',[OrdersController::class,'edit'])->name('orders-edit');
     Route::patch('/orders/{id}',[OrdersController::class,'update'])->name('orders-update');
     Route::patch('/orders/status/{id}',[OrdersController::class,'updateOrderStatus'])->name('orders-status-update');
-    Route::patch('/orders/upload-reference',[OrdersController::class,'uploadReferenceDocument'])->name('orders-reference-upload');
+    Route::post('/orders/upload-reference',[OrdersController::class,'uploadReferenceDocument'])->name('orders-reference-upload');
     Route::get('/orders/download-reference/{id}',[OrdersController::class,'downloadReferenceDocument'])->name('orders-reference-download');
 
     // receiving

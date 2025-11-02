@@ -150,6 +150,7 @@ class OrdersController extends Controller
 
     public function uploadReferenceDocument(Request $request)
     {
+
         $request->validate([
             'upload_reference' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240',
             'order_id' => 'required|exists:orders,id'
@@ -158,14 +159,8 @@ class OrdersController extends Controller
         $order = Order::findOrFail($request->order_id);
 
         if ($request->hasFile('upload_reference')) {
-            // Delete old file if exists
-            if ($order->upload_reference && \Storage::disk('public')->exists($order->upload_reference)) {
-                \Storage::disk('public')->delete($order->upload_reference);
-            }
 
-            // Store the new file
-            $path = $request->file('upload_reference')->store('reference_documents', 'public');
-            $order->upload_reference = $path;
+            $order->upload_reference = $request->file('upload_reference')->store('images');
             $order->save();
 
             return Redirect::route('orders')->with('success', 'Reference document uploaded successfully');

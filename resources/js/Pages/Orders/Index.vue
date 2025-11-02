@@ -7,14 +7,15 @@ import { ref, watch } from "vue";
 import throttle from "lodash/throttle";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
-import { useForm as useInertiaForm } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 import ShowModal from "./ShowModal.vue";
 
 const show = ref(false);
 const showUploadModal = ref(false);
 const selected_order = ref({});
-const uploadForm = useInertiaForm({
+
+const uploadForm = useForm({
   upload_reference: null,
   order_id: null,
 });
@@ -32,7 +33,22 @@ const submitUpload = () => {
     onSuccess: () => {
       showUploadModal.value = false;
       uploadForm.reset();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Reference document uploaded successfully',
+        confirmButtonText: 'OK'
+      });
     },
+    onError: (errors) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Upload Failed',
+        text: errors.upload_reference || 'An error occurred while uploading the document',
+        confirmButtonText: 'OK'
+      });
+    }
   });
 };
 
@@ -359,7 +375,7 @@ const openShowDetails = (item) => {
                   type="file"
                   class="form-control"
                   @input="uploadForm.upload_reference = $event.target.files[0]"
-                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                   required
                 >
                 <div v-if="uploadForm.errors.upload_reference" class="text-danger">
