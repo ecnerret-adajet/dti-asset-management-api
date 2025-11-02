@@ -9,12 +9,9 @@
             </div>
           </div>
           <div class="card-body">
-            <div v-if="$page.props.flash.success" class="alert alert-success">
-              {{ $page.props.flash.success }}
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <form @submit.prevent="updateProfile">
+            <form @submit.prevent="updateProfile">
+              <div class="row">
+                <div class="col-md-6">
                   <div class="form-group mb-4">
                     <label class="form-label">Profile Image</label>
                     <div class="d-flex align-items-center mb-3">
@@ -92,67 +89,41 @@
                     </div>
                     <div class="text-muted mt-2">Enter valid Philippine phone number.</div>
                   </div>
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-primary" :disabled="form.processing">
-                      Update Profile
-                    </button>
-                  </div>
-                </form>
-              </div>
-              <div class="col-md-6">
-                <div class="card card-custom">
-                  <div class="card-header">
-                    <div class="card-title">
-                      <h3 class="card-label">Change Password</h3>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group mb-4">
+                    <label class="form-label">New Password</label>
+                    <input
+                      v-model="form.password"
+                      type="password"
+                      class="form-control"
+                      :class="{ 'is-invalid': form.errors.password }"
+                      placeholder="Leave blank to keep current password"
+                    />
+                    <div v-if="form.errors.password" class="invalid-feedback">
+                      {{ form.errors.password }}
+                    </div>
+                    <div class="text-muted mt-2">
+                      Leave blank if you don't want to change your password. Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.
                     </div>
                   </div>
-                  <div class="card-body">
-                    <form @submit.prevent="updatePassword">
-                      <div class="form-group mb-4">
-                        <label class="form-label">Current Password</label>
-                        <input
-                          v-model="passwordForm.current_password"
-                          type="password"
-                          class="form-control"
-                          :class="{ 'is-invalid': passwordForm.errors.current_password }"
-                        />
-                        <div v-if="passwordForm.errors.current_password" class="invalid-feedback">
-                          {{ passwordForm.errors.current_password }}
-                        </div>
-                      </div>
-                      <div class="form-group mb-4">
-                        <label class="form-label">New Password</label>
-                        <input
-                          v-model="passwordForm.password"
-                          type="password"
-                          class="form-control"
-                          :class="{ 'is-invalid': passwordForm.errors.password }"
-                        />
-                        <div v-if="passwordForm.errors.password" class="invalid-feedback">
-                          {{ passwordForm.errors.password }}
-                        </div>
-                        <div class="text-muted mt-2">
-                          Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols.
-                        </div>
-                      </div>
-                      <div class="form-group mb-4">
-                        <label class="form-label">Confirm New Password</label>
-                        <input
-                          v-model="passwordForm.password_confirmation"
-                          type="password"
-                          class="form-control"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <button type="submit" class="btn btn-primary" :disabled="passwordForm.processing">
-                          Update Password
-                        </button>
-                      </div>
-                    </form>
+                  <div class="form-group mb-4">
+                    <label class="form-label">Confirm New Password</label>
+                    <input
+                      v-model="form.password_confirmation"
+                      type="password"
+                      class="form-control"
+                      placeholder="Leave blank to keep current password"
+                    />
                   </div>
                 </div>
               </div>
-            </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary" :disabled="form.processing">
+                  Update Profile
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -163,6 +134,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 const props = defineProps({
   user: Object,
@@ -171,18 +143,13 @@ const props = defineProps({
 const imageInput = ref(null);
 const selectedImage = ref(null);
 
-// Form for profile update
+// Single form for profile and password update
 const form = useForm({
   first_name: props.user.first_name,
   last_name: props.user.last_name,
   email: props.user.email,
   contact_number: props.user.contact_number || '',
   image_path: null,
-});
-
-// Form for password update
-const passwordForm = useForm({
-  current_password: '',
   password: '',
   password_confirmation: '',
 });
@@ -191,13 +158,13 @@ const profileImageUrl = computed(() => {
   if (selectedImage.value) {
     return URL.createObjectURL(selectedImage.value);
   }
-  
+
   if (props.user.image_path) {
-    return props.user.image_path.startsWith('http') 
-      ? props.user.image_path 
+    return props.user.image_path.startsWith('http')
+      ? props.user.image_path
       : `/storage/${props.user.image_path}`;
   }
-  
+
   return 'assets/media/users/default.jpg';
 });
 
@@ -209,19 +176,22 @@ const handleImageChange = (e) => {
 };
 
 const updateProfile = () => {
-  form.post(route('profile-update'), {
+  form.transform((data) => ({
+    ...data,
+    _method: 'PATCH'
+  })).post(route('profile-update'), {
     preserveScroll: true,
     onSuccess: () => {
       selectedImage.value = null;
-    },
-  });
-};
+      form.password = '';
+      form.password_confirmation = '';
 
-const updatePassword = () => {
-  passwordForm.post(route('profile-change-password'), {
-    preserveScroll: true,
-    onSuccess: () => {
-      passwordForm.reset();
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Profile updated successfully',
+        confirmButtonText: 'OK'
+      });
     },
   });
 };

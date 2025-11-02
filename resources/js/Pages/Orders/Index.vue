@@ -26,13 +26,12 @@ const openUploadModal = (order) => {
 };
 
 const submitUpload = () => {
-  uploadForm.post(route('orders.upload-reference'), {
+  uploadForm.post(route('orders-reference-upload'), {
     preserveScroll: true,
+    forceFormData: true,
     onSuccess: () => {
       showUploadModal.value = false;
       uploadForm.reset();
-      // Refresh the page to show the updated reference
-      router.visit(route('orders.index'), { only: ['orders'] });
     },
   });
 };
@@ -177,8 +176,17 @@ const openShowDetails = (item) => {
                             </span>
                           </td>
                           <td class="pr-2">
-                            <span class="text-capitalize">
-                              {{ order.reference }}
+                            <span v-if="order.upload_reference" class="text-capitalize">
+                              <a
+                                :href="route('orders-reference-download', order.id)"
+                                class="btn btn-sm btn-light-primary"
+                                target="_blank"
+                              >
+                                <i class="flaticon2-download"></i> Download
+                              </a>
+                            </span>
+                            <span v-else class="text-muted">
+                              No file uploaded
                             </span>
                           </td>
                           <td>
@@ -347,11 +355,11 @@ const openShowDetails = (item) => {
             <form @submit.prevent="submitUpload">
               <div class="form-group">
                 <label>Reference Document</label>
-                <input 
-                  type="file" 
-                  class="form-control" 
+                <input
+                  type="file"
+                  class="form-control"
                   @input="uploadForm.upload_reference = $event.target.files[0]"
-                  accept="image/*,.pdf,.doc,.docx"
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
                   required
                 >
                 <div v-if="uploadForm.errors.upload_reference" class="text-danger">
