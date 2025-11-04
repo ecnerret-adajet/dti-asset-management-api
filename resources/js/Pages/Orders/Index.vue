@@ -179,6 +179,7 @@ const openShowDetails = (item) => {
                           <th style="min-width: 150px">Total Cost</th>
                           <th style="min-width: 150px">Created By</th>
                           <th style="min-width: 150px">Status</th>
+                          <th style="min-width: 150px">Document</th>
                           <th class="pr-0 text-right" style="min-width: 150px">
                             action
                           </th>
@@ -192,17 +193,8 @@ const openShowDetails = (item) => {
                             </span>
                           </td>
                           <td class="pr-2">
-                            <span v-if="order.upload_reference" class="text-capitalize">
-                              <a
-                                :href="route('orders-reference-download', order.id)"
-                                class="btn btn-sm btn-light-primary"
-                                target="_blank"
-                              >
-                                <i class="flaticon2-download"></i> Download
-                              </a>
-                            </span>
-                            <span v-else class="text-muted">
-                              No file uploaded
+                            <span class="text-capitalize">
+                              {{ order.reference }}
                             </span>
                           </td>
                           <td>
@@ -240,6 +232,20 @@ const openShowDetails = (item) => {
                               class="label label-lg font-weight-bold text-capitalize label-inline"
                               >{{ order.order_status.name }}</span
                             >
+                          </td>
+                          <td>
+                             <span v-if="order.upload_reference" class="text-capitalize">
+                              <a
+                                :href="route('orders-reference-download', order.id)"
+                                class="btn btn-sm btn-light-primary"
+                                download
+                              >
+                                <i class="flaticon2-download"></i> Download
+                              </a>
+                            </span>
+                            <span v-else class="text-muted">
+                              No file uploaded
+                            </span>
                           </td>
                           <td class="pr-0 text-right">
                             <!-- <Link

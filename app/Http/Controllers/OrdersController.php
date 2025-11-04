@@ -159,8 +159,12 @@ class OrdersController extends Controller
         $order = Order::findOrFail($request->order_id);
 
         if ($request->hasFile('upload_reference')) {
+            // Delete old file if exists
+            if ($order->upload_reference && \Storage::exists($order->upload_reference)) {
+                \Storage::delete($order->upload_reference);
+            }
 
-            $order->upload_reference = $request->file('upload_reference')->store('images');
+            $order->upload_reference = $request->file('upload_reference')->store('order_references');
             $order->save();
 
             return Redirect::route('orders')->with('success', 'Reference document uploaded successfully');
@@ -173,11 +177,14 @@ class OrdersController extends Controller
     {
         $order = Order::findOrFail($id);
 
-        if (!$order->upload_reference || !\Storage::disk('public')->exists($order->upload_reference)) {
+        if (!$order->upload_reference || !\Storage::exists($order->upload_reference)) {
             return Redirect::back()->withErrors(['message' => 'Reference document not found']);
         }
 
-        return \Storage::disk('public')->download($order->upload_reference);
+        $filePath = storage_path('app/' . $order->upload_reference);
+        $fileName = basename($order->upload_reference);
+
+        return response()->download($filePath, $fileName);
     }
 
     public function updateOrderStatus(Request $request, $id)

@@ -97,7 +97,7 @@ const previewFile = (event) => {
           >
             Submit
           </button>
-          <button type="reset" class="btn btn-secondary">Cancel</button>
+          <button type="button" @click="$inertia.visit('/inventory')" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
       <!--end::Header-->

@@ -66,6 +66,10 @@ class AssetsController extends Controller
                     ->with('location','assetType','status','supplier','audits')
                     ->first();
 
+        if (!$asset) {
+            return Redirect::route('inventory')->with('error', 'Asset not found.');
+        }
+
         $locations = Location::activeLocations()->get();
         $asset_types = AssetType::all();
         $status = Status::all();
@@ -87,6 +91,10 @@ class AssetsController extends Controller
         $asset = Asset::where('id', $asset_id)
                     ->with('location','assetType','status','supplier','audits')
                     ->first();
+
+        if (!$asset) {
+            return Redirect::route('inventory')->with('error', 'Asset not found.');
+        }
 
         $locations = Location::activeLocations()->get();
         $asset_types = AssetType::select('id', 'name')->get();
