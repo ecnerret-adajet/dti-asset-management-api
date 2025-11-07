@@ -30,7 +30,7 @@ const handleLogin = () => {
         </a>
         <strong
           class="text-center font-weight-bolder text-dark font-size-h2 font-size-h1-lg pt-3"
-          >Daelift Traiding Inc.</strong
+          >Daelift Trading Inc.</strong
         >
         <!--end::Logo-->
         <!--begin::Aside body-->
