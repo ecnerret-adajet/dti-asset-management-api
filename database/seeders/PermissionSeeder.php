@@ -28,7 +28,10 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            PermissionCategory::create($category);
+            PermissionCategory::firstOrCreate(
+                ['slug' => $category['slug']],
+                $category
+            );
         }
 
         // Define all permissions with categories
@@ -99,11 +102,14 @@ class PermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             $category = PermissionCategory::where('slug', $permission['category'])->first();
 
-            Permission::create([
-                'name' => $permission['name'],
-                'slug' => $permission['slug'],
-                'category_id' => $category->id,
-            ]);
+            Permission::firstOrCreate(
+                ['slug' => $permission['slug']],
+                [
+                    'name' => $permission['name'],
+                    'slug' => $permission['slug'],
+                    'category_id' => $category->id,
+                ]
+            );
         }
 
         // Create default roles
